@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Drawing;
 
 namespace VideoTracker
 {
@@ -25,11 +26,11 @@ namespace VideoTracker
 
         private void AddNewTitle_Click(object sender, EventArgs e)
         {
-            VideoSeriesForm vs = new VideoSeriesForm();
-            if (vs.ShowDialog() == DialogResult.OK)
+            VideoSeriesForm vsf = new VideoSeriesForm();
+            if (vsf.ShowDialog() == DialogResult.OK)
             {
-                videoTrackerData.videoSeriesList.Add(vs.videoSeries);
-                AddOrUpdateVideoPanel(vs.videoSeries);
+                videoTrackerData.videoSeriesList.Add(vsf.videoSeries);
+                AddOrUpdateVideoPanel(vsf.videoSeries);
             }
         }
  
@@ -68,6 +69,7 @@ namespace VideoTracker
             {
                 mainPanel.Controls.Add(v.panel);
             }
+            AdjustWidth();
         }
 
         public void DeleteTitle(VideoPlayerPanel panel)
@@ -75,6 +77,31 @@ namespace VideoTracker
             videoTrackerData.videoSeriesList.Remove(panel.videoSeries);
             mainPanel.Controls.Remove(panel);
             numPanels--;
+            AdjustWidth();
+        }
+
+        private void AdjustWidth()
+        {
+            int max = 0;
+            foreach (VideoPlayerPanel vp in mainPanel.Controls)
+            {
+                FlowLayoutPanel p = vp.flowLayoutPanel;
+                p.AutoSize = true;
+                ResumeLayout();
+                p.ResumeLayout();
+                PerformLayout();
+                if (p.Width > max)
+                {
+                    max = p.Width;
+                }
+            }
+            foreach (VideoPlayerPanel vp in mainPanel.Controls)
+            {
+                FlowLayoutPanel p = vp.flowLayoutPanel;
+                p.AutoSize = false;
+                p.Width = max;
+                p.PerformLayout();
+            }
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -132,8 +159,9 @@ namespace VideoTracker
     public class VideoFile
     {
         public string filename;
-        public string season;
-        public string episode;
+        public int postseason;
+        public int season;
+        public int episode;
         public string key;
     }
 
@@ -144,6 +172,9 @@ namespace VideoTracker
         public string title;
         public VideoFile currentVideo;
         public List<string> directoryList;
+        public bool allowUndelimitedEpisodes;
+        public bool noSeasonNumber;
+        public List<string> postSeasonStrings;
         [XmlIgnore] public SortedList<string,VideoFile> videoFiles;
         [XmlIgnore] public VideoPlayerPanel panel;
 
@@ -152,7 +183,10 @@ namespace VideoTracker
             this.title = "";
             this.currentVideo = null;
             this.directoryList = null;
+            this.allowUndelimitedEpisodes = true;
+            this.noSeasonNumber = false;
             this.panel = null;
+            this.postSeasonStrings = new List<String>();
             this.videoFiles = new SortedList<string,VideoFile>();
         }
 
@@ -164,23 +198,32 @@ namespace VideoTracker
             this.Update(title, currentFile, directoryList, this.panel);
         }
 
+        private int Sort(string key)
+        {
+            return 0;
+        }
+
         public void Update(string title, string currentFile, List<string> directoryList, VideoPlayerPanel panel)
         {
             videoFiles.Clear();
             this.title = title;
+            this.allowUndelimitedEpisodes = true; // Make this configurable;
+            this.noSeasonNumber = false; // Make this configurable;
+            this.postSeasonStrings = new List<string>();
+            this.postSeasonStrings.Add("SPECIAL"); // Make this configurable;
             this.currentVideo = null;
             this.directoryList = directoryList;
             this.panel = panel;
 
-            Regex whitespace = new Regex(@"/\s+/g");
+            Regex whitespace = new Regex(@"\s+");
             string fileSearchString = whitespace.Replace(title, "*");
             string regexSearchString = whitespace.Replace(Regex.Escape(title), ".*");
             string seasonEpisodeRegex = regexSearchString + @"\D*?(\d+)\D+?(\d+)";
             string EpisodeOnlyRegex = regexSearchString + @"\D*?(\d+)";
 
-            Dictionary<string, int> seasons = new Dictionary<string, int>();
-            int special = 1;
+            Dictionary<int, int> seasons = new Dictionary<int, int>();
             bool seasonValid = true;
+            bool parsingEpisode = true;
             foreach (string directory in directoryList)
             {
                 string[] files = Directory.GetFiles(directory, fileSearchString + "*");
@@ -189,29 +232,40 @@ namespace VideoTracker
                     VideoFile v = new VideoFile();
                     v.filename = file;
              
-                    Match m = Regex.Match(file, seasonEpisodeRegex, RegexOptions.IgnoreCase);
-                    if (m.Success)
-                    {
-                        GroupCollection g = m.Groups;
-                        v.season = g[1].Value;
-                        v.episode = g[2].Value;
-                        if (seasons.ContainsKey(v.season))
+                    parsingEpisode = true;
+                    // This handles strings with season and episode numbers, in formats
+                    // like S01E01 and 1x01. It is executed if the "noSeasonNumber" flag
+                    // has not been set, and if the episode name contains at least two
+                    // digit strings.
+                    if (noSeasonNumber == false) {
+                        Match m = Regex.Match(file, seasonEpisodeRegex, RegexOptions.IgnoreCase);
+                        if (m.Success)
                         {
-                            seasons[v.season] += 1;
-                        }
-                        else
-                        {
-                            seasons[v.season] = 1;
+
+                             GroupCollection g = m.Groups;
+                             v.season = Int32.Parse(g[1].Value);
+                             v.episode = Int32.Parse(g[2].Value);
+                             if (seasons.ContainsKey(v.season))
+                             {
+                                  seasons[v.season] += 1;
+                             }
+                             else
+                             {
+                                  seasons[v.season] = 1;
+                             }
+                             parsingEpisode = false;
                         }
                     }
-                    else
-                    {
-                        m = Regex.Match(file, EpisodeOnlyRegex, RegexOptions.IgnoreCase);
+
+                    // This handles strings with episode numbers only. It is executed if
+                    // the previous block failed - meaning that the "noSeasonNumber" flag 
+                    // has been set, or the filename contains a single digit string.
+                    if (parsingEpisode) {
+                        Match m = Regex.Match(file, EpisodeOnlyRegex, RegexOptions.IgnoreCase);
                         if (m.Success)
                         {
                             GroupCollection g = m.Groups;
-                            v.season = g[1].Value;
-                            v.episode = "Special " + special++;
+                            v.season = Int32.Parse(g[1].Value);
                             if (seasons.ContainsKey(v.season))
                             {
                                 seasons[v.season] += 1;
@@ -220,15 +274,42 @@ namespace VideoTracker
                             {
                                 seasons[v.season] = 1;
                             }
-                        }
-                        else
-                        {
-                            v.season = "NONE";
-                            v.episode = "Special " + special++;
+                            parsingEpisode = false;
                         }
                     }
-                    v.key = this.title + " S:" + v.season + " E:" + v.episode;
+                    //
+                    // This code is executed if the filename contains no digits at all.
+                    // Assume this is a single episode of something.
+                    if (parsingEpisode)
+                    {
+                            v.season = 1;
+                            v.episode = 1;
+                     }                   
 
+                    // If the first number is 3 or more digits, then this usually indicates
+                    // that it contains both the season and episode numbers, e.g. 101 is
+                    // Season 1, Episode 1, not season 101.
+                    if (allowUndelimitedEpisodes)
+                    {
+                        if (v.season > 100)
+                        {
+                            v.episode = v.season % 100;
+                            v.season = v.season / 100;
+                        }
+                    }
+
+                    // End-of-season special. May have the same episode number as a regular
+                    // season episode.
+                    v.postseason = 0;
+                    foreach (string s in postSeasonStrings)
+                    {
+                        if (file.IndexOf(s, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        {
+                            v.postseason = 1;
+                        }
+                    }
+
+                    v.key = String.Format("{0:D3}{1:D1}{2:D3}", v.season, v.postseason, v.episode);
 
                     videoFiles.Add(v.key, v);
                     if (v.filename == currentFile)
@@ -237,8 +318,9 @@ namespace VideoTracker
                     }
                 }
             }
-            // The current video file has been deleted. Reset to the beginning of the series.
-            // If all videos have been deleted, then an empty panel will be displayed for editting.
+            // The current video file has been deleted from disk. Reset to the beginning of the 
+            // series. If all videos have been deleted, then an empty panel will be displayed 
+            // for editting.
             if (this.currentVideo == null && videoFiles.Count > 0)
             {
                 this.currentVideo = videoFiles.Values[0];
@@ -246,8 +328,8 @@ namespace VideoTracker
 
             //
             // If there are three or more episodes, and if no two episodes have the same season 
-            // number, then assume that the first number in the filename is the episode, and any
-            // remaining numbers are meaningless.
+            // number, then assume that the first number in the filename is the episode, and that
+            // any remaining numbers are meaningless.
             //
             if (videoFiles.Count >= 3)
             {
@@ -265,7 +347,7 @@ namespace VideoTracker
                 foreach (VideoFile v in videoFiles.Values)
                 {
                     v.episode = v.season;
-                    v.season = "NONE";
+                    v.season = 1;
                 }
             }
         }

@@ -29,7 +29,6 @@ namespace VideoTracker
             videoTrackerForm.DeleteTitle(this);
         }
 
-
         private void backButton_Click(object sender, EventArgs e)
         {
             VideoSeries vs = videoSeries;
@@ -48,7 +47,7 @@ namespace VideoTracker
             UpdatePanel();
         }
 
-        private void videoSelector_DropDownClosed(object sender, EventArgs e)
+        private void videoSelector_SelectedIndexChanged(object sender, EventArgs e)
         {
             VideoSeries vs = videoSeries;
             int index = videoSelector.SelectedIndex;
@@ -98,9 +97,16 @@ namespace VideoTracker
                 return;
             }
 
-            string key = videoSeries.currentVideo.key;
-            seriesName.Text = key;
-            int index = videoSeries.videoFiles.IndexOfKey(key);
+            VideoFile v = videoSeries.currentVideo;
+            if (v.postseason == 1)
+            {
+                seriesName.Text = videoSeries.title + " Season: " + v.season + " Special: " + v.episode;
+            }
+            else
+            {
+                seriesName.Text = videoSeries.title + " Season: " + v.season + " Episode: " + v.episode;
+            }
+            int index = videoSeries.videoFiles.IndexOfKey(v.key);
             videoSelector.SelectedIndex = index; 
             if (index == 0) {
                 backButton.Enabled = false;
@@ -133,6 +139,7 @@ namespace VideoTracker
                vtf.AddOrUpdateVideoPanel(vsf.videoSeries);
            }
         }
+ 
 
     }
 }

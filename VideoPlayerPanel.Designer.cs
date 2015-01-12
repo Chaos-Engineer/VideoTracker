@@ -30,6 +30,7 @@
         {
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.seriesName = new System.Windows.Forms.Label();
+            this.bugFixLabel = new System.Windows.Forms.Label();
             this.videoSelector = new System.Windows.Forms.ComboBox();
             this.playButton = new System.Windows.Forms.Button();
             this.playNextButton = new System.Windows.Forms.Button();
@@ -46,6 +47,7 @@
             this.flowLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flowLayoutPanel.Controls.Add(this.seriesName);
+            this.flowLayoutPanel.Controls.Add(this.bugFixLabel);
             this.flowLayoutPanel.Controls.Add(this.videoSelector);
             this.flowLayoutPanel.Controls.Add(this.playButton);
             this.flowLayoutPanel.Controls.Add(this.playNextButton);
@@ -53,10 +55,9 @@
             this.flowLayoutPanel.Controls.Add(this.nextButton);
             this.flowLayoutPanel.Controls.Add(this.deleteButton);
             this.flowLayoutPanel.Controls.Add(this.editButton);
-            this.flowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel.Name = "flowLayoutPanel";
-            this.flowLayoutPanel.Size = new System.Drawing.Size(266, 87);
+            this.flowLayoutPanel.Size = new System.Drawing.Size(266, 81);
             this.flowLayoutPanel.TabIndex = 0;
             // 
             // seriesName
@@ -69,21 +70,28 @@
             this.seriesName.TabIndex = 0;
             this.seriesName.Text = "seriesName";
             // 
+            // bugFixLabel
+            // 
+            this.bugFixLabel.Location = new System.Drawing.Point(3, 23);
+            this.bugFixLabel.Name = "bugFixLabel";
+            this.bugFixLabel.Size = new System.Drawing.Size(0, 23);
+            this.bugFixLabel.TabIndex = 0;
+            // 
             // videoSelector
             // 
             this.flowLayoutPanel.SetFlowBreak(this.videoSelector, true);
             this.videoSelector.FormattingEnabled = true;
-            this.videoSelector.Location = new System.Drawing.Point(3, 30);
+            this.videoSelector.Location = new System.Drawing.Point(9, 26);
             this.videoSelector.Name = "videoSelector";
-            this.videoSelector.Size = new System.Drawing.Size(149, 21);
+            this.videoSelector.Size = new System.Drawing.Size(211, 21);
             this.videoSelector.TabIndex = 1;
-            this.videoSelector.DropDownClosed += new System.EventHandler(this.videoSelector_DropDownClosed);
+            this.videoSelector.SelectedIndexChanged += new System.EventHandler(this.videoSelector_SelectedIndexChanged);
             // 
             // playButton
             // 
             this.playButton.AutoSize = true;
             this.playButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.playButton.Location = new System.Drawing.Point(3, 59);
+            this.playButton.Location = new System.Drawing.Point(3, 53);
             this.playButton.Name = "playButton";
             this.playButton.Size = new System.Drawing.Size(37, 23);
             this.playButton.TabIndex = 2;
@@ -95,7 +103,7 @@
             // 
             this.playNextButton.AutoSize = true;
             this.playNextButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.playNextButton.Location = new System.Drawing.Point(46, 59);
+            this.playNextButton.Location = new System.Drawing.Point(46, 53);
             this.playNextButton.Name = "playNextButton";
             this.playNextButton.Size = new System.Drawing.Size(62, 23);
             this.playNextButton.TabIndex = 3;
@@ -107,7 +115,7 @@
             // 
             this.backButton.AutoSize = true;
             this.backButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.backButton.Location = new System.Drawing.Point(114, 59);
+            this.backButton.Location = new System.Drawing.Point(114, 53);
             this.backButton.Name = "backButton";
             this.backButton.Size = new System.Drawing.Size(23, 23);
             this.backButton.TabIndex = 4;
@@ -119,7 +127,7 @@
             // 
             this.nextButton.AutoSize = true;
             this.nextButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.nextButton.Location = new System.Drawing.Point(143, 59);
+            this.nextButton.Location = new System.Drawing.Point(143, 53);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(23, 23);
             this.nextButton.TabIndex = 5;
@@ -131,7 +139,7 @@
             // 
             this.deleteButton.AutoSize = true;
             this.deleteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.deleteButton.Location = new System.Drawing.Point(172, 59);
+            this.deleteButton.Location = new System.Drawing.Point(172, 53);
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.Size = new System.Drawing.Size(48, 23);
             this.deleteButton.TabIndex = 6;
@@ -143,7 +151,7 @@
             // 
             this.editButton.AutoSize = true;
             this.editButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.editButton.Location = new System.Drawing.Point(226, 59);
+            this.editButton.Location = new System.Drawing.Point(226, 53);
             this.editButton.Name = "editButton";
             this.editButton.Size = new System.Drawing.Size(35, 23);
             this.editButton.TabIndex = 7;
@@ -159,7 +167,7 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.flowLayoutPanel);
             this.Name = "VideoPlayerPanel";
-            this.Size = new System.Drawing.Size(266, 87);
+            this.Size = new System.Drawing.Size(269, 84);
             this.flowLayoutPanel.ResumeLayout(false);
             this.flowLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -167,7 +175,7 @@
 
         }
 
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
+        public  System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private System.Windows.Forms.Label seriesName;
         private System.Windows.Forms.Button playButton;
         private System.Windows.Forms.Button backButton;
@@ -176,6 +184,7 @@
         private System.Windows.Forms.ComboBox videoSelector;
         private System.Windows.Forms.Button playNextButton;
         private System.Windows.Forms.Button editButton;
+        private System.Windows.Forms.Label bugFixLabel;
     }
 
         #endregion

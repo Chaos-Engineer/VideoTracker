@@ -58,10 +58,9 @@ namespace VideoTracker
                 return;
             }
 
-            Regex whitespace = new Regex(@"/\s+/g");
-            string wildcard = whitespace.Replace(Regex.Escape(titleBox.Text), ".*");
-            if (!Regex.Match(fileNameBox.Text, wildcard, RegexOptions.IgnoreCase).Success)
-            {
+            Regex whitespace = new Regex(@"\s+");
+            string wildcard = whitespace.Replace(titleBox.Text, ".*");
+            if (!Regex.Match(fileNameBox.Text, wildcard, RegexOptions.IgnoreCase).Success) {
                 MessageBox.Show("Title string must be contained in filename");
                 e.Cancel = true;
                 return;
