@@ -77,7 +77,11 @@ namespace VideoTracker
             videoTrackerData.videoSeriesList.Remove(panel.videoSeries);
             mainPanel.Controls.Remove(panel);
             numPanels--;
-            AdjustWidth();
+            if (numPanels > 0)
+            {
+                AdjustWidth();
+            }
+
         }
 
         private void AdjustWidth()
@@ -85,14 +89,9 @@ namespace VideoTracker
             int max = 0;
             foreach (VideoPlayerPanel vp in mainPanel.Controls)
             {
-                FlowLayoutPanel p = vp.flowLayoutPanel;
-                p.AutoSize = true;
-                ResumeLayout();
-                p.ResumeLayout();
-                PerformLayout();
-                if (p.Width > max)
+                if (vp.initialWidth > max)
                 {
-                    max = p.Width;
+                    max = vp.initialWidth;
                 }
             }
             foreach (VideoPlayerPanel vp in mainPanel.Controls)
@@ -102,6 +101,8 @@ namespace VideoTracker
                 p.Width = max;
                 p.PerformLayout();
             }
+            AutoSize = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)

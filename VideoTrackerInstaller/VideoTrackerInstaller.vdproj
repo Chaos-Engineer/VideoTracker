@@ -188,7 +188,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:VideoTracker"
         "ProductCode" = "8:{5E5A5664-C2A1-4777-B531-9285723D9525}"
-        "PackageCode" = "8:{B956C958-3A23-4BD5-9239-0A1639177897}"
+        "PackageCode" = "8:{D2BAF56E-FA44-4EED-911E-8B52088F52CF}"
         "UpgradeCode" = "8:{E486F037-4B11-409F-A329-CD5363DB71E5}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -203,7 +203,7 @@
         "Subject" = "8:"
         "ARPCONTACT" = "8:Extraordinary Popular Delusions"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:"
+        "ARPCOMMENTS" = "8:Video Tracker"
         "ARPURLINFOABOUT" = "8:"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
@@ -709,7 +709,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_653113B10E7D4FAFAF662D8DD8C158FD"
             {
-            "SourcePath" = "8:..\\obj\\Debug\\VideoTracker.exe"
+            "SourcePath" = "8:..\\obj\\Release\\VideoTracker.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B298CFF3B8C049CA9C8CEA64F129E940"
