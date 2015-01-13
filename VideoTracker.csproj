@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>https://github.com/Chaos-Engineer/VideoTracker/raw/master/publish/</PublishUrl>
+    <PublishUrl>publish/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -22,6 +22,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>https://github.com/Chaos-Engineer/VideoTracker/raw/master/publish/</InstallUrl>
     <ProductName>Video Tracker</ProductName>
     <PublisherName>Extraordinary Popular Delusions</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
