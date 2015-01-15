@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using System.Text.RegularExpressions;
 using System.Text;
 using System.Drawing;
+using System.Configuration;
 
 namespace VideoTracker
 {
@@ -17,11 +18,35 @@ namespace VideoTracker
         //Number of panels on main page
         //</summary>
         private int numPanels = 0;
+        private string configFile;
+        private bool loadingConfigFile;
         public VideoTrackerData videoTrackerData = new VideoTrackerData();
 
         public VideoTrackerForm()
         {
-            InitializeComponent();
+            string file = "UNDEFINED";
+            try
+            {
+                InitializeComponent();
+                file = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["DefaultFilePath"]);
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
+                configFile = file;
+                if (!File.Exists(file))
+                {
+                    using (File.Create(file)) {
+                        // Null body - to allow handle to get disposed.
+                    }
+                    SaveData(file);
+                }
+                else
+                {
+                    LoadData(file);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Failed to load " + file + "\n" + e.Message);
+            } 
         }
 
         private void AddNewTitle_Click(object sender, EventArgs e)
@@ -31,6 +56,7 @@ namespace VideoTracker
             {
                 videoTrackerData.videoSeriesList.Add(vsf.videoSeries);
                 AddOrUpdateVideoPanel(vsf.videoSeries);
+                CheckAutoSave();
             }
         }
  
@@ -81,7 +107,7 @@ namespace VideoTracker
             {
                 AdjustWidth();
             }
-
+            CheckAutoSave();
         }
 
         private void AdjustWidth()
@@ -105,54 +131,102 @@ namespace VideoTracker
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveData();
-        }
-
         public void CheckAutoSave()
         {
-            if (videoTrackerData.autoSave)
+            if (!loadingConfigFile && videoTrackerData.autoSave)
             {
-                SaveData();
+                MessageBox.Show("Performing autosave");
+                SaveData(configFile);
             }
         }
 
-        private void SaveData()
+        private void SaveData(string file)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
-            Stream stream = new FileStream("MyFile.xml", FileMode.Create,
+            using (Stream stream = new FileStream(file, FileMode.Create,
                 FileAccess.Write,
-                FileShare.Read);
-            serializer.Serialize(stream, videoTrackerData);
-            stream.Close();
+                FileShare.Read))
+            {
+                serializer.Serialize(stream, videoTrackerData);
+                stream.Close();
+            }
+        }
+
+        private void LoadData(string file)
+        {
+
+            try
+            {
+                using (Stream stream = new FileStream(file, FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.Read))
+                {
+                    loadingConfigFile = true;
+                    XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
+
+                    mainPanel.SuspendLayout();
+                    mainPanel.Controls.Clear();
+                    videoTrackerData = (VideoTrackerData)serializer.Deserialize(stream);
+                    foreach (VideoSeries v in videoTrackerData.videoSeriesList)
+                    {
+                        // These fields aren't serialized and must be recreated.
+                        v.videoFiles.Clear();
+                        v.panel = null;
+                        v.Update(v.title, v.currentVideo.filename, v.directoryList, v.panel);
+                        AddOrUpdateVideoPanel(v);
+                    }
+                    mainPanel.PerformLayout();
+                    mainPanel.ResumeLayout();
+                }
+                configFile = file;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Failed to load " + file + "\n" + e.Message);
+            }
+            finally
+            {
+                loadingConfigFile = false;
+            }
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
-            Stream stream = new FileStream("MyFile.xml", FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read);
-            mainPanel.SuspendLayout();
-            mainPanel.Controls.Clear();
-            videoTrackerData = (VideoTrackerData) serializer.Deserialize(stream);
-            stream.Close();
-            foreach (VideoSeries v in videoTrackerData.videoSeriesList)
+
+            OpenFileDialog fd = new OpenFileDialog();
+            if (fd.ShowDialog() == DialogResult.OK)
             {
-                // These fields aren't serialized and must be recreated.
-                v.videoFiles.Clear();
-                v.panel = null; 
-                v.Update(v.title, v.currentVideo.filename, v.directoryList, v.panel);
-                AddOrUpdateVideoPanel(v);
-            }
-            mainPanel.PerformLayout();
-            mainPanel.ResumeLayout();
+                configFile = fd.FileName;
+                LoadData(configFile);
+            }     
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void saveAsMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fd = new OpenFileDialog();
+            if (fd.ShowDialog() == DialogResult.OK)
+            {
+                configFile = fd.FileName;
+                SaveData(configFile);  
+            }     
+        }
+
+        private void autoSaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            videoTrackerData.autoSave = !videoTrackerData.autoSave;
+            if (videoTrackerData.autoSave)
+            {
+                MessageBox.Show("Autosave enabled");
+            }
+            else
+            {
+                MessageBox.Show("Autosave disabled");
+            }
         }
     }
 
@@ -176,7 +250,10 @@ namespace VideoTracker
         public bool allowUndelimitedEpisodes;
         public bool noSeasonNumber;
         public List<string> postSeasonStrings;
+        // Not serialized - this list can be changed between invocations of the 
+        // program and so must be built at run-time.
         [XmlIgnore] public SortedList<string,VideoFile> videoFiles;
+        // Not serialized - this depends on the contents of "videoFiles".
         [XmlIgnore] public VideoPlayerPanel panel;
 
         public VideoSeries()
@@ -358,13 +435,11 @@ namespace VideoTracker
     public class VideoTrackerData
     {
         public bool autoSave;
-        public string configPath;
         public List<VideoSeries> videoSeriesList;
 
         public VideoTrackerData()
         {
             autoSave = true;
-            configPath = "";
             videoSeriesList = new List<VideoSeries>();
         }
     }
