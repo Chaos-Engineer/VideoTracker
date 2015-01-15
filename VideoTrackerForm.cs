@@ -219,6 +219,7 @@ namespace VideoTracker
         private void autoSaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             videoTrackerData.autoSave = !videoTrackerData.autoSave;
+            autoSaveToolStripMenuItem.Checked = videoTrackerData.autoSave;
             if (videoTrackerData.autoSave)
             {
                 MessageBox.Show("Autosave enabled");
