@@ -85,6 +85,7 @@
     <Compile Include="VideoPlayerPanel.Designer.cs">
       <DependentUpon>VideoPlayerPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="VideoSeries.cs" />
     <Compile Include="VideoSeriesForm.cs">
       <SubType>Form</SubType>
     </Compile>

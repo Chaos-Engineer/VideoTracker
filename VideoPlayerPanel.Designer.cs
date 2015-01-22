@@ -175,7 +175,7 @@
 
         }
 
-        public  System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private System.Windows.Forms.Label seriesName;
         private System.Windows.Forms.Button playButton;
         private System.Windows.Forms.Button backButton;

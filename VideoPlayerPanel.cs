@@ -18,33 +18,28 @@ namespace VideoTracker
         public VideoTrackerData videoTrackerData;
         public VideoTrackerForm videoTrackerForm;
         public int initialWidth;
+        private bool updateInProgress;
 
         public VideoPlayerPanel()
         {
             InitializeComponent();
             this.videoSeries = null;
+            updateInProgress = false;
         }
   
-        private void deleteButton_Click(object sender, EventArgs e)
-        {
-            videoTrackerForm.DeleteTitle(this);
-        }
-
         private void backButton_Click(object sender, EventArgs e)
         {
-            VideoSeries vs = videoSeries;
+            VideoSeries vs = this.videoSeries;
             int index = vs.videoFiles.IndexOfKey(vs.currentVideo.key);
-            index--;
-            vs.currentVideo = vs.videoFiles.Values[index];
+            vs.currentVideo = vs.videoFiles.Values[--index];
             UpdatePanel();
         }
 
         private void nextButton_Click(object sender, EventArgs e)
         {
-            VideoSeries vs = videoSeries;
+            VideoSeries vs = this.videoSeries;
             int index = vs.videoFiles.IndexOfKey(vs.currentVideo.key);
-            index++;
-            vs.currentVideo = vs.videoFiles.Values[index];
+            vs.currentVideo = vs.videoFiles.Values[++index];
             UpdatePanel();
         }
 
@@ -67,25 +62,52 @@ namespace VideoTracker
             playButton_Click(sender, e);
         }
 
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            videoTrackerForm.DeleteTitle(this);
+        }
+
+        private void editButton_Click(object sender, EventArgs e)
+        {
+            VideoSeriesForm vsf = new VideoSeriesForm(videoTrackerForm, videoSeries);
+            vsf.ShowDialog();
+        }
+
         public void AddFile(string filename)
         {
-            videoSelector.Items.Add(filename);
+            this.videoSelector.Items.Add(filename);
+        }
+
+        public void ClearFiles()
+        {
+            this.videoSelector.Items.Clear();
         }
 
         public void SetSelectorWidth(int width)
         {
-            videoSelector.Width = width + SystemInformation.VerticalScrollBarWidth;
+            this.videoSelector.Width = width + SystemInformation.VerticalScrollBarWidth;
         }
 
+        public void SetSeriesName(string name)
+        {
+            this.seriesName.Text = name;
+        }
+
+        
         public void UpdatePanel()
         {
-            SuspendLayout();
+            // Prevent recursive calls using the "updateInProgress" variable.
+            //
+            // Reason: If this routine changes the SelectedIndex field, it triggers
+            // a recursive call because it's the handler for the SelectedIndexChanged
+            // event.
+            if (updateInProgress) { return;  }
+            updateInProgress = true;
 
-            if (videoSeries.currentVideo == null)
+            SuspendLayout();
+            if (!videoSeries.valid)
             {
-                string noFiles = "NO FILES FOUND";
-                AddFile(noFiles);
-                SetSelectorWidth(TextRenderer.MeasureText(noFiles, Font).Width);
+                // No files were found for this video series
                 videoSelector.SelectedIndex = 0;
                 videoSelector.Enabled = false;
                 backButton.Enabled = false;
@@ -96,18 +118,28 @@ namespace VideoTracker
             }
             else
             {
-
                 VideoFile v = videoSeries.currentVideo;
+                int maxIndex = videoSeries.videoFiles.Count - 1;
+                int index = videoSeries.videoFiles.IndexOfKey(v.key);
+                int remaining = maxIndex - index;
                 if (v.postseason == 1)
                 {
-                    seriesName.Text = videoSeries.title + " Season: " + v.season + " Special: " + v.episode;
+                    seriesName.Text = videoSeries.title + " Season: " + v.season + 
+                                    " Special: " + v.episode + 
+                                    " (" + remaining + " remaining)";
                 }
                 else
                 {
-                    seriesName.Text = videoSeries.title + " Season: " + v.season + " Episode: " + v.episode;
+                    seriesName.Text = videoSeries.title + " Season: " + v.season + 
+                                    " Episode: " + v.episode +
+                                    " (" + remaining + " remaining)";
                 }
-                int index = videoSeries.videoFiles.IndexOfKey(v.key);
+
+                videoSelector.Enabled = true;
                 videoSelector.SelectedIndex = index;
+
+                // Disable the "back" button for the first video, and the
+                // "next" and "play next" buttons for the last video
                 if (index == 0)
                 {
                     backButton.Enabled = false;
@@ -117,7 +149,7 @@ namespace VideoTracker
                     backButton.Enabled = true;
                 }
 
-                if (index == videoSeries.videoFiles.Count - 1)
+                if (index == maxIndex)
                 {
                     playNextButton.Enabled = false;
                     nextButton.Enabled = false;
@@ -134,18 +166,27 @@ namespace VideoTracker
             initialWidth = flowLayoutPanel.Width;
             flowLayoutPanel.AutoSize = false;
             videoTrackerForm.CheckAutoSave();
+            updateInProgress = false;
         }
 
-        private void editButton_Click(object sender, EventArgs e)
+        public void SetWidth(int width)
         {
-           VideoSeriesForm vsf = new VideoSeriesForm(videoSeries);
-           VideoTrackerForm vtf = (VideoTrackerForm) this.Parent.Parent;
-           if (vsf.ShowDialog() == DialogResult.OK)
-           {
-               vtf.AddOrUpdateVideoPanel(vsf.videoSeries);
-           }
+            FlowLayoutPanel p = this.flowLayoutPanel;
+            p.AutoSize = false;
+            p.Width = width;
+            p.PerformLayout();
         }
- 
+
+        public void VisibleControls(bool flag)
+        {
+            this.videoSelector.Visible = flag;
+            this.nextButton.Visible = flag;
+            this.backButton.Visible = flag;
+            this.editButton.Visible = flag;
+            this.deleteButton.Visible = flag;
+            this.playButton.Visible = flag;
+            this.playNextButton.Visible = flag;
+        }
 
     }
 }

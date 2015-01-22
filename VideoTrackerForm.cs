@@ -9,186 +9,48 @@ using System.Text.RegularExpressions;
 using System.Text;
 using System.Drawing;
 using System.Configuration;
+using System.Threading;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace VideoTracker
 {
     public partial class VideoTrackerForm : Form
     {
-        //<summary>
-        //Number of panels on main page
-        //</summary>
-        private int numPanels = 0;
         private string configFile;
-        private bool loadingConfigFile;
+        public int numPanels;
+        public int configFileThreads;
         public VideoTrackerData videoTrackerData = new VideoTrackerData();
 
-        public VideoTrackerForm()
+        public VideoTrackerForm(string launchFile)
         {
             string file = "UNDEFINED";
-            try
+            InitializeComponent();
+            if (launchFile.Equals(""))
             {
-                InitializeComponent();
                 file = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["DefaultFilePath"]);
                 Directory.CreateDirectory(Path.GetDirectoryName(file));
-                configFile = file;
-                if (!File.Exists(file))
+            }
+            else
+            {
+                file = launchFile;
+            }
+            this.configFile = file;
+            if (!File.Exists(file))
+            {
+                using (File.Create(file))
                 {
-                    using (File.Create(file)) {
-                        // Null body - to allow handle to get disposed.
-                    }
-                    SaveData(file);
+                    // Null body - to allow handle to get disposed.
                 }
-                else
-                {
-                    LoadData(file);
-                }
+                SaveData(file);
             }
-            catch (Exception e)
+            else
             {
-                MessageBox.Show("Failed to load " + file + "\n" + e.Message);
-            } 
-        }
-
-        private void AddNewTitle_Click(object sender, EventArgs e)
-        {
-            VideoSeriesForm vsf = new VideoSeriesForm();
-            if (vsf.ShowDialog() == DialogResult.OK)
-            {
-                videoTrackerData.videoSeriesList.Add(vsf.videoSeries);
-                AddOrUpdateVideoPanel(vsf.videoSeries);
-                CheckAutoSave();
-            }
-        }
- 
-        //
-        // This is called when we click the "Add New" button, or when a
-        // configuration file is imported.
-        //
-        public void AddOrUpdateVideoPanel(VideoSeries v)
-        {
-            bool add;
-            VideoPlayerPanel panel;
-
-            add = false;
-            if (v.panel == null) {
-                // New title
-                add = true;
-                numPanels++;
-                panel = new VideoPlayerPanel();
-                v.panel = panel;
-                v.panel.videoSeries = v;
-                v.panel.videoTrackerData = videoTrackerData;
-                v.panel.videoTrackerForm = this;
-            }
-            int temp = 0, maxWidth = 0;
-            foreach (VideoFile f in v.videoFiles.Values)
-            {
-                string filename = Path.GetFileName(f.filename);
-                v.panel.AddFile(filename);
-                temp = TextRenderer.MeasureText(filename, Font).Width;
-                if (temp > maxWidth) { maxWidth = temp; }
-            }
-            v.panel.SetSelectorWidth(maxWidth);
-            v.panel.UpdatePanel();
- 
-            if (add)
-            {
-                mainPanel.Controls.Add(v.panel);
-            }
-            AdjustWidth();
-        }
-
-        public void DeleteTitle(VideoPlayerPanel panel)
-        {
-            videoTrackerData.videoSeriesList.Remove(panel.videoSeries);
-            mainPanel.Controls.Remove(panel);
-            numPanels--;
-            if (numPanels > 0)
-            {
-                AdjustWidth();
-            }
-            CheckAutoSave();
-        }
-
-        private void AdjustWidth()
-        {
-            int max = 0;
-            foreach (VideoPlayerPanel vp in mainPanel.Controls)
-            {
-                if (vp.initialWidth > max)
-                {
-                    max = vp.initialWidth;
-                }
-            }
-            foreach (VideoPlayerPanel vp in mainPanel.Controls)
-            {
-                FlowLayoutPanel p = vp.flowLayoutPanel;
-                p.AutoSize = false;
-                p.Width = max;
-                p.PerformLayout();
-            }
-            AutoSize = true;
-            AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        }
-
-        public void CheckAutoSave()
-        {
-            if (!loadingConfigFile && videoTrackerData.autoSave)
-            {
-                MessageBox.Show("Performing autosave");
-                SaveData(configFile);
+                LoadData(file);
             }
         }
 
-        private void SaveData(string file)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
-            using (Stream stream = new FileStream(file, FileMode.Create,
-                FileAccess.Write,
-                FileShare.Read))
-            {
-                serializer.Serialize(stream, videoTrackerData);
-                stream.Close();
-            }
-        }
 
-        private void LoadData(string file)
-        {
-
-            try
-            {
-                using (Stream stream = new FileStream(file, FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read))
-                {
-                    loadingConfigFile = true;
-                    XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
-
-                    mainPanel.SuspendLayout();
-                    mainPanel.Controls.Clear();
-                    videoTrackerData = (VideoTrackerData)serializer.Deserialize(stream);
-                    foreach (VideoSeries v in videoTrackerData.videoSeriesList)
-                    {
-                        // These fields aren't serialized and must be recreated.
-                        v.videoFiles.Clear();
-                        v.panel = null;
-                        v.Update(v.title, v.currentVideo.filename, v.directoryList, v.panel);
-                        AddOrUpdateVideoPanel(v);
-                    }
-                    mainPanel.PerformLayout();
-                    mainPanel.ResumeLayout();
-                }
-                configFile = file;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Failed to load " + file + "\n" + e.Message);
-            }
-            finally
-            {
-                loadingConfigFile = false;
-            }
-        }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -198,7 +60,7 @@ namespace VideoTracker
             {
                 configFile = fd.FileName;
                 LoadData(configFile);
-            }     
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -212,8 +74,13 @@ namespace VideoTracker
             if (fd.ShowDialog() == DialogResult.OK)
             {
                 configFile = fd.FileName;
-                SaveData(configFile);  
-            }     
+                SaveData(configFile);
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveData(configFile);
         }
 
         private void autoSaveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -229,207 +96,107 @@ namespace VideoTracker
                 MessageBox.Show("Autosave disabled");
             }
         }
-    }
 
-    [Serializable]
-    public class VideoFile
-    {
-        public string filename;
-        public int postseason;
-        public int season;
-        public int episode;
-        public string key;
-    }
-
-    [Serializable]
-    public class VideoSeries
-    {
-
-        public string title;
-        public VideoFile currentVideo;
-        public List<string> directoryList;
-        public bool allowUndelimitedEpisodes;
-        public bool noSeasonNumber;
-        public List<string> postSeasonStrings;
-        // Not serialized - this list can be changed between invocations of the 
-        // program and so must be built at run-time.
-        [XmlIgnore] public SortedList<string,VideoFile> videoFiles;
-        // Not serialized - this depends on the contents of "videoFiles".
-        [XmlIgnore] public VideoPlayerPanel panel;
-
-        public VideoSeries()
+        //
+        // Open up a New Series dialog. Do not check status here; the operation
+        // completes asynchronously.
+        //
+        private void addProgramToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.title = "";
-            this.currentVideo = null;
-            this.directoryList = null;
-            this.allowUndelimitedEpisodes = true;
-            this.noSeasonNumber = false;
-            this.panel = null;
-            this.postSeasonStrings = new List<String>();
-            this.videoFiles = new SortedList<string,VideoFile>();
+            VideoSeriesForm vsf = new VideoSeriesForm(this);
+            vsf.ShowDialog();
         }
 
-        public VideoSeries(string title, string currentFile, List<string> directoryList)
+        public void DeleteTitle(VideoPlayerPanel panel)
         {
-
-            this.videoFiles = new SortedList<string,VideoFile>();
-            this.panel = null;
-            this.Update(title, currentFile, directoryList, this.panel);
-        }
-
-        private int Sort(string key)
-        {
-            return 0;
-        }
-
-        public void Update(string title, string currentFile, List<string> directoryList, VideoPlayerPanel panel)
-        {
-            videoFiles.Clear();
-            this.title = title;
-            this.allowUndelimitedEpisodes = true; // Make this configurable;
-            this.noSeasonNumber = false; // Make this configurable;
-            this.postSeasonStrings = new List<string>();
-            this.postSeasonStrings.Add("SPECIAL"); // Make this configurable;
-            this.currentVideo = null;
-            this.directoryList = directoryList;
-            this.panel = panel;
-
-            Regex whitespace = new Regex(@"\s+");
-            string fileSearchString = whitespace.Replace(title, "*");
-            string regexSearchString = whitespace.Replace(Regex.Escape(title), ".*");
-            string seasonEpisodeRegex = regexSearchString + @"\D*?(\d+)\D+?(\d+)";
-            string EpisodeOnlyRegex = regexSearchString + @"\D*?(\d+)";
-
-            Dictionary<int, int> seasons = new Dictionary<int, int>();
-            bool seasonValid = true;
-            bool parsingEpisode = true;
-            foreach (string directory in directoryList)
+            videoTrackerData.videoSeriesList.Remove(panel.videoSeries);
+            mainPanel.Controls.Remove(panel);
+            numPanels--;
+            if (numPanels > 0)
             {
-                string[] files = Directory.GetFiles(directory, fileSearchString + "*");
-                foreach (string file in files)
+                AdjustWidth();
+            }
+            CheckAutoSave();
+        }
+
+        public void AdjustWidth()
+        {
+            int max = 0;
+            foreach (VideoPlayerPanel vp in mainPanel.Controls)
+            {
+                if (vp.initialWidth > max)
                 {
-                    VideoFile v = new VideoFile();
-                    v.filename = file;
-             
-                    parsingEpisode = true;
-                    // This handles strings with season and episode numbers, in formats
-                    // like S01E01 and 1x01. It is executed if the "noSeasonNumber" flag
-                    // has not been set, and if the episode name contains at least two
-                    // digit strings.
-                    if (noSeasonNumber == false) {
-                        Match m = Regex.Match(file, seasonEpisodeRegex, RegexOptions.IgnoreCase);
-                        if (m.Success)
-                        {
-
-                             GroupCollection g = m.Groups;
-                             v.season = Int32.Parse(g[1].Value);
-                             v.episode = Int32.Parse(g[2].Value);
-                             if (seasons.ContainsKey(v.season))
-                             {
-                                  seasons[v.season] += 1;
-                             }
-                             else
-                             {
-                                  seasons[v.season] = 1;
-                             }
-                             parsingEpisode = false;
-                        }
-                    }
-
-                    // This handles strings with episode numbers only. It is executed if
-                    // the previous block failed - meaning that the "noSeasonNumber" flag 
-                    // has been set, or the filename contains a single digit string.
-                    if (parsingEpisode) {
-                        Match m = Regex.Match(file, EpisodeOnlyRegex, RegexOptions.IgnoreCase);
-                        if (m.Success)
-                        {
-                            GroupCollection g = m.Groups;
-                            v.season = Int32.Parse(g[1].Value);
-                            if (seasons.ContainsKey(v.season))
-                            {
-                                seasons[v.season] += 1;
-                            }
-                            else
-                            {
-                                seasons[v.season] = 1;
-                            }
-                            parsingEpisode = false;
-                        }
-                    }
-                    //
-                    // This code is executed if the filename contains no digits at all.
-                    // Assume this is a single episode of something.
-                    if (parsingEpisode)
-                    {
-                            v.season = 1;
-                            v.episode = 1;
-                     }                   
-
-                    // If the first number is 3 or more digits, then this usually indicates
-                    // that it contains both the season and episode numbers, e.g. 101 is
-                    // Season 1, Episode 1, not season 101.
-                    if (allowUndelimitedEpisodes)
-                    {
-                        if (v.season > 100)
-                        {
-                            v.episode = v.season % 100;
-                            v.season = v.season / 100;
-                        }
-                    }
-
-                    // End-of-season special. May have the same episode number as a regular
-                    // season episode.
-                    v.postseason = 0;
-                    foreach (string s in postSeasonStrings)
-                    {
-                        if (file.IndexOf(s, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                        {
-                            v.postseason = 1;
-                        }
-                    }
-
-                    v.key = String.Format("{0:D3}{1:D1}{2:D3}", v.season, v.postseason, v.episode);
-
-                    videoFiles.Add(v.key, v);
-                    if (v.filename == currentFile)
-                    {
-                        this.currentVideo = v;
-                    }
+                    max = vp.initialWidth;
                 }
             }
-            // The current video file has been deleted from disk. Reset to the beginning of the 
-            // series. If all videos have been deleted, then an empty panel will be displayed 
-            // for editting.
-            if (this.currentVideo == null && videoFiles.Count > 0)
+            foreach (VideoPlayerPanel vp in mainPanel.Controls)
             {
-                this.currentVideo = videoFiles.Values[0];
+                vp.SetWidth(max);
             }
+            AutoSize = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+        }
 
-            //
-            // If there are three or more episodes, and if no two episodes have the same season 
-            // number, then assume that the first number in the filename is the episode, and that
-            // any remaining numbers are meaningless.
-            //
-            if (videoFiles.Count >= 3)
+        public void CheckAutoSave()
+        {
+            if (configFileThreads == 0 && videoTrackerData.autoSave)
             {
-                seasonValid = false;
-                foreach (int i in seasons.Values)
-                {
-                    if (i > 1)
-                    {
-                        seasonValid = true;
-                    }
-                }
-            }
-            if (!seasonValid)
-            {
-                foreach (VideoFile v in videoFiles.Values)
-                {
-                    v.episode = v.season;
-                    v.season = 1;
-                }
+                SaveData(configFile);
             }
         }
+
+        private void LoadData(string file)
+        {
+            EnableFileOperations(false);
+            try
+            {
+                using (Stream stream = new FileStream(file, FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.Read))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
+                    videoTrackerData = (VideoTrackerData)serializer.Deserialize(stream);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Failed to load " + file + "\n" + e.ToString());
+                EnableFileOperations(true);
+                return;
+            }
+
+            // File was successfully loaded; create panels. This will complete
+            // asynchronously, so the asynchronous thread must call
+            // EnableFileOperations on completion.
+            mainPanel.Controls.Clear();
+            configFileThreads = videoTrackerData.videoSeriesList.Count;
+            foreach (VideoSeries vs in videoTrackerData.videoSeriesList)
+            {
+                vs.InitializeVideoPanel(this);
+                vs.UpdateFiles(vs.title, vs.currentVideo.filename, vs.directoryList, vs.panel);
+            }
+            configFile = file;
+        }
+
+        private void SaveData(string file)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
+            using (Stream stream = new FileStream(file, FileMode.Create,
+                FileAccess.Write,
+                FileShare.Read))
+            {
+                serializer.Serialize(stream, videoTrackerData);
+                stream.Close();
+            }
+        }
+
+        public void EnableFileOperations(bool flag)
+        {
+            loadToolStripMenuItem.Enabled = flag;
+            saveAsMenuItem.Enabled = flag;
+            autoSaveToolStripMenuItem.Enabled = flag;
+        }
+
     }
 
     [Serializable]
