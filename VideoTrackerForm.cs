@@ -107,16 +107,29 @@ namespace VideoTracker
             vsf.ShowDialog();
         }
 
-        public void DeleteTitle(VideoPlayerPanel panel)
+        public void AddTitle(VideoPlayerPanel panel, VideoSeries vs)
         {
-            videoTrackerData.videoSeriesList.Remove(panel.videoSeries);
-            mainPanel.Controls.Remove(panel);
-            numPanels--;
+            if (!this.videoTrackerData.videoSeriesList.Contains(vs))
+            {
+                this.numPanels++;
+                this.videoTrackerData.videoSeriesList.Add(vs);
+            }
+
+            this.mainPanel.Controls.Add(panel);
+            this.AdjustWidth();
+            this.CheckAutoSave();
+        }
+
+        public void DeleteTitle(VideoPlayerPanel panel, VideoSeries vs)    
+        {
+            this.videoTrackerData.videoSeriesList.Remove(vs);
+            this.mainPanel.Controls.Remove(panel);
+            this.numPanels--;
             if (numPanels > 0)
             {
-                AdjustWidth();
+                this.AdjustWidth();
             }
-            CheckAutoSave();
+            this.CheckAutoSave();
         }
 
         public void AdjustWidth()
@@ -172,7 +185,7 @@ namespace VideoTracker
             configFileThreads = videoTrackerData.videoSeriesList.Count;
             foreach (VideoSeries vs in videoTrackerData.videoSeriesList)
             {
-                vs.InitializeVideoPanel(this);
+                vs.panel = new VideoPlayerPanel(this, vs);
                 vs.UpdateFiles(vs.title, vs.currentVideo.filename, vs.directoryList, vs.panel);
             }
             configFile = file;

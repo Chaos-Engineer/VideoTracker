@@ -14,19 +14,30 @@ namespace VideoTracker
 {
     public partial class VideoPlayerPanel : UserControl
     {
-        public VideoSeries videoSeries;
-        public VideoTrackerData videoTrackerData;
+        private VideoSeries videoSeries;
+        private VideoTrackerData videoTrackerData;
         public VideoTrackerForm videoTrackerForm;
         public int initialWidth;
         private bool updateInProgress;
 
-        public VideoPlayerPanel()
+        public VideoPlayerPanel(VideoTrackerForm vtf, VideoSeries vs)
         {
             InitializeComponent();
-            this.videoSeries = null;
-            updateInProgress = false;
+            this.updateInProgress = false;
+
+            this.videoSeries = vs;
+
+            this.videoTrackerForm = vtf;
+            this.videoTrackerData = vtf.videoTrackerData;
+
+            this.seriesName.Text = "Loading " + vs.title;
+            this.VisibleControls(false);
+            this.PerformLayout();
+            this.initialWidth = this.Width;
+
+            this.videoTrackerForm.AddTitle(this, vs);
         }
-  
+
         private void backButton_Click(object sender, EventArgs e)
         {
             VideoSeries vs = this.videoSeries;
@@ -64,7 +75,8 @@ namespace VideoTracker
 
         private void deleteButton_Click(object sender, EventArgs e)
         {
-            videoTrackerForm.DeleteTitle(this);
+            videoTrackerForm.DeleteTitle(this, videoSeries);
+            this.Dispose();
         }
 
         private void editButton_Click(object sender, EventArgs e)
@@ -73,28 +85,42 @@ namespace VideoTracker
             vsf.ShowDialog();
         }
 
-        public void AddFile(string filename)
+        public void BeginFileLoad(VideoSeries vs)
         {
-            this.videoSelector.Items.Add(filename);
+            this.seriesName.Text = "Loading " + vs.title;
+            VisibleControls(false);
+            this.initialWidth = Width;
         }
 
-        public void ClearFiles()
+        public void EndFileLoad(VideoSeries vs)
         {
+            int temp = 0, maxWidth = 0;
             this.videoSelector.Items.Clear();
+            foreach (VideoFile f in vs.videoFiles.Values)
+            {
+                string filename = Path.GetFileName(f.filename);
+                this.videoSelector.Items.Add(filename);
+                temp = TextRenderer.MeasureText(filename, this.videoSelector.Font).Width;
+                if (temp > maxWidth) { maxWidth = temp; }
+            }
+            this.seriesName.Text = vs.title;
+            this.SetSelectorWidth(maxWidth);
+            this.VisibleControls(true);
+            this.UpdatePanel();
+            this.videoTrackerForm.AdjustWidth();
+            if (videoTrackerForm.configFileThreads > 0) { videoTrackerForm.configFileThreads--; }
+            if (videoTrackerForm.configFileThreads == 0)
+            {
+                videoTrackerForm.EnableFileOperations(true);
+            }
         }
 
-        public void SetSelectorWidth(int width)
+        private void SetSelectorWidth(int width)
         {
             this.videoSelector.Width = width + SystemInformation.VerticalScrollBarWidth;
         }
-
-        public void SetSeriesName(string name)
-        {
-            this.seriesName.Text = name;
-        }
-
         
-        public void UpdatePanel()
+        private void UpdatePanel()
         {
             // Prevent recursive calls using the "updateInProgress" variable.
             //
@@ -160,6 +186,7 @@ namespace VideoTracker
                     nextButton.Enabled = true;
                 }
             }
+
             flowLayoutPanel.AutoSize = true;
             ResumeLayout(false);
             PerformLayout();
@@ -177,7 +204,7 @@ namespace VideoTracker
             p.PerformLayout();
         }
 
-        public void VisibleControls(bool flag)
+        private void VisibleControls(bool flag)
         {
             this.videoSelector.Visible = flag;
             this.nextButton.Visible = flag;

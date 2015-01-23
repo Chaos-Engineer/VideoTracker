@@ -76,7 +76,7 @@ namespace VideoTracker
                 videoSeries = new VideoSeries();
                 videoSeries.UpdateFiles(titleBox.Text, fileNameBox.Text,
                     directoryListBox.Items.OfType<String>().ToList(), null);
-                videoSeries.InitializeVideoPanel(videoTrackerForm);
+                videoSeries.panel = new VideoPlayerPanel(videoTrackerForm, videoSeries);
             }
             else
             {

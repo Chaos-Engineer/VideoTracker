@@ -168,7 +168,7 @@
         }
 
         #endregion
-        public System.Windows.Forms.FlowLayoutPanel mainPanel;
+        private System.Windows.Forms.FlowLayoutPanel mainPanel;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace VideoTracker
         public bool allowUndelimitedEpisodes;
         public bool noSeasonNumber;
         public List<string> postSeasonStrings;
+        private static string addDelay = ConfigurationManager.AppSettings["AddDelay"];
 
         // Not serialized - this list can be changed between invocations of the 
         // program and so must be built at run-time.
@@ -68,70 +70,10 @@ namespace VideoTracker
             this.panel = panel;
             if (panel != null)
             {
-                this.panel.SetSeriesName("Loading " + this.title);
-                this.panel.VisibleControls(false);
-                this.panel.initialWidth = panel.Width;
+                panel.BeginFileLoad(this);
             }
 
             this.backgroundWorker.RunWorkerAsync(currentFile);
-        }
-
-        public void InitializeVideoPanel(VideoTrackerForm vtf)
-        {
-            if (this.panel != null)
-            {
-                MessageBox.Show("Called InitializePanel on existing panel");
-                return;
-            }
-            vtf.numPanels++;
-            this.panel = new VideoPlayerPanel();
-            this.panel.videoSeries = this;
-            this.panel.videoTrackerData = vtf.videoTrackerData;
-            this.panel.videoTrackerForm = vtf;
-            this.panel.SetSeriesName("Loading " + this.title);
-            this.panel.VisibleControls(false);
-            this.panel.PerformLayout();
-            this.panel.initialWidth = this.panel.Width;
-            vtf.mainPanel.Controls.Add(this.panel);
-            vtf.AdjustWidth();
-        }
-
-        public void UpdateVideoPanel(VideoTrackerForm vtf)
-        {
-            if (this.panel == null)
-            {
-                MessageBox.Show("Called UpdateVideoPanel on null panel");
-            }
-            int temp = 0, maxWidth = 0;
-            this.panel.ClearFiles();
-            if (this.videoFiles.Count == 0)
-            {
-                this.valid = false;
-                string dummyFile = "NO FILES FOUND";
-                this.panel.AddFile(dummyFile);
-                VideoFile v = new VideoFile();
-                v.filename = dummyFile;
-                this.videoFiles.Add(dummyFile, v);
-                this.currentVideo = v;
-                maxWidth = TextRenderer.MeasureText(dummyFile, this.panel.Font).Width;
-            }
-            else
-            {
-                this.valid = true;
-                foreach (VideoFile f in this.videoFiles.Values)
-                {
-                    string filename = Path.GetFileName(f.filename);
-                    this.panel.AddFile(filename);
-                    temp = TextRenderer.MeasureText(filename, this.panel.Font).Width;
-                    if (temp > maxWidth) { maxWidth = temp; }
-                }
-            }
-            this.panel.SetSeriesName(this.title);
-            this.panel.VisibleControls(true);
-            this.panel.SetSelectorWidth(maxWidth);
-            this.panel.UpdatePanel();
-
-            vtf.AdjustWidth();
         }
 
         private void LoadSeriesAsync(object sender, DoWorkEventArgs e)
@@ -146,7 +88,10 @@ namespace VideoTracker
             bool seasonValid = true;
             bool parsingEpisode = true;
 
-            Thread.Sleep(1000 * title.Length); // Force delay 
+            if (addDelay.Equals("true"))
+            {
+                Thread.Sleep(1000 * title.Length); // Force delay 
+            }
             foreach (string directory in directoryList)
             {
                 string[] files = System.IO.Directory.GetFiles(directory, fileSearchString + "*");
@@ -279,17 +224,20 @@ namespace VideoTracker
 
         private void LoadDataCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            VideoTrackerForm vtf = panel.videoTrackerForm;
-            if (!vtf.videoTrackerData.videoSeriesList.Contains(this))
+            if (this.videoFiles.Count == 0)
             {
-                vtf.videoTrackerData.videoSeriesList.Add(this);
+                this.valid = false;
+                string dummyFile = "NO FILES FOUND";
+                VideoFile v = new VideoFile();
+                v.filename = dummyFile;
+                this.videoFiles.Add(dummyFile, v);
+                this.currentVideo = v;
             }
-            UpdateVideoPanel(vtf);
-            if (vtf.configFileThreads > 0) { vtf.configFileThreads--; }
-            if (vtf.configFileThreads == 0)
+            else
             {
-                vtf.EnableFileOperations(true);
+                this.valid = true;
             }
+            this.panel.EndFileLoad(this);
         }
     }
 
