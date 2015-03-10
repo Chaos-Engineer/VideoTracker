@@ -86,11 +86,11 @@
       <DependentUpon>VideoPlayerPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="VideoSeries.cs" />
-    <Compile Include="VideoSeriesForm.cs">
+    <Compile Include="FileVideoSeriesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VideoSeriesForm.Designer.cs">
-      <DependentUpon>VideoSeriesForm.cs</DependentUpon>
+    <Compile Include="FileVideoSeriesForm.Designer.cs">
+      <DependentUpon>FileVideoSeriesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="VideoTrackerForm.cs">
       <SubType>Form</SubType>
@@ -103,8 +103,8 @@
     <EmbeddedResource Include="VideoPlayerPanel.resx">
       <DependentUpon>VideoPlayerPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VideoSeriesForm.resx">
-      <DependentUpon>VideoSeriesForm.cs</DependentUpon>
+    <EmbeddedResource Include="FileVideoSeriesForm.resx">
+      <DependentUpon>FileVideoSeriesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VideoTrackerForm.resx">
       <DependentUpon>VideoTrackerForm.cs</DependentUpon>

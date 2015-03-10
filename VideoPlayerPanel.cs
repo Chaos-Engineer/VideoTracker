@@ -64,8 +64,7 @@ namespace VideoTracker
 
         private void playButton_Click(object sender, EventArgs e)
         {
-            Process.Start(videoSeries.currentVideo.filename);
-        }
+            videoSeries.PlayCurrent();        }
 
         private void playNextButton_Click(object sender, EventArgs e)
         {
@@ -79,10 +78,11 @@ namespace VideoTracker
             this.Dispose();
         }
 
+        // Call the EditForm method to bring up the appropriate editing
+        // form for this derived class.
         private void editButton_Click(object sender, EventArgs e)
         {
-            VideoSeriesForm vsf = new VideoSeriesForm(videoTrackerForm, videoSeries);
-            vsf.ShowDialog();
+            videoSeries.EditForm(videoTrackerForm);
         }
 
         public void BeginFileLoad(VideoSeries vs)
@@ -98,7 +98,7 @@ namespace VideoTracker
             this.videoSelector.Items.Clear();
             foreach (VideoFile f in vs.videoFiles.Values)
             {
-                string filename = Path.GetFileName(f.filename);
+                string filename = Path.GetFileName(f.internalName);
                 this.videoSelector.Items.Add(filename);
                 temp = TextRenderer.MeasureText(filename, this.videoSelector.Font).Width;
                 if (temp > maxWidth) { maxWidth = temp; }
@@ -148,7 +148,7 @@ namespace VideoTracker
                 int maxIndex = videoSeries.videoFiles.Count - 1;
                 int index = videoSeries.videoFiles.IndexOfKey(v.key);
                 int remaining = maxIndex - index;
-                if (v.postseason == 1)
+                if (v.postSeason == 1)
                 {
                     seriesName.Text = videoSeries.title + " Season: " + v.season + 
                                     " Special: " + v.episode + 

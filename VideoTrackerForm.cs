@@ -103,7 +103,7 @@ namespace VideoTracker
         //
         private void addProgramToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            VideoSeriesForm vsf = new VideoSeriesForm(this);
+            FileVideoSeriesForm vsf = new FileVideoSeriesForm(this);
             vsf.ShowDialog();
         }
 
@@ -178,15 +178,15 @@ namespace VideoTracker
                 return;
             }
 
-            // File was successfully loaded; create panels. This will complete
-            // asynchronously, so the asynchronous thread must call
-            // EnableFileOperations on completion.
+            // File was successfully loaded; create panels and load videos. The
+            // load operation will complete asynchronously, so the asynchronous
+            // thread must call EnableFileOperations on completion.
             mainPanel.Controls.Clear();
             configFileThreads = videoTrackerData.videoSeriesList.Count;
             foreach (VideoSeries vs in videoTrackerData.videoSeriesList)
             {
                 vs.panel = new VideoPlayerPanel(this, vs);
-                vs.UpdateFiles(vs.title, vs.currentVideo.filename, vs.directoryList, vs.panel);
+                vs.Load(vs.title, vs.currentVideo.internalName, vs.panel);
             }
             configFile = file;
         }
@@ -208,6 +208,15 @@ namespace VideoTracker
             loadToolStripMenuItem.Enabled = flag;
             saveAsMenuItem.Enabled = flag;
             autoSaveToolStripMenuItem.Enabled = flag;
+        }
+
+        // Program is exiting.
+        private void VideoTrackerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing || e.CloseReason == CloseReason.ApplicationExitCall)
+            {
+                CheckAutoSave();
+            }
         }
 
     }

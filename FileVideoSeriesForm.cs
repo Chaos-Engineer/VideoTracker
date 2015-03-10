@@ -12,25 +12,25 @@ using System.Windows.Forms;
 
 namespace VideoTracker
 {
-    public partial class VideoSeriesForm : Form
+    public partial class FileVideoSeriesForm : Form
     {
-        public VideoSeries videoSeries;
+        public FileVideoSeries fileVideoSeries;
         private VideoTrackerForm videoTrackerForm;
 
-        public VideoSeriesForm(VideoTrackerForm vtf)
+        public FileVideoSeriesForm(VideoTrackerForm vtf)
         {
             this.videoTrackerForm = vtf;
             InitializeComponent();
         }
-        public VideoSeriesForm(VideoTrackerForm vtf, VideoSeries vs)
+        public FileVideoSeriesForm(VideoTrackerForm vtf, FileVideoSeries vs)
         {
             InitializeComponent();
-            this.videoSeries = vs;
+            this.fileVideoSeries = vs;
             this.videoTrackerForm = vtf;
             this.titleBox.Text = vs.title;
             if (vs.currentVideo != null)
             {
-                this.fileNameBox.Text = vs.currentVideo.filename;
+                this.fileNameBox.Text = vs.currentVideo.title;
             }
             foreach (string dir in vs.directoryList)
             {
@@ -47,7 +47,7 @@ namespace VideoTracker
             }
         }
 
-        private void VideoSeriesForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void FileVideoSeriesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // User selected cancel, don't validate or save results.
             if (this.DialogResult == DialogResult.Cancel)
@@ -72,16 +72,16 @@ namespace VideoTracker
                 return;
             }
 
-            if (videoSeries == null) {
-                videoSeries = new VideoSeries();
-                videoSeries.UpdateFiles(titleBox.Text, fileNameBox.Text,
-                    directoryListBox.Items.OfType<String>().ToList(), null);
-                videoSeries.panel = new VideoPlayerPanel(videoTrackerForm, videoSeries);
+            if (fileVideoSeries == null) {
+                fileVideoSeries = new FileVideoSeries();
+                fileVideoSeries.Load(titleBox.Text, fileNameBox.Text, null,
+                    directoryListBox.Items.OfType<String>().ToList());
+                fileVideoSeries.panel = new VideoPlayerPanel(videoTrackerForm, fileVideoSeries);
             }
             else
             {
-                videoSeries.UpdateFiles(titleBox.Text, fileNameBox.Text, 
-                    directoryListBox.Items.OfType<String>().ToList(), videoSeries.panel);
+                fileVideoSeries.Load(titleBox.Text, fileNameBox.Text, fileVideoSeries.panel,
+                    directoryListBox.Items.OfType<String>().ToList());
             }
             e.Cancel = false;
         }

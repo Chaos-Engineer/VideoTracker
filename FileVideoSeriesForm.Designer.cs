@@ -1,6 +1,6 @@
 ﻿namespace VideoTracker
 {
-    partial class VideoSeriesForm
+    partial class FileVideoSeriesForm
     {
         /// <summary>
         /// Required designer variable.
@@ -180,9 +180,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.titleBox);
             this.Controls.Add(this.label1);
-            this.Name = "VideoSeriesForm";
+            this.Name = "FileVideoSeriesForm";
             this.Text = "Select Video Series";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VideoSeriesForm_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FileVideoSeriesForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
