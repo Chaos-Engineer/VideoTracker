@@ -18,14 +18,16 @@ namespace VideoTracker
     public partial class VideoTrackerForm : Form
     {
         private string configFile;
+        private bool configFileValid = false;
         public int numPanels;
         public int configFileThreads;
-        public VideoTrackerData videoTrackerData = new VideoTrackerData();
+        public VideoTrackerData videoTrackerData;
 
         public VideoTrackerForm(string launchFile)
         {
-            string file = "UNDEFINED";
             InitializeComponent();
+            string file = "UNDEFINED";
+            videoTrackerData = new VideoTrackerData(this);
             if (launchFile.Equals(""))
             {
                 file = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["DefaultFilePath"]);
@@ -49,8 +51,6 @@ namespace VideoTracker
                 LoadData(file);
             }
         }
-
-
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -80,6 +80,7 @@ namespace VideoTracker
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             SaveData(configFile);
         }
 
@@ -101,11 +102,24 @@ namespace VideoTracker
         // Open up a New Series dialog. Do not check status here; the operation
         // completes asynchronously.
         //
-        private void addProgramToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addVideoFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FileVideoSeriesForm vsf = new FileVideoSeriesForm(this);
+            FileVideoSeriesForm vsf = new FileVideoSeriesForm(videoTrackerData);
             vsf.ShowDialog();
         }
+
+        private void addAmazonVideoOnDemandToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AmazonVideoSeriesForm vsf = new AmazonVideoSeriesForm(videoTrackerData);
+            vsf.ShowDialog();
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsForm sf = new SettingsForm(videoTrackerData);
+            sf.ShowDialog();
+        }
+
 
         public void AddTitle(VideoPlayerPanel panel, VideoSeries vs)
         {
@@ -152,7 +166,7 @@ namespace VideoTracker
 
         public void CheckAutoSave()
         {
-            if (configFileThreads == 0 && videoTrackerData.autoSave)
+            if (configFileThreads == 0 && videoTrackerData.autoSave && configFileValid)
             {
                 SaveData(configFile);
             }
@@ -169,12 +183,15 @@ namespace VideoTracker
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
                     videoTrackerData = (VideoTrackerData)serializer.Deserialize(stream);
+                    videoTrackerData.videoTrackerForm = this;
                 }
             }
             catch (Exception e)
             {
-                MessageBox.Show("Failed to load " + file + "\n" + e.ToString());
+                MessageBox.Show("Failed to load " + file + "\n" + e.ToString() +
+                    "\n\nAuto-save will not be performed until configuration is saved manually");
                 EnableFileOperations(true);
+                configFileValid = false;
                 return;
             }
 
@@ -183,24 +200,48 @@ namespace VideoTracker
             // thread must call EnableFileOperations on completion.
             mainPanel.Controls.Clear();
             configFileThreads = videoTrackerData.videoSeriesList.Count;
+            configFileValid = true;
             foreach (VideoSeries vs in videoTrackerData.videoSeriesList)
             {
-                vs.panel = new VideoPlayerPanel(this, vs);
-                vs.Load(vs.title, vs.currentVideo.internalName, vs.panel);
+                // Check for corrupted video in configuration file. This
+                // shouldn't happen unless there was a bug adding a series.
+                if (vs.title == "") { vs.title = "UNKNOWN";}
+                if (vs.currentVideo == null) {
+                    vs.currentVideo = new VideoFile();
+                    vs.currentVideo.title = "NO FILE FOUND";
+                    vs.currentVideo.key = "NO FILE FOUND";
+                    MessageBox.Show("Invalid data for title " + vs.title + ". " +
+                        "\n\nAuto-save will not be performed until configuration is saved manually");
+                    configFileValid = false;
+                }
+                vs.panel = new VideoPlayerPanel(videoTrackerData, vs);
+                vs.LoadGlobalSettings(videoTrackerData);
+                vs.Load(vs.title, vs.currentVideo.title, vs.panel);
             }
             configFile = file;
+ 
         }
 
         private void SaveData(string file)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
-            using (Stream stream = new FileStream(file, FileMode.Create,
-                FileAccess.Write,
-                FileShare.Read))
+            try
             {
-                serializer.Serialize(stream, videoTrackerData);
-                stream.Close();
+                XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
+                using (Stream stream = new FileStream(file + ".tmp", FileMode.Create,
+                    FileAccess.Write,
+                    FileShare.Read))
+                {
+                    serializer.Serialize(stream, videoTrackerData);
+                    stream.Close();
+                }
+                File.Copy(file + ".tmp", file, true);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Can't save " + file + ".\n" + ex.ToString());
+                return;
+            }
+            configFileValid = true;
         }
 
         public void EnableFileOperations(bool flag)
@@ -219,18 +260,41 @@ namespace VideoTracker
             }
         }
 
+
+
     }
 
     [Serializable]
     public class VideoTrackerData
     {
+
+        // Global settings for different VideoSeries classes. We declare them here so that
+        // they can be serialized in the configuration file.
+        //
+        // Globals for AmazonVideoSeries
+        public string awsPublicKey;
+        public string awsSecretKey;
+        public string awsAffiliateID;
+
         public bool autoSave;
         public List<VideoSeries> videoSeriesList;
 
+        [XmlIgnore]
+        public VideoTrackerForm videoTrackerForm;
+
         public VideoTrackerData()
         {
-            autoSave = true;
-            videoSeriesList = new List<VideoSeries>();
+            return;
+        }
+
+        public VideoTrackerData(VideoTrackerForm vtf)
+        {
+            this.autoSave = true;
+            this.awsPublicKey = null;
+            this.awsSecretKey = null;
+            this.awsAffiliateID = null;
+            this.videoTrackerForm = vtf;
+            this.videoSeriesList = new List<VideoSeries>();
         }
     }
 }

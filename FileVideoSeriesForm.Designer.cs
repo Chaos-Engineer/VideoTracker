@@ -55,7 +55,7 @@
             this.label1.Location = new System.Drawing.Point(4, 4);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(30, 13);
-            this.label1.TabIndex = 0;
+            this.label1.TabStop = false;
             this.label1.Text = "Title:";
             // 
             // titleBox
@@ -71,18 +71,8 @@
             this.label2.Location = new System.Drawing.Point(7, 34);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(63, 13);
-            this.label2.TabIndex = 2;
+            this.label2.TabStop = false;
             this.label2.Text = "Current File:";
-            // 
-            // Browse
-            // 
-            this.Browse.Location = new System.Drawing.Point(464, 25);
-            this.Browse.Name = "Browse";
-            this.Browse.Size = new System.Drawing.Size(102, 23);
-            this.Browse.TabIndex = 3;
-            this.Browse.Text = "Browse";
-            this.Browse.UseVisualStyleBackColor = true;
-            this.Browse.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Browse_MouseClick);
             // 
             // fileNameBox
             // 
@@ -90,29 +80,29 @@
             this.fileNameBox.Location = new System.Drawing.Point(108, 27);
             this.fileNameBox.Name = "fileNameBox";
             this.fileNameBox.Size = new System.Drawing.Size(350, 20);
-            this.fileNameBox.TabIndex = 4;
+            this.fileNameBox.TabIndex = 3;
             this.fileNameBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.fileNameBox_DragDrop);
             this.fileNameBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.fileNameBox_DragEnter);
+    
             // 
-            // OK
+            // Browse
             // 
-            this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OK.Location = new System.Drawing.Point(163, 147);
-            this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(75, 23);
-            this.OK.TabIndex = 5;
-            this.OK.Text = "OK";
-            this.OK.UseVisualStyleBackColor = true;
+            this.Browse.Location = new System.Drawing.Point(464, 25);
+            this.Browse.Name = "Browse";
+            this.Browse.Size = new System.Drawing.Size(102, 23);
+            this.Browse.TabIndex = 4;
+            this.Browse.Text = "Browse";
+            this.Browse.UseVisualStyleBackColor = true;
+            this.Browse.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Browse_MouseClick);
             // 
-            // Cancel
+            // label3
             // 
-            this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(327, 147);
-            this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(75, 23);
-            this.Cancel.TabIndex = 6;
-            this.Cancel.Text = "Cancel";
-            this.Cancel.UseVisualStyleBackColor = true;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 64);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(95, 13);
+            this.label3.TabStop = false;
+            this.label3.Text = "Search directories:";
             // 
             // directoryListBox
             // 
@@ -121,7 +111,7 @@
             this.directoryListBox.Location = new System.Drawing.Point(108, 64);
             this.directoryListBox.Name = "directoryListBox";
             this.directoryListBox.Size = new System.Drawing.Size(350, 56);
-            this.directoryListBox.TabIndex = 7;
+            this.directoryListBox.TabStop = false;
             this.directoryListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.directoryListBox_DragDrop);
             this.directoryListBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.directoryListBox_DragEnter);
             // 
@@ -130,7 +120,7 @@
             this.addDirButton.Location = new System.Drawing.Point(464, 64);
             this.addDirButton.Name = "addDirButton";
             this.addDirButton.Size = new System.Drawing.Size(102, 23);
-            this.addDirButton.TabIndex = 8;
+            this.addDirButton.TabIndex = 5;
             this.addDirButton.Text = "Add Directory";
             this.addDirButton.UseVisualStyleBackColor = true;
             this.addDirButton.Click += new System.EventHandler(this.addDirButton_Click);
@@ -140,7 +130,7 @@
             this.removeDirectoryButton.Location = new System.Drawing.Point(464, 93);
             this.removeDirectoryButton.Name = "removeDirectoryButton";
             this.removeDirectoryButton.Size = new System.Drawing.Size(102, 23);
-            this.removeDirectoryButton.TabIndex = 9;
+            this.removeDirectoryButton.TabIndex = 6;
             this.removeDirectoryButton.Text = "Remove Directory";
             this.removeDirectoryButton.UseVisualStyleBackColor = true;
             this.removeDirectoryButton.Click += new System.EventHandler(this.removeDirectoryButton_Click);
@@ -153,14 +143,25 @@
             this.openDirectoryDialog.SupportMultiDottedExtensions = true;
             this.openDirectoryDialog.Title = "Any file from additional directory";
             // 
-            // label3
+            // OK
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 64);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(95, 13);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "Search directories:";
+            this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.OK.Location = new System.Drawing.Point(163, 147);
+            this.OK.Name = "OK";
+            this.OK.Size = new System.Drawing.Size(75, 23);
+            this.OK.TabIndex = 7;
+            this.OK.Text = "OK";
+            this.OK.UseVisualStyleBackColor = true;
+            // 
+            // Cancel
+            // 
+            this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.Cancel.Location = new System.Drawing.Point(327, 147);
+            this.Cancel.Name = "Cancel";
+            this.Cancel.Size = new System.Drawing.Size(75, 23);
+            this.Cancel.TabIndex = 8;
+            this.Cancel.Text = "Cancel";
+            this.Cancel.UseVisualStyleBackColor = true;
             // 
             // VideoSeriesForm
             // 

@@ -1,5 +1,6 @@
 bin/*
 Data/*
 obj/*
+backup/*
 *.suo
 *.exe

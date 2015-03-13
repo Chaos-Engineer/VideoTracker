@@ -15,18 +15,18 @@ namespace VideoTracker
     public partial class FileVideoSeriesForm : Form
     {
         public FileVideoSeries fileVideoSeries;
-        private VideoTrackerForm videoTrackerForm;
+        private VideoTrackerData videoTrackerData;
 
-        public FileVideoSeriesForm(VideoTrackerForm vtf)
+        public FileVideoSeriesForm(VideoTrackerData vtd)
         {
-            this.videoTrackerForm = vtf;
+            this.videoTrackerData = vtd;
             InitializeComponent();
         }
-        public FileVideoSeriesForm(VideoTrackerForm vtf, FileVideoSeries vs)
+        public FileVideoSeriesForm(VideoTrackerData vtd, FileVideoSeries vs)
         {
             InitializeComponent();
             this.fileVideoSeries = vs;
-            this.videoTrackerForm = vtf;
+            this.videoTrackerData = vtd;
             this.titleBox.Text = vs.title;
             if (vs.currentVideo != null)
             {
@@ -72,17 +72,13 @@ namespace VideoTracker
                 return;
             }
 
+            // Create a new series object, or update an existing one.
+
             if (fileVideoSeries == null) {
-                fileVideoSeries = new FileVideoSeries();
-                fileVideoSeries.Load(titleBox.Text, fileNameBox.Text, null,
-                    directoryListBox.Items.OfType<String>().ToList());
-                fileVideoSeries.panel = new VideoPlayerPanel(videoTrackerForm, fileVideoSeries);
+                fileVideoSeries = new FileVideoSeries(videoTrackerData);
             }
-            else
-            {
-                fileVideoSeries.Load(titleBox.Text, fileNameBox.Text, fileVideoSeries.panel,
-                    directoryListBox.Items.OfType<String>().ToList());
-            }
+            fileVideoSeries.Initialize( directoryListBox.Items.OfType<String>().ToList());
+            fileVideoSeries.Load(titleBox.Text, fileNameBox.Text, fileVideoSeries.panel);
             e.Cancel = false;
         }
 

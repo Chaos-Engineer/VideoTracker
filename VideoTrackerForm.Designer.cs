@@ -40,6 +40,7 @@
             this.addProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addAmazonVideoOnDemandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -123,6 +124,7 @@
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addProgramToolStripMenuItem,
+            this.addAmazonVideoOnDemandToolStripMenuItem,
             this.settingsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -131,21 +133,29 @@
             // addProgramToolStripMenuItem
             // 
             this.addProgramToolStripMenuItem.Name = "addProgramToolStripMenuItem";
-            this.addProgramToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.addProgramToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.addProgramToolStripMenuItem.Text = "Add Video Files";
-            this.addProgramToolStripMenuItem.Click += new System.EventHandler(this.addProgramToolStripMenuItem_Click);
+            this.addProgramToolStripMenuItem.Click += new System.EventHandler(this.addVideoFileToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
             this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // addAmazonVideoOnDemandToolStripMenuItem
+            // 
+            this.addAmazonVideoOnDemandToolStripMenuItem.Name = "addAmazonVideoOnDemandToolStripMenuItem";
+            this.addAmazonVideoOnDemandToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.addAmazonVideoOnDemandToolStripMenuItem.Text = "Add Amazon Video On-Demand";
+            this.addAmazonVideoOnDemandToolStripMenuItem.Click += new System.EventHandler(this.addAmazonVideoOnDemandToolStripMenuItem_Click);
             // 
             // VideoTrackerForm
             // 
@@ -181,6 +191,7 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addAmazonVideoOnDemandToolStripMenuItem;
     }
 }
 

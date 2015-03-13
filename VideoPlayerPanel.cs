@@ -20,15 +20,15 @@ namespace VideoTracker
         public int initialWidth;
         private bool updateInProgress;
 
-        public VideoPlayerPanel(VideoTrackerForm vtf, VideoSeries vs)
+        public VideoPlayerPanel(VideoTrackerData vtd, VideoSeries vs)
         {
             InitializeComponent();
             this.updateInProgress = false;
 
             this.videoSeries = vs;
 
-            this.videoTrackerForm = vtf;
-            this.videoTrackerData = vtf.videoTrackerData;
+            this.videoTrackerForm = vtd.videoTrackerForm;
+            this.videoTrackerData = vtd;
 
             this.seriesName.Text = "Loading " + vs.title;
             this.VisibleControls(false);
@@ -82,7 +82,7 @@ namespace VideoTracker
         // form for this derived class.
         private void editButton_Click(object sender, EventArgs e)
         {
-            videoSeries.EditForm(videoTrackerForm);
+            videoSeries.EditForm(videoTrackerData);
         }
 
         public void BeginFileLoad(VideoSeries vs)
@@ -98,7 +98,7 @@ namespace VideoTracker
             this.videoSelector.Items.Clear();
             foreach (VideoFile f in vs.videoFiles.Values)
             {
-                string filename = Path.GetFileName(f.internalName);
+                string filename = f.title;
                 this.videoSelector.Items.Add(filename);
                 temp = TextRenderer.MeasureText(filename, this.videoSelector.Font).Width;
                 if (temp > maxWidth) { maxWidth = temp; }
@@ -145,6 +145,11 @@ namespace VideoTracker
             else
             {
                 VideoFile v = videoSeries.currentVideo;
+                if (v == null)
+                {
+                    v = videoSeries.videoFiles.First().Value;
+                    videoSeries.currentVideo = v;
+                }
                 int maxIndex = videoSeries.videoFiles.Count - 1;
                 int index = videoSeries.videoFiles.IndexOfKey(v.key);
                 int remaining = maxIndex - index;

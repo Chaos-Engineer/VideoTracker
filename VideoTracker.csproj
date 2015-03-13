@@ -68,6 +68,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -79,6 +80,21 @@
     <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmazonSignedRequestHelper.cs" />
+    <Compile Include="AmazonVideoSeries.cs" />
+    <Compile Include="AmazonVideoSeriesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AmazonVideoSeriesForm.Designer.cs">
+      <DependentUpon>AmazonVideoSeriesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileVideoSeries.cs" />
+    <Compile Include="SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="VideoPlayerPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -100,6 +116,12 @@
     </Compile>
     <Compile Include="VideoTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AmazonVideoSeriesForm.resx">
+      <DependentUpon>AmazonVideoSeriesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VideoPlayerPanel.resx">
       <DependentUpon>VideoPlayerPanel.cs</DependentUpon>
     </EmbeddedResource>
