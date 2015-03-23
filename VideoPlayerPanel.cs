@@ -168,6 +168,7 @@ namespace VideoTracker
 
                 videoSelector.Enabled = true;
                 videoSelector.SelectedIndex = index;
+                playButton.Enabled = true;
 
                 // Disable the "back" button for the first video, and the
                 // "next" and "play next" buttons for the last video

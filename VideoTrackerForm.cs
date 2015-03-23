@@ -22,12 +22,16 @@ namespace VideoTracker
         public int numPanels;
         public int configFileThreads;
         public VideoTrackerData videoTrackerData;
+        public const string dummyFileKey = "NO FILES FOUND";
+        public static VideoFile dummyFile;
+
 
         public VideoTrackerForm(string launchFile)
         {
             InitializeComponent();
             string file = "UNDEFINED";
             videoTrackerData = new VideoTrackerData(this);
+
             if (launchFile.Equals(""))
             {
                 file = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["DefaultFilePath"]);
@@ -50,6 +54,10 @@ namespace VideoTracker
             {
                 LoadData(file);
             }
+
+            dummyFile = new VideoFile();
+            dummyFile.title = dummyFileKey;
+            dummyFile.key = dummyFileKey;
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -214,7 +222,6 @@ namespace VideoTracker
                         "\n\nAuto-save will not be performed until configuration is saved manually");
                     configFileValid = false;
                 }
-                vs.panel = new VideoPlayerPanel(videoTrackerData, vs);
                 vs.LoadGlobalSettings(videoTrackerData);
                 vs.Load(vs.title, vs.currentVideo.title, vs.panel);
             }

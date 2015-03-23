@@ -21,11 +21,6 @@ namespace VideoTracker
             this.directoryList = null;
         }
 
-        public FileVideoSeries(VideoTrackerData videoTrackerData)
-        {
-            this.panel = new VideoPlayerPanel(videoTrackerData, this);
-        }
-
         public void Initialize(List<string> directoryList)
         {
             this.directoryList = directoryList;
@@ -55,6 +50,7 @@ namespace VideoTracker
                 Dictionary<int, int> seasons = new Dictionary<int, int>();
                 bool seasonValid = true;
                 bool parsingEpisode = true;
+                string[] files;
 
                 if (addDelay.Equals("true"))
                 {
@@ -62,7 +58,15 @@ namespace VideoTracker
                 }
                 foreach (string directory in directoryList)
                 {
-                    string[] files = System.IO.Directory.GetFiles(directory, fileSearchString + "*");
+                    try
+                    {
+                        files = System.IO.Directory.GetFiles(directory, fileSearchString + "*");
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                        continue; // Silently ignore - directory or network share not found
+                    }
+
                     foreach (string file in files)
                     {
                         VideoFile v = new VideoFile();
@@ -145,6 +149,7 @@ namespace VideoTracker
                             if (file.IndexOf(s, StringComparison.CurrentCultureIgnoreCase) >= 0)
                             {
                                 v.postSeason = 1;
+                                if (v.episode == 0) { v.episode = 1; }
                             }
                         }
 

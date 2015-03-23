@@ -75,9 +75,15 @@ namespace VideoTracker
             // Create a new series object, or update an existing one.
 
             if (fileVideoSeries == null) {
-                fileVideoSeries = new FileVideoSeries(videoTrackerData);
+                fileVideoSeries = new FileVideoSeries();
+                if (!fileVideoSeries.LoadGlobalSettings(videoTrackerData))
+                {
+                    e.Cancel = true;
+                    return;
+                }
             }
             fileVideoSeries.Initialize( directoryListBox.Items.OfType<String>().ToList());
+           
             fileVideoSeries.Load(titleBox.Text, fileNameBox.Text, fileVideoSeries.panel);
             e.Cancel = false;
         }

@@ -46,9 +46,15 @@ namespace VideoTracker
         public abstract void EditForm(VideoTrackerData videoTrackerData);
         public abstract void PlayCurrent();
 
-        public virtual void LoadGlobalSettings(VideoTrackerData videoTrackerData)
+        public virtual bool LoadGlobalSettings(VideoTrackerData videoTrackerData)
         {
-            return; // Can be overridden.
+            // This routine can be overridden. Typically the overriding routine will
+            // call this base routine in order to execute the panel initialization 
+            // code.
+            if (this.panel == null) { 
+                this.panel = new VideoPlayerPanel(videoTrackerData, this);
+            }
+            return true; 
         }
 
         // Not serialized - this list can be changed between invocations of the 
@@ -117,12 +123,10 @@ namespace VideoTracker
                 }
                 else
                 {
-                    string dummyFile = "NO FILES FOUND";
-                    VideoFile v = new VideoFile();
-                    v.title = dummyFile;
-                    v.key = dummyFile;
-                    this.videoFiles.Add(dummyFile, v);
-                    this.currentVideo = v;
+                    VideoFile dummyFile = VideoTrackerForm.dummyFile;
+                    string dummyFileKey = VideoTrackerForm.dummyFileKey;
+                    this.videoFiles.Add(dummyFileKey, dummyFile);
+                    this.currentVideo = dummyFile;
                 }
             }
             else

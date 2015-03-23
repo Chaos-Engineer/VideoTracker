@@ -57,7 +57,11 @@ namespace VideoTracker
             // Create a new series object, or update an existing one.
             if (amazonVideoSeries == null)
             {
-                amazonVideoSeries = new AmazonVideoSeries(videoTrackerData);
+                amazonVideoSeries = new AmazonVideoSeries();
+                if (!amazonVideoSeries.LoadGlobalSettings(videoTrackerData)) {
+                    e.Cancel = true;
+                    return;
+                }
                 currentTitle = null;
             } else {
                 currentTitle = amazonVideoSeries.currentVideo.key;

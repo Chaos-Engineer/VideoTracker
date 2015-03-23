@@ -55,9 +55,13 @@ namespace VideoTracker
             this.awsAffiliateID = null;
         }
 
-        public AmazonVideoSeries(VideoTrackerData vtd)
+        public void Initialize(string keywords)
         {
-            this.panel = new VideoPlayerPanel(vtd, this);
+            this.keywords = keywords;
+        }
+
+        public override bool LoadGlobalSettings(VideoTrackerData vtd)
+        {
             if (vtd.awsPublicKey == null || vtd.awsSecretKey == null || vtd.awsAffiliateID == null)
             {
                 MessageBox.Show("Amazon Affiliate ID parameters must be set before loading " +
@@ -65,20 +69,11 @@ namespace VideoTracker
                 SettingsForm s = new SettingsForm(vtd);
                 s.tabControl.SelectTab("amazonSettings");
                 s.ShowDialog();
-                return;
+                return false;
             }
-            LoadGlobalSettings(vtd);
-        }
-
-        public void Initialize(string keywords)
-        {
-            this.keywords = keywords;
-        }
-
-        public override void LoadGlobalSettings(VideoTrackerData vtd)
-        {
-            helper = new SignedRequestHelper(vtd.awsPublicKey, vtd.awsSecretKey, DESTINATION);
-            awsAffiliateID = vtd.awsAffiliateID;
+            this.helper = new SignedRequestHelper(vtd.awsPublicKey, vtd.awsSecretKey, DESTINATION);
+            this.awsAffiliateID = vtd.awsAffiliateID;
+            return base.LoadGlobalSettings(vtd);
         }
 
         public override void EditForm(VideoTrackerData videoTrackerData)
