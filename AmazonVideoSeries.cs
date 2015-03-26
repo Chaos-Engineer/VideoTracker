@@ -45,10 +45,6 @@ namespace VideoTracker
         private SignedRequestHelper helper;
         private string awsAffiliateID;
 
-        // The parameterless constructor is required for serialization. All actual uses 
-        // of the form will be called with the VideoTrackerData parameter to give access
-        // to global variables.
-
         public AmazonVideoSeries()
         {
             this.helper = null;
@@ -73,7 +69,7 @@ namespace VideoTracker
             }
             this.helper = new SignedRequestHelper(vtd.awsPublicKey, vtd.awsSecretKey, DESTINATION);
             this.awsAffiliateID = vtd.awsAffiliateID;
-            return base.LoadGlobalSettings(vtd);
+            return (true);
         }
 
         public override void EditForm(VideoTrackerData videoTrackerData)
@@ -115,7 +111,7 @@ namespace VideoTracker
             GetEpisodeListFromAsin(asin);
         }
 
-        public string GetAsinFromKeywords(string keywords)
+        private string GetAsinFromKeywords(string keywords)
         {
             IDictionary<string, string> r = new Dictionary<string, String>();
             XmlDocument doc = new XmlDocument();
@@ -143,7 +139,7 @@ namespace VideoTracker
         //     succeed, giving the grandparent ASIN. Traversing the nodes below the
         //     grandparent will give all the videos in the series.
         //
-        public bool GetEpisodeListFromAsin(string asin)
+        private bool GetEpisodeListFromAsin(string asin)
         {
             this.videoFiles = new SortedList<string, VideoFile>();
 
@@ -340,7 +336,7 @@ namespace VideoTracker
             return (true);
         }
 
-        public string GetURLFromAsin(string asin)
+        private string GetURLFromAsin(string asin)
         {
             IDictionary<string, string> r = new Dictionary<string, String>();
             XmlDocument doc = new XmlDocument();

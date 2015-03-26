@@ -19,11 +19,10 @@ namespace VideoTracker
     {
         private string configFile;
         private bool configFileValid = false;
-        public int numPanels;
-        public int configFileThreads;
-        public VideoTrackerData videoTrackerData;
-        public const string dummyFileKey = "NO FILES FOUND";
-        public static VideoFile dummyFile;
+        private int numPanels;
+        private int configFileThreads;
+        private VideoTrackerData videoTrackerData;
+
 
 
         public VideoTrackerForm(string launchFile)
@@ -54,10 +53,6 @@ namespace VideoTracker
             {
                 LoadData(file);
             }
-
-            dummyFile = new VideoFile();
-            dummyFile.title = dummyFileKey;
-            dummyFile.key = dummyFileKey;
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -216,14 +211,13 @@ namespace VideoTracker
                 if (vs.title == "") { vs.title = "UNKNOWN";}
                 if (vs.currentVideo == null) {
                     vs.currentVideo = new VideoFile();
-                    vs.currentVideo.title = "NO FILE FOUND";
-                    vs.currentVideo.key = "NO FILE FOUND";
+                    vs.currentVideo.key =  vs.currentVideo.title = "NO FILE FOUND";
                     MessageBox.Show("Invalid data for title " + vs.title + ". " +
                         "\n\nAuto-save will not be performed until configuration is saved manually");
                     configFileValid = false;
                 }
                 vs.LoadGlobalSettings(videoTrackerData);
-                vs.Load(vs.title, vs.currentVideo.title, vs.panel);
+                vs.LoadFiles(vs.title, vs.currentVideo.title, videoTrackerData);
             }
             configFile = file;
  
@@ -249,6 +243,15 @@ namespace VideoTracker
                 return;
             }
             configFileValid = true;
+        }
+
+        public void ThreadComplete()
+        {
+            if (this.configFileThreads > 0) { this.configFileThreads--; }
+            if (this.configFileThreads == 0)
+            {
+                EnableFileOperations(true);
+            }
         }
 
         public void EnableFileOperations(bool flag)

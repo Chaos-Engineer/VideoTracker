@@ -34,7 +34,7 @@ namespace VideoTracker
         
         private void AmazonVideoSeriesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            string currentTitle;
+            string currentKey;
             // User selected cancel, don't validate or save results.
             if (this.DialogResult == DialogResult.Cancel)
             {
@@ -62,13 +62,13 @@ namespace VideoTracker
                     e.Cancel = true;
                     return;
                 }
-                currentTitle = null;
+                currentKey = null;
             } else {
-                currentTitle = amazonVideoSeries.currentVideo.key;
+                currentKey = amazonVideoSeries.currentVideo.key;
             }
               
             amazonVideoSeries.Initialize(keywordBox.Text);
-            amazonVideoSeries.Load(titleBox.Text, currentTitle, amazonVideoSeries.panel);
+            amazonVideoSeries.LoadFiles(titleBox.Text, currentKey, videoTrackerData);
 
             e.Cancel = false;
         }

@@ -1,6 +1,6 @@
 ﻿namespace VideoTracker
 {
-    partial class FileVideoSeriesForm
+    partial class FileVideoSeriesForm 
     {
         /// <summary>
         /// Required designer variable.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,16 +9,31 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace VideoTracker
 {
+
     public class FileVideoSeries : VideoSeries
     {
+
+        private bool allowUndelimitedEpisodes;  // Make this configurable
+        private bool noSeasonNumber;            // Make this configurable
+        private List<string> postSeasonStrings; // Make this configurable
+
         public List<string> directoryList;
+
+        [XmlIgnore]
+        private static string addDelay = ConfigurationManager.AppSettings["AddDelay"];
 
 
         public FileVideoSeries()
         {
+            this.allowUndelimitedEpisodes = true; 
+            this.noSeasonNumber = false;
+            this.postSeasonStrings = new List<string>();
+            this.postSeasonStrings.Add("SPECIAL");
+
             this.directoryList = null;
         }
 
@@ -152,10 +168,13 @@ namespace VideoTracker
                                 if (v.episode == 0) { v.episode = 1; }
                             }
                         }
-
                         v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.postSeason, v.episode, v.title);
 
                         videoFiles.Add(v.key, v);
+                        // Note that we use the internal file name rather than the key.
+                        // If this is a new video series, then the user entered a filename
+                        // on the form. The key name is unknown at that time because the
+                        // keys cannot be generated until all files are loaded.
                         if (v.internalName == currentFile)
                         {
                             this.currentVideo = v;
@@ -176,6 +195,9 @@ namespace VideoTracker
                 // If there are three or more episodes, and if no two episodes have the same season 
                 // number, then assume that the first number in the filename is the episode, and that
                 // any remaining numbers are meaningless.
+                //
+                // We don't need to recalculate the key, as this will not change the sort order of
+                // the list. 
                 //
                 if (videoFiles.Count >= 3)
                 {

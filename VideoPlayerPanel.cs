@@ -16,8 +16,8 @@ namespace VideoTracker
     {
         private VideoSeries videoSeries;
         private VideoTrackerData videoTrackerData;
-        public VideoTrackerForm videoTrackerForm;
-        public int initialWidth;
+        private VideoTrackerForm videoTrackerForm;
+        public  int initialWidth;
         private bool updateInProgress;
 
         public VideoPlayerPanel(VideoTrackerData vtd, VideoSeries vs)
@@ -108,11 +108,7 @@ namespace VideoTracker
             this.VisibleControls(true);
             this.UpdatePanel();
             this.videoTrackerForm.AdjustWidth();
-            if (videoTrackerForm.configFileThreads > 0) { videoTrackerForm.configFileThreads--; }
-            if (videoTrackerForm.configFileThreads == 0)
-            {
-                videoTrackerForm.EnableFileOperations(true);
-            }
+            this.videoTrackerForm.ThreadComplete();
         }
 
         private void SetSelectorWidth(int width)
@@ -131,7 +127,7 @@ namespace VideoTracker
             updateInProgress = true;
 
             SuspendLayout();
-            if (!videoSeries.valid)
+            if (!videoSeries.IsValid())
             {
                 // No files were found for this video series
                 videoSelector.SelectedIndex = 0;

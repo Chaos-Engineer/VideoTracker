@@ -34,7 +34,7 @@ namespace VideoTracker
 
         //
         // The Windows library draws text vertically down left-aligned tabs. This routine
-        // allows text to be drawn horizontally, as expected. (If the tab width is too 
+        // allows text to be drawn horizontally instead. (If the tab width is too 
         // narrow, increase the TabControl object's *height* attribute.)
         //
         private void tabControl_DrawItem(Object sender, System.Windows.Forms.DrawItemEventArgs e)
@@ -43,10 +43,7 @@ namespace VideoTracker
             Brush brush;
             Font font;
 
-            // Get the item from the collection.
             TabPage tabPage = tabControl.TabPages[e.Index];
-
-            // Get the real bounds for the tab rectangle.
             Rectangle tabBounds = tabControl.GetTabRect(e.Index);
 
             brush = new SolidBrush(Color.Black);
@@ -59,7 +56,6 @@ namespace VideoTracker
                 font = this.Font;
             }
 
-            // Draw string. Center the text.
             StringFormat stringFlags = new StringFormat();
             stringFlags.Alignment = StringAlignment.Center;
             stringFlags.LineAlignment = StringAlignment.Center;

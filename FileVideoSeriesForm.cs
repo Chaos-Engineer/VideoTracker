@@ -14,7 +14,7 @@ namespace VideoTracker
 {
     public partial class FileVideoSeriesForm : Form
     {
-        public FileVideoSeries fileVideoSeries;
+        private FileVideoSeries fileVideoSeries;
         private VideoTrackerData videoTrackerData;
 
         public FileVideoSeriesForm(VideoTrackerData vtd)
@@ -22,6 +22,7 @@ namespace VideoTracker
             this.videoTrackerData = vtd;
             InitializeComponent();
         }
+
         public FileVideoSeriesForm(VideoTrackerData vtd, FileVideoSeries vs)
         {
             InitializeComponent();
@@ -35,15 +36,6 @@ namespace VideoTracker
             foreach (string dir in vs.directoryList)
             {
                 AddDirectoryToListBox(dir);
-            }
-        }
-
-        private void Browse_MouseClick(object sender, MouseEventArgs e)
-        {
-            OpenFileDialog fd = openFileDialog;
-            if (fd.ShowDialog() == DialogResult.OK)
-            {
-                AddFileToForm(fd.FileName);
             }
         }
 
@@ -82,10 +74,20 @@ namespace VideoTracker
                     return;
                 }
             }
-            fileVideoSeries.Initialize( directoryListBox.Items.OfType<String>().ToList());
-           
-            fileVideoSeries.Load(titleBox.Text, fileNameBox.Text, fileVideoSeries.panel);
+
+            fileVideoSeries.Initialize(directoryListBox.Items.OfType<String>().ToList());
+            fileVideoSeries.LoadFiles(titleBox.Text, fileNameBox.Text, videoTrackerData);
             e.Cancel = false;
+        }
+
+
+        private void Browse_MouseClick(object sender, MouseEventArgs e)
+        {
+            OpenFileDialog fd = openFileDialog;
+            if (fd.ShowDialog() == DialogResult.OK)
+            {
+                AddFileToForm(fd.FileName);
+            }
         }
 
         private void addDirButton_Click(object sender, EventArgs e)
