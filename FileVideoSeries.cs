@@ -76,7 +76,7 @@ namespace VideoTracker
                 {
                     try
                     {
-                        files = System.IO.Directory.GetFiles(directory, fileSearchString + "*");
+                        files = System.IO.Directory.GetFiles(directory, "*" + fileSearchString + "*");
                     }
                     catch (DirectoryNotFoundException)
                     {

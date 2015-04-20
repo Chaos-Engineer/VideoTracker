@@ -20,7 +20,7 @@ namespace VideoTracker
         private string configFile;
         private bool configFileValid = false;
         private int numPanels;
-        private int configFileThreads;
+        private long configFileThreads; // Interlocked variables must be long
         private VideoTrackerData videoTrackerData;
 
 
@@ -169,7 +169,8 @@ namespace VideoTracker
 
         public void CheckAutoSave()
         {
-            if (configFileThreads == 0 && videoTrackerData.autoSave && configFileValid)
+            // Note: configFileTh
+            if (Interlocked.Read(ref configFileThreads) == 0 && videoTrackerData.autoSave && configFileValid)
             {
                 SaveData(configFile);
             }
@@ -202,7 +203,7 @@ namespace VideoTracker
             // load operation will complete asynchronously, so the asynchronous
             // thread must call EnableFileOperations on completion.
             mainPanel.Controls.Clear();
-            configFileThreads = videoTrackerData.videoSeriesList.Count;
+            Interlocked.Add(ref configFileThreads, (long) videoTrackerData.videoSeriesList.Count);
             configFileValid = true;
             foreach (VideoSeries vs in videoTrackerData.videoSeriesList)
             {
@@ -220,7 +221,6 @@ namespace VideoTracker
                 vs.LoadFiles(vs.title, vs.currentVideo.title, videoTrackerData);
             }
             configFile = file;
- 
         }
 
         private void SaveData(string file)
@@ -247,8 +247,8 @@ namespace VideoTracker
 
         public void ThreadComplete()
         {
-            if (this.configFileThreads > 0) { this.configFileThreads--; }
-            if (this.configFileThreads == 0)
+            long threads = Interlocked.Decrement(ref this.configFileThreads);
+            if (threads == 0)
             {
                 EnableFileOperations(true);
             }
@@ -306,5 +306,7 @@ namespace VideoTracker
             this.videoTrackerForm = vtf;
             this.videoSeriesList = new List<VideoSeries>();
         }
+
+      
     }
 }
