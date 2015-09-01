@@ -30,6 +30,7 @@ namespace VideoTracker
     [Serializable]
     [XmlInclude(typeof(FileVideoSeries))]
     [XmlInclude(typeof(AmazonVideoSeries))]
+    [XmlInclude(typeof(CrunchyRollVideoSeries))]
     public abstract class VideoSeries
     {
 

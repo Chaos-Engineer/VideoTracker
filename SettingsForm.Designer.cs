@@ -150,8 +150,8 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(508, 13);
             this.label3.TabIndex = 1;
-            this.label3.Text = "To import Amazon videos, you must obtain an affiliate ID and keys by following th" +
-    "e instructions at this URL:";
+            this.label3.Text = "To import Amazon videos, you must obtain an affiliate ID and keys by " +
+                 "following the instructions at this URL:";
             // 
             // linkLabel1
             // 

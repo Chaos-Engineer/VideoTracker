@@ -65,6 +65,9 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsQuery">
+      <HintPath>packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -87,6 +90,13 @@
     </Compile>
     <Compile Include="AmazonVideoSeriesForm.Designer.cs">
       <DependentUpon>AmazonVideoSeriesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CrunchyRollVideoSeries.cs" />
+    <Compile Include="CrunchyRollVideoSeriesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CrunchyRollVideoSeriesForm.Designer.cs">
+      <DependentUpon>CrunchyRollVideoSeriesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="FileVideoSeries.cs" />
     <Compile Include="SettingsForm.cs">
@@ -118,6 +128,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AmazonVideoSeriesForm.resx">
       <DependentUpon>AmazonVideoSeriesForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrunchyRollVideoSeriesForm.resx">
+      <DependentUpon>CrunchyRollVideoSeriesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -140,6 +154,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -170,6 +185,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="!Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

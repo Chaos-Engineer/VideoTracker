@@ -117,6 +117,14 @@ namespace VideoTracker
             vsf.ShowDialog();
         }
 
+
+        private void addCrunchyRollVideoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CrunchyRollVideoSeriesForm csf = new CrunchyRollVideoSeriesForm(videoTrackerData);
+            csf.ShowDialog();
+        }
+
+
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SettingsForm sf = new SettingsForm(videoTrackerData);
@@ -269,9 +277,6 @@ namespace VideoTracker
                 CheckAutoSave();
             }
         }
-
-
-
     }
 
     [Serializable]
@@ -291,6 +296,9 @@ namespace VideoTracker
 
         [XmlIgnore]
         public VideoTrackerForm videoTrackerForm;
+
+        [XmlIgnore]
+        public const string CrunchyRollUrlPrefix = "http://www.crunchyroll.com";
 
         public VideoTrackerData()
         {
