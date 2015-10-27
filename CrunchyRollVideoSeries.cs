@@ -113,10 +113,9 @@ namespace VideoTracker
 
                 v.key = key;
                 v.internalName = episodeUrl;
-                v.title = desc;
+                v.title = v.episode + " - " + desc;
                 v.season = 1;
                 videoFiles.Add(key, v);
-
 
             }
         }

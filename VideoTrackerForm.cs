@@ -134,12 +134,15 @@ namespace VideoTracker
 
         public void AddTitle(VideoPlayerPanel panel, VideoSeries vs)
         {
+            // AddTitle can be called from "Add new program" or from "File Load". If it's
+            // called from "File Load", then it's already in videoSeriesList and doesn't
+            // need to be added again.
             if (!this.videoTrackerData.videoSeriesList.Contains(vs))
             {
-                this.numPanels++;
                 this.videoTrackerData.videoSeriesList.Add(vs);
             }
 
+            this.numPanels++;
             this.mainPanel.Controls.Add(panel);
             this.AdjustWidth();
             this.CheckAutoSave();
@@ -154,6 +157,26 @@ namespace VideoTracker
             {
                 this.AdjustWidth();
             }
+            this.CheckAutoSave();
+        }
+
+        // Remove a program from the list and insert it at a different
+        // position.
+        public void MoveTitle(int source, int dest)
+        {
+            if (source == dest) return;
+            if (source < 0 || dest < 0) return;
+            if (source >= this.numPanels || dest >= this.numPanels) return;
+
+            Control.ControlCollection cc = this.mainPanel.Controls;
+            Control c = cc[source];
+            cc.SetChildIndex(c, dest);
+
+            List<VideoSeries> vsl = this.videoTrackerData.videoSeriesList;
+            VideoSeries item = vsl[source];
+            vsl.RemoveAt(source);
+            vsl.Insert(dest, item);
+
             this.CheckAutoSave();
         }
 

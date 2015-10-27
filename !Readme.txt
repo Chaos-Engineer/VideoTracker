@@ -1,18 +1,29 @@
 ﻿Instructions for adding a new series type:
 
 1 - Declare a new class representing the series type. It should be derived from VideoSeries.
-2 - Add these routine headers:
+2 - Add an empty constructor that takes no arguments (called during deserialization), and a constructor to be
+    called by the Form class, where the arguments are the values defined by the form. (Title, Current Episode,
+	and all series-specific arguments)
+3 - Add these method headers:
         public override bool LoadGlobalSettings(VideoTrackerData vtd)  [ONLY IF GLOBAL CONFIGURATION VARIABLES NEEDED]
         public override void PlayCurrent()
         public override void EditForm(VideoTrackerData vtd)
         protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
-3 - Add an XmlInclude for the new class in VideoSeries.cs, to allow it to be serializable.
-4 - Declare a new Windows Form class (xxxVideoSeriesForm) to allow the series information to be entered.
-5 - Add a new option to the VideoTrackerForm menu to launch that form class.
-6 - Write the (VideoTrackerData) and (VideoTrackerData, xxxVideoSeries) initializers for the Form Class
-7 - Add the FormClosing event to the Form Class
+4 - Add an [XmlInclude] for the new class in VideoSeries.cs, to allow it to be serializable.
+5 - Declare a new Windows Form class (xxxVideoSeriesForm) to define the form used to enter the series 
+    information.
+6 - Add a new option to the VideoTrackerForm menu to display that form class.
+7 - Write the (VideoTrackerData) and (VideoTrackerData, xxxVideoSeries) constructors for the Form Class. The
+    first one is used to add a new series. The second one is used to edit an existing series and presets the 
+	displayed fields to the current series values.
 8 - If there are any new global variables for this class, add them to the VideoTrackerData class.
-9 - Add an interface to set the new global variables to SettingsForm
-10 - Write the series type routines. Most of them can be copied from existing code with slight modifications. 
+9 - Add an interface to set these new global variables to the SettingsForm class
+10 - Add the FormClosing event to the Form Class. This should call the multi-argument constructor, the 
+    LoadGlobalSettings method if needed and the base LoadFiles method. (LoadFiles will set up a call to 
+	the class-specific LoadSeriesAsync method, which will do the actual file load.)
+11 - Write the series type routines. Most of them can be copied from existing code with slight modifications. 
     LoadSeriesAsync should do the actual work of getting information about each video and adding it to the
 	videoFiles member.
+
+
+Use "git push origin master" to publish updated package.

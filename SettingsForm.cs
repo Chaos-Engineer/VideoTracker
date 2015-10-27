@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace VideoTracker
 {
@@ -90,6 +91,12 @@ namespace VideoTracker
             videoTrackerData.awsSecretKey = secretKeyTextBox.Text;
             videoTrackerData.awsAffiliateID = affiliateIdTextBox.Text;
             this.settingsValid = true;
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            LinkLabel l = sender as LinkLabel;
+            Process.Start(l.Text);
         }
     }
 }

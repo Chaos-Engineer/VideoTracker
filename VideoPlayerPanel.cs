@@ -217,5 +217,32 @@ namespace VideoTracker
             this.playNextButton.Visible = flag;
         }
 
+        // Panel drag-and-drop code:
+        // - MouseDown event - Start a drop-and-drop sequence, with the input argument
+        //   set to the index of the panel being moved.
+        // - DragEnter event - Validate that we're dragging in a valid value
+        // - DragDrop event - Get the index of the panel being dragged into and call the
+        //   main form's MoveTitle method.
+        private void flowLayoutPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            int index = videoTrackerData.videoSeriesList.IndexOf(this.videoSeries);
+            DoDragDrop(index, DragDropEffects.Move);
+        }
+
+        private void flowLayoutPanel_DragEnter(object sender, DragEventArgs e)
+        {
+            if (((e.AllowedEffect & DragDropEffects.Move) != 0)
+                    && e.Data.GetDataPresent(typeof(int))) {
+                       e.Effect = DragDropEffects.Move;
+            }
+        }
+
+        private void flowLayoutPanel_DragDrop(object sender, DragEventArgs e)
+        {
+            int source = (int) e.Data.GetData(typeof(int));
+            int dest = videoTrackerData.videoSeriesList.IndexOf(this.videoSeries);
+            videoTrackerForm.MoveTitle(source, dest);
+        }
+
     }
 }

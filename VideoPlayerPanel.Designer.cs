@@ -43,6 +43,7 @@
             // 
             // flowLayoutPanel
             // 
+            this.flowLayoutPanel.AllowDrop = true;
             this.flowLayoutPanel.AutoSize = true;
             this.flowLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -59,6 +60,9 @@
             this.flowLayoutPanel.Name = "flowLayoutPanel";
             this.flowLayoutPanel.Size = new System.Drawing.Size(266, 81);
             this.flowLayoutPanel.TabIndex = 0;
+            this.flowLayoutPanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.flowLayoutPanel_DragDrop);
+            this.flowLayoutPanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.flowLayoutPanel_DragEnter);
+            this.flowLayoutPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.flowLayoutPanel_MouseDown);
             // 
             // seriesName
             // 

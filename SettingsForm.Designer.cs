@@ -32,9 +32,6 @@
             this.generalSettings = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.amazonSettings = new System.Windows.Forms.TabPage();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.applyButton = new System.Windows.Forms.Button();
-            this.okButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -44,6 +41,9 @@
             this.publicKeyTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.secretKeyTextBox = new System.Windows.Forms.TextBox();
+            this.cancelButton = new System.Windows.Forms.Button();
+            this.applyButton = new System.Windows.Forms.Button();
+            this.okButton = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.generalSettings.SuspendLayout();
             this.amazonSettings.SuspendLayout();
@@ -104,36 +104,6 @@
             this.amazonSettings.Text = "Amazon";
             this.amazonSettings.UseVisualStyleBackColor = true;
             // 
-            // cancelButton
-            // 
-            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(260, 161);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 3;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            // 
-            // applyButton
-            // 
-            this.applyButton.Location = new System.Drawing.Point(170, 161);
-            this.applyButton.Name = "applyButton";
-            this.applyButton.Size = new System.Drawing.Size(75, 23);
-            this.applyButton.TabIndex = 2;
-            this.applyButton.Text = "Apply";
-            this.applyButton.UseVisualStyleBackColor = true;
-            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
-            // 
-            // okButton
-            // 
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(80, 161);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(75, 23);
-            this.okButton.TabIndex = 1;
-            this.okButton.Text = "OK";
-            this.okButton.UseVisualStyleBackColor = true;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -150,8 +120,8 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(508, 13);
             this.label3.TabIndex = 1;
-            this.label3.Text = "To import Amazon videos, you must obtain an affiliate ID and keys by " +
-                 "following the instructions at this URL:";
+            this.label3.Text = "To import Amazon videos, you must obtain an affiliate ID and keys by following th" +
+    "e instructions at this URL:";
             // 
             // linkLabel1
             // 
@@ -161,6 +131,7 @@
             this.linkLabel1.TabIndex = 8;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "http://docs.aws.amazon.com/AWSECommerceService/latest/DG/becomingAssociate.html";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // label4
             // 
@@ -191,7 +162,7 @@
             // 
             this.publicKeyTextBox.Location = new System.Drawing.Point(75, 78);
             this.publicKeyTextBox.Name = "publicKeyTextBox";
-            this.publicKeyTextBox.Size = new System.Drawing.Size(100, 20);
+            this.publicKeyTextBox.Size = new System.Drawing.Size(292, 20);
             this.publicKeyTextBox.TabIndex = 11;
             // 
             // label6
@@ -207,8 +178,38 @@
             // 
             this.secretKeyTextBox.Location = new System.Drawing.Point(75, 104);
             this.secretKeyTextBox.Name = "secretKeyTextBox";
-            this.secretKeyTextBox.Size = new System.Drawing.Size(100, 20);
+            this.secretKeyTextBox.Size = new System.Drawing.Size(292, 20);
             this.secretKeyTextBox.TabIndex = 12;
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cancelButton.Location = new System.Drawing.Point(260, 161);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelButton.TabIndex = 3;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            // 
+            // applyButton
+            // 
+            this.applyButton.Location = new System.Drawing.Point(170, 161);
+            this.applyButton.Name = "applyButton";
+            this.applyButton.Size = new System.Drawing.Size(75, 23);
+            this.applyButton.TabIndex = 2;
+            this.applyButton.Text = "Apply";
+            this.applyButton.UseVisualStyleBackColor = true;
+            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
+            // 
+            // okButton
+            // 
+            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.okButton.Location = new System.Drawing.Point(80, 161);
+            this.okButton.Name = "okButton";
+            this.okButton.Size = new System.Drawing.Size(75, 23);
+            this.okButton.TabIndex = 1;
+            this.okButton.Text = "OK";
+            this.okButton.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
