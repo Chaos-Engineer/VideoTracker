@@ -62,7 +62,7 @@ namespace VideoTracker
                 string regexSearchString = whitespace.Replace(Regex.Escape(title), ".*");
                 string seasonEpisodeRegex = regexSearchString + @"\D*?(\d+)\D+?(\d+)";
                 string EpisodeOnlyRegex = regexSearchString + @"\D*?(\d+)";
-                string currentFile = (String)e.Argument;
+                string currentFile = e.Argument.ToString();
                 Dictionary<int, int> seasons = new Dictionary<int, int>();
                 bool seasonValid = true;
                 bool parsingEpisode = true;

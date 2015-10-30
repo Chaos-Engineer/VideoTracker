@@ -20,6 +20,15 @@ namespace VideoTracker
         {
             InitializeComponent();
             this.videoTrackerData = vtd;
+            if (vtd.columns > 0)
+            {
+                columnsTextBox.Text = vtd.columns.ToString();
+            }
+            else
+            {
+                columnsTextBox.Text = "1";
+            }
+
             if (vtd.awsPublicKey != null)
             {
                 publicKeyTextBox.Text = vtd.awsPublicKey;
@@ -74,7 +83,8 @@ namespace VideoTracker
 
             // Apply changes. If there were validation failures, then prevent the 
             // form from closing.
-            applyButton.PerformClick();
+            ApplyChanges();
+            settingsValid = true;
             if (settingsValid)
             {
                 e.Cancel = false;
@@ -83,10 +93,22 @@ namespace VideoTracker
             {
                 e.Cancel = true;
             }
+            return;
         }
 
         private void applyButton_Click(object sender, EventArgs e)
         {
+            ApplyChanges();
+        }
+
+        private void ApplyChanges()
+        {
+            if (!Int32.TryParse(columnsTextBox.Text, out videoTrackerData.columns))
+            {
+                videoTrackerData.columns = 1;
+            }
+            videoTrackerData.videoTrackerForm.ResizeMainPanel();
+
             videoTrackerData.awsPublicKey = publicKeyTextBox.Text;
             videoTrackerData.awsSecretKey = secretKeyTextBox.Text;
             videoTrackerData.awsAffiliateID = affiliateIdTextBox.Text;
@@ -98,5 +120,6 @@ namespace VideoTracker
             LinkLabel l = sender as LinkLabel;
             Process.Start(l.Text);
         }
+
     }
 }

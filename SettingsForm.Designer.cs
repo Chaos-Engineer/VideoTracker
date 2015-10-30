@@ -30,6 +30,8 @@
         {
             this.tabControl = new System.Windows.Forms.TabControl();
             this.generalSettings = new System.Windows.Forms.TabPage();
+            this.columnsTextBox = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.amazonSettings = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
@@ -67,6 +69,8 @@
             // 
             // generalSettings
             // 
+            this.generalSettings.Controls.Add(this.columnsTextBox);
+            this.generalSettings.Controls.Add(this.label7);
             this.generalSettings.Controls.Add(this.label1);
             this.generalSettings.Location = new System.Drawing.Point(79, 4);
             this.generalSettings.Name = "generalSettings";
@@ -76,12 +80,29 @@
             this.generalSettings.Text = "General";
             this.generalSettings.UseVisualStyleBackColor = true;
             // 
+            // columnsTextBox
+            // 
+            this.columnsTextBox.Location = new System.Drawing.Point(99, 27);
+            this.columnsTextBox.Name = "columnsTextBox";
+            this.columnsTextBox.Size = new System.Drawing.Size(31, 20);
+            this.columnsTextBox.TabIndex = 2;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 34);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(87, 13);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "Display Columns:";
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 7);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(6, 3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(78, 13);
+            this.label1.Size = new System.Drawing.Size(93, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Global Settings";
             // 
@@ -213,7 +234,7 @@
             // 
             // SettingsForm
             // 
-            this.AcceptButton = this.applyButton;
+            this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
@@ -252,5 +273,7 @@
         private System.Windows.Forms.TextBox publicKeyTextBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox secretKeyTextBox;
+        private System.Windows.Forms.TextBox columnsTextBox;
+        private System.Windows.Forms.Label label7;
     }
 }

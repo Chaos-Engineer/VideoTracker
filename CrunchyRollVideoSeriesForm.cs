@@ -56,9 +56,9 @@ namespace VideoTracker
             if (URL.Text.Equals("")) URL.Text = Title.Text.Replace(' ','-').ToLower();
             int index = URL.Text.LastIndexOf('/');
             if (index < 0) {
-                URL.Text = VideoTrackerData.CrunchyRollUrlPrefix + "/" + URL.Text.ToLower();
+                URL.Text = CrunchyRollVideoSeries.CrunchyRollUrlPrefix + "/" + URL.Text.ToLower();
             } else {
-                URL.Text = VideoTrackerData.CrunchyRollUrlPrefix + URL.Text.Substring(index).ToLower();
+                URL.Text = CrunchyRollVideoSeries.CrunchyRollUrlPrefix + URL.Text.Substring(index).ToLower();
             }
 
             // Create a new series object, or update an existing one.

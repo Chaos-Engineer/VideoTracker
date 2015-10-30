@@ -74,11 +74,15 @@
             this.seriesName.TabIndex = 0;
             this.seriesName.Text = "seriesName";
             // 
-            // bugFixLabel
+            // bugFixLabel - Windows FlowLayoutPanels have a bug that causes panels to display incorrectly
+            // if the first field is a label followed by a SetFlowBreak. Adding a zero-width label of the
+            // appropriate height fixes this somehow.
+            //
+            // See: https://social.msdn.microsoft.com/Forums/windows/en-US/02ef18fa-538e-4936-b964-e6af2cdee94f/flowlayoutpanel-flowbreak-bug-it-creates-unwanted-empty-space?forum=winforms
             // 
-            this.bugFixLabel.Location = new System.Drawing.Point(3, 23);
+            this.bugFixLabel.Location = new System.Drawing.Point(3, 18);
             this.bugFixLabel.Name = "bugFixLabel";
-            this.bugFixLabel.Size = new System.Drawing.Size(0, 23);
+            this.bugFixLabel.Size = new System.Drawing.Size(0, 18);
             this.bugFixLabel.TabIndex = 0;
             // 
             // videoSelector

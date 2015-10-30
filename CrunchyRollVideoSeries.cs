@@ -16,6 +16,8 @@ namespace VideoTracker
     public class CrunchyRollVideoSeries : VideoSeries
     {
         public string URL;
+        public const string CrunchyRollUrlPrefix = "http://www.crunchyroll.com";
+
 
         public CrunchyRollVideoSeries()
         {
@@ -78,7 +80,7 @@ namespace VideoTracker
             {
                 IDomElement atag = div.Cq().Find("a").FirstElement();
                 if (atag == null) { continue; }
-                string episodeUrl = VideoTrackerData.CrunchyRollUrlPrefix + atag.GetAttribute("href").ToString(); 
+                string episodeUrl = CrunchyRollUrlPrefix + atag.GetAttribute("href").ToString(); 
                 // URL is the user-entered URL for the series. At entry time, it was converted to 
                 // all-lowercase and so will match the beginning of the episode URL returned in div.
                 if (!episodeUrl.Contains(this.URL)) { continue; }  // Ignore "Viewers Also Liked" links.

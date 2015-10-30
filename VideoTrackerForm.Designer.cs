@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.mainPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.mainPanel = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,25 +39,22 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addAmazonVideoOnDemandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addCrunchyRollVideoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addCrunchyRollVideoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainPanel
             // 
-            this.mainPanel.AutoScroll = true;
             this.mainPanel.AutoSize = true;
             this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.mainPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.mainPanel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.mainPanel.Location = new System.Drawing.Point(0, 24);
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(341, 183);
             this.mainPanel.TabIndex = 0;
-            this.mainPanel.WrapContents = false;
             // 
             // menuStrip
             // 
@@ -146,6 +143,13 @@
             this.addAmazonVideoOnDemandToolStripMenuItem.Text = "Add Amazon Video On-Demand";
             this.addAmazonVideoOnDemandToolStripMenuItem.Click += new System.EventHandler(this.addAmazonVideoOnDemandToolStripMenuItem_Click);
             // 
+            // addCrunchyRollVideoToolStripMenuItem
+            // 
+            this.addCrunchyRollVideoToolStripMenuItem.Name = "addCrunchyRollVideoToolStripMenuItem";
+            this.addCrunchyRollVideoToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.addCrunchyRollVideoToolStripMenuItem.Text = "Add CrunchyRoll Video";
+            this.addCrunchyRollVideoToolStripMenuItem.Click += new System.EventHandler(this.addCrunchyRollVideoToolStripMenuItem_Click);
+            // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
@@ -159,19 +163,13 @@
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
-            // addCrunchyRollVideoToolStripMenuItem
-            // 
-            this.addCrunchyRollVideoToolStripMenuItem.Name = "addCrunchyRollVideoToolStripMenuItem";
-            this.addCrunchyRollVideoToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.addCrunchyRollVideoToolStripMenuItem.Text = "Add CrunchyRoll Video";
-            this.addCrunchyRollVideoToolStripMenuItem.Click += new System.EventHandler(this.addCrunchyRollVideoToolStripMenuItem_Click);
-            // 
             // VideoTrackerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(341, 207);
             this.Controls.Add(this.mainPanel);
@@ -188,7 +186,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.FlowLayoutPanel mainPanel;
+        private System.Windows.Forms.TableLayoutPanel mainPanel;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;

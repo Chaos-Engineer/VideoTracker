@@ -23,8 +23,6 @@ namespace VideoTracker
         private long configFileThreads; // Interlocked variables must be long
         private VideoTrackerData videoTrackerData;
 
-
-
         public VideoTrackerForm(string launchFile)
         {
             InitializeComponent();
@@ -58,11 +56,13 @@ namespace VideoTracker
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-            OpenFileDialog fd = new OpenFileDialog();
-            if (fd.ShowDialog() == DialogResult.OK)
+            using (OpenFileDialog fd = new OpenFileDialog())
             {
-                configFile = fd.FileName;
-                LoadData(configFile);
+                if (fd.ShowDialog() == DialogResult.OK)
+                {
+                    configFile = fd.FileName;
+                    LoadData(configFile);
+                }
             }
         }
 
@@ -73,11 +73,13 @@ namespace VideoTracker
 
         private void saveAsMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fd = new OpenFileDialog();
-            if (fd.ShowDialog() == DialogResult.OK)
+            using (OpenFileDialog fd = new OpenFileDialog())
             {
-                configFile = fd.FileName;
-                SaveData(configFile);
+                if (fd.ShowDialog() == DialogResult.OK)
+                {
+                    configFile = fd.FileName;
+                    SaveData(configFile);
+                }
             }
         }
 
@@ -107,28 +109,36 @@ namespace VideoTracker
         //
         private void addVideoFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FileVideoSeriesForm vsf = new FileVideoSeriesForm(videoTrackerData);
-            vsf.ShowDialog();
+            using (FileVideoSeriesForm vsf = new FileVideoSeriesForm(videoTrackerData))
+            {
+                vsf.ShowDialog();
+            }
         }
 
         private void addAmazonVideoOnDemandToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AmazonVideoSeriesForm vsf = new AmazonVideoSeriesForm(videoTrackerData);
-            vsf.ShowDialog();
+            using (AmazonVideoSeriesForm vsf = new AmazonVideoSeriesForm(videoTrackerData))
+            {
+                vsf.ShowDialog();
+            }
         }
 
 
         private void addCrunchyRollVideoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CrunchyRollVideoSeriesForm csf = new CrunchyRollVideoSeriesForm(videoTrackerData);
-            csf.ShowDialog();
+            using (CrunchyRollVideoSeriesForm csf = new CrunchyRollVideoSeriesForm(videoTrackerData))
+            {
+                csf.ShowDialog();
+            }
+
         }
 
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SettingsForm sf = new SettingsForm(videoTrackerData);
-            sf.ShowDialog();
+            using (SettingsForm sf = new SettingsForm(videoTrackerData)) {
+                sf.ShowDialog();
+            }
         }
 
 
@@ -144,7 +154,7 @@ namespace VideoTracker
 
             this.numPanels++;
             this.mainPanel.Controls.Add(panel);
-            this.AdjustWidth();
+            this.ResizeMainPanel();
             this.CheckAutoSave();
         }
 
@@ -155,7 +165,7 @@ namespace VideoTracker
             this.numPanels--;
             if (numPanels > 0)
             {
-                this.AdjustWidth();
+                this.ResizeMainPanel();
             }
             this.CheckAutoSave();
         }
@@ -180,8 +190,13 @@ namespace VideoTracker
             this.CheckAutoSave();
         }
 
-        public void AdjustWidth()
+        // Function: Update the size of the main window. This is called when we add or remove a
+        // program, or change the number of columns in the display.
+        public void ResizeMainPanel()
         {
+
+            // Find the maximum initial width of the VideoPlayerPanel controls, and set
+            // the width of each panel to that maximum.
             int max = 0;
             foreach (VideoPlayerPanel vp in mainPanel.Controls)
             {
@@ -194,13 +209,25 @@ namespace VideoTracker
             {
                 vp.SetWidth(max);
             }
-            AutoSize = true;
-            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+
+            // Adjust the number of columns if it has changed.
+            if (this.mainPanel.ColumnCount != this.videoTrackerData.columns)
+            {
+                this.mainPanel.ColumnCount = this.videoTrackerData.columns;
+                this.mainPanel.PerformLayout();
+            }
+            // Update the main window
+            this.PerformLayout();
         }
 
+        // Autosave the file if it's allowed:
+        // - No "Add Series" threads can currently be running.
+        // - Autosave must be enabled.
+        // - The configFileValid field must indicate that the configuration file loaded
+        //   without errors.
         public void CheckAutoSave()
         {
-            // Note: configFileTh
+            // Note: configFileThreads can be updated asynchronously.
             if (Interlocked.Read(ref configFileThreads) == 0 && videoTrackerData.autoSave && configFileValid)
             {
                 SaveData(configFile);
@@ -309,6 +336,10 @@ namespace VideoTracker
         // Global settings for different VideoSeries classes. We declare them here so that
         // they can be serialized in the configuration file.
         //
+
+        // General Globals
+        public int columns;
+
         // Globals for AmazonVideoSeries
         public string awsPublicKey;
         public string awsSecretKey;
@@ -319,9 +350,6 @@ namespace VideoTracker
 
         [XmlIgnore]
         public VideoTrackerForm videoTrackerForm;
-
-        [XmlIgnore]
-        public const string CrunchyRollUrlPrefix = "http://www.crunchyroll.com";
 
         public VideoTrackerData()
         {
