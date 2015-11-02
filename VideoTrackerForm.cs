@@ -340,6 +340,9 @@ namespace VideoTracker
         // General Globals
         public int columns;
 
+        // Globals for FileSeries
+        public List<string> defaultDirectoryList;
+
         // Globals for AmazonVideoSeries
         public string awsPublicKey;
         public string awsSecretKey;
@@ -363,6 +366,7 @@ namespace VideoTracker
             this.awsSecretKey = null;
             this.awsAffiliateID = null;
             this.videoTrackerForm = vtf;
+            this.defaultDirectoryList = new List<string>();
             this.videoSeriesList = new List<VideoSeries>();
         }
 

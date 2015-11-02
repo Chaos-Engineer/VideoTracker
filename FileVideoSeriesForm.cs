@@ -1,4 +1,13 @@
-﻿using System;
+﻿// FileVideoSeriesForm
+//
+// Fields:
+// - The name of the series [REQUIRED]
+// - The name of the file to start with [OPTIONAL, use first file if this is not specified.]
+// - The directories to search for files [OPTIONAL, if not specified then we'll try to populate this from the
+//       global list of default directories. If we're not able to find any matching files in the default directories,
+//       then this field must be specified.
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +25,8 @@ namespace VideoTracker
     {
         private FileVideoSeries fileVideoSeries;
         private VideoTrackerData videoTrackerData;
+        private string regexWildcard;
+        private string fileWildcard;
 
         public FileVideoSeriesForm(VideoTrackerData vtd)
         {
@@ -48,18 +59,8 @@ namespace VideoTracker
                 return;
             }
 
-            // Check input for validity
-            if (titleBox.Text.Equals("") || fileNameBox.Text.Equals("") || directoryListBox.Items.Count == 0)
+            if (!ValidateForm())
             {
-                MessageBox.Show("Title, Filename, and Directory List must be set");
-                e.Cancel = true;
-                return;
-            }
-
-            Regex whitespace = new Regex(@"\s+");
-            string wildcard = whitespace.Replace(titleBox.Text, ".*");
-            if (!Regex.Match(fileNameBox.Text, wildcard, RegexOptions.IgnoreCase).Success) {
-                MessageBox.Show("Title string must be contained in filename");
                 e.Cancel = true;
                 return;
             }
@@ -75,11 +76,46 @@ namespace VideoTracker
                 }
             }
 
+
             fileVideoSeries.Initialize(directoryListBox.Items.OfType<String>().ToList());
             fileVideoSeries.LoadFiles(titleBox.Text, fileNameBox.Text, videoTrackerData);
             e.Cancel = false;
         }
 
+        // All validation operations go here.
+        private bool ValidateForm()
+        {
+            if (titleBox.Text.Equals(""))
+            {
+                MessageBox.Show("Title must be set");
+                return (false);
+            }
+
+            Regex whitespace = new Regex(@"\s+");
+            regexWildcard = whitespace.Replace(titleBox.Text, ".*");
+            fileWildcard = "*" + whitespace.Replace(titleBox.Text, "*") + "*";
+            if (fileNameBox.Text != "" && !Regex.Match(fileNameBox.Text, regexWildcard, RegexOptions.IgnoreCase).Success)
+            {
+                MessageBox.Show("Title string must be contained in filename");
+                return (false);
+            }
+
+            if (directoryListBox.Items.Count == 0)
+            {
+                if (videoTrackerData.defaultDirectoryList.Count == 0)
+                {
+                    MessageBox.Show("Directory list (or default directory list) must be set.");
+                    return (false);
+                }
+                GetDirectoriesFromDefaultList(fileWildcard);
+                if (directoryListBox.Items.Count == 0)
+                {
+                    MessageBox.Show("No matching files found in default directory list.");
+                    return(false);
+                }
+            }
+            return (true);  
+        }
 
         private void Browse_MouseClick(object sender, MouseEventArgs e)
         {
@@ -102,6 +138,16 @@ namespace VideoTracker
         private void removeDirectoryButton_Click(object sender, EventArgs e)
         {
             directoryListBox.Items.RemoveAt(directoryListBox.SelectedIndex);
+        }
+
+
+        private void findDefaultDirButton_Click(object sender, EventArgs e)
+        {
+            if (!ValidateForm())
+            {
+                return;
+            }
+            GetDirectoriesFromDefaultList(fileWildcard);
         }
 
         private void fileNameBox_DragDrop(object sender, DragEventArgs e)
@@ -156,6 +202,26 @@ namespace VideoTracker
             if (!directoryListBox.Items.Contains(directory))
             {
                 directoryListBox.Items.Add(directory);
+            }
+        }
+
+        // Search through the default directories and subdirectories for matching files. Add
+        // each directory to the program-specific directory list.
+        private void GetDirectoriesFromDefaultList(string search)
+        {
+
+            List<string> l = directoryListBox.Items.Cast<string>().ToList();
+            foreach (String d in l)
+            {
+                if (!Directory.Exists(d))
+                {
+                    directoryListBox.Items.Remove(d);
+                }
+            }
+            foreach (String d in videoTrackerData.defaultDirectoryList) {
+                foreach (String f in Directory.GetFiles(d, search, SearchOption.AllDirectories )) {
+                    AddDirectoryToListBox(Path.GetDirectoryName(f));
+                }
             }
         }
     }

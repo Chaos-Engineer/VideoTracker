@@ -33,6 +33,12 @@
             this.columnsTextBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.fileSettings = new System.Windows.Forms.TabPage();
+            this.label9 = new System.Windows.Forms.Label();
+            this.removeDefaultDirectoryButton = new System.Windows.Forms.Button();
+            this.addDefaultDirectoryButton = new System.Windows.Forms.Button();
+            this.defaultDirectoryListBox = new System.Windows.Forms.ListBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.amazonSettings = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -46,8 +52,10 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.applyButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
+            this.openDefaultDirectoryDialog = new System.Windows.Forms.OpenFileDialog();
             this.tabControl.SuspendLayout();
             this.generalSettings.SuspendLayout();
+            this.fileSettings.SuspendLayout();
             this.amazonSettings.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,6 +63,7 @@
             // 
             this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.tabControl.Controls.Add(this.generalSettings);
+            this.tabControl.Controls.Add(this.fileSettings);
             this.tabControl.Controls.Add(this.amazonSettings);
             this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl.ItemSize = new System.Drawing.Size(25, 75);
@@ -105,6 +114,72 @@
             this.label1.Size = new System.Drawing.Size(93, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Global Settings";
+            // 
+            // fileSettings
+            // 
+            this.fileSettings.Controls.Add(this.label9);
+            this.fileSettings.Controls.Add(this.removeDefaultDirectoryButton);
+            this.fileSettings.Controls.Add(this.addDefaultDirectoryButton);
+            this.fileSettings.Controls.Add(this.defaultDirectoryListBox);
+            this.fileSettings.Controls.Add(this.label8);
+            this.fileSettings.Location = new System.Drawing.Point(79, 4);
+            this.fileSettings.Name = "fileSettings";
+            this.fileSettings.Size = new System.Drawing.Size(575, 145);
+            this.fileSettings.TabIndex = 2;
+            this.fileSettings.Text = "File Settings";
+            this.fileSettings.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(3, 105);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(479, 26);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "When a new series is added, these directory trees will be searched for matching f" +
+    "iles. The directories\r\nfound will be added to the directory list for that series" +
+    ".";
+            // 
+            // removeDefaultDirectoryButton
+            // 
+            this.removeDefaultDirectoryButton.Location = new System.Drawing.Point(472, 61);
+            this.removeDefaultDirectoryButton.Name = "removeDefaultDirectoryButton";
+            this.removeDefaultDirectoryButton.Size = new System.Drawing.Size(75, 23);
+            this.removeDefaultDirectoryButton.TabIndex = 4;
+            this.removeDefaultDirectoryButton.Text = "Remove";
+            this.removeDefaultDirectoryButton.UseVisualStyleBackColor = true;
+            this.removeDefaultDirectoryButton.Click += new System.EventHandler(this.removeDefaultDirectoryButton_Click);
+            // 
+            // addDefaultDirectoryButton
+            // 
+            this.addDefaultDirectoryButton.Location = new System.Drawing.Point(472, 31);
+            this.addDefaultDirectoryButton.Name = "addDefaultDirectoryButton";
+            this.addDefaultDirectoryButton.Size = new System.Drawing.Size(75, 23);
+            this.addDefaultDirectoryButton.TabIndex = 3;
+            this.addDefaultDirectoryButton.Text = "Add";
+            this.addDefaultDirectoryButton.UseVisualStyleBackColor = true;
+            this.addDefaultDirectoryButton.Click += new System.EventHandler(this.addDefaultDirectoryButton_Click);
+            // 
+            // defaultDirectoryListBox
+            // 
+            this.defaultDirectoryListBox.AllowDrop = true;
+            this.defaultDirectoryListBox.FormattingEnabled = true;
+            this.defaultDirectoryListBox.Location = new System.Drawing.Point(6, 20);
+            this.defaultDirectoryListBox.Name = "defaultDirectoryListBox";
+            this.defaultDirectoryListBox.Size = new System.Drawing.Size(459, 82);
+            this.defaultDirectoryListBox.TabIndex = 2;
+            this.defaultDirectoryListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.defaultDirectoryListBox_DragDrop);
+            this.defaultDirectoryListBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.defaultDirectoryListBox_DragEnter);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(3, 3);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(77, 13);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "File Settings";
             // 
             // amazonSettings
             // 
@@ -232,6 +307,14 @@
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
             // 
+            // openDefaultDirectoryDialog
+            // 
+            this.openDefaultDirectoryDialog.CheckFileExists = false;
+            this.openDefaultDirectoryDialog.CheckPathExists = false;
+            this.openDefaultDirectoryDialog.Filter = "Video files|*.avi;*.mp4;*.mkv|All files|*.*";
+            this.openDefaultDirectoryDialog.SupportMultiDottedExtensions = true;
+            this.openDefaultDirectoryDialog.Title = "Any file from additional directory";
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.okButton;
@@ -249,6 +332,8 @@
             this.tabControl.ResumeLayout(false);
             this.generalSettings.ResumeLayout(false);
             this.generalSettings.PerformLayout();
+            this.fileSettings.ResumeLayout(false);
+            this.fileSettings.PerformLayout();
             this.amazonSettings.ResumeLayout(false);
             this.amazonSettings.PerformLayout();
             this.ResumeLayout(false);
@@ -275,5 +360,12 @@
         private System.Windows.Forms.TextBox secretKeyTextBox;
         private System.Windows.Forms.TextBox columnsTextBox;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TabPage fileSettings;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button removeDefaultDirectoryButton;
+        private System.Windows.Forms.Button addDefaultDirectoryButton;
+        private System.Windows.Forms.ListBox defaultDirectoryListBox;
+        private System.Windows.Forms.OpenFileDialog openDefaultDirectoryDialog;
     }
 }

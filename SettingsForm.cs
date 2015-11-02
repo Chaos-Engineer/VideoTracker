@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.IO;
 
 namespace VideoTracker
 {
@@ -20,6 +21,8 @@ namespace VideoTracker
         {
             InitializeComponent();
             this.videoTrackerData = vtd;
+
+            // Global settings
             if (vtd.columns > 0)
             {
                 columnsTextBox.Text = vtd.columns.ToString();
@@ -29,6 +32,13 @@ namespace VideoTracker
                 columnsTextBox.Text = "1";
             }
 
+            // File series settings
+            if (vtd.defaultDirectoryList != null && vtd.defaultDirectoryList.Count > 0)
+            {
+                defaultDirectoryListBox.Items.AddRange(vtd.defaultDirectoryList.ToArray<string>());
+            }
+
+            // Amazon series settings
             if (vtd.awsPublicKey != null)
             {
                 publicKeyTextBox.Text = vtd.awsPublicKey;
@@ -103,12 +113,17 @@ namespace VideoTracker
 
         private void ApplyChanges()
         {
+            // Program-wide globals
             if (!Int32.TryParse(columnsTextBox.Text, out videoTrackerData.columns))
             {
                 videoTrackerData.columns = 1;
             }
             videoTrackerData.videoTrackerForm.ResizeMainPanel();
 
+            // File series globals
+            videoTrackerData.defaultDirectoryList = defaultDirectoryListBox.Items.OfType<string>().ToList();
+
+            // Amazon series globals
             videoTrackerData.awsPublicKey = publicKeyTextBox.Text;
             videoTrackerData.awsSecretKey = secretKeyTextBox.Text;
             videoTrackerData.awsAffiliateID = affiliateIdTextBox.Text;
@@ -120,6 +135,49 @@ namespace VideoTracker
             LinkLabel l = sender as LinkLabel;
             Process.Start(l.Text);
         }
+
+        private void defaultDirectoryListBox_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string file in files)
+            {
+                AddDirectoryToListBox(file);
+            }
+        }
+
+        private void defaultDirectoryListBox_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+
+
+        private void addDefaultDirectoryButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dd = openDefaultDirectoryDialog;
+            if (dd.ShowDialog() == DialogResult.OK)
+            {
+                AddDirectoryToListBox(Path.GetDirectoryName(dd.FileName));
+            }
+        }
+
+        private void removeDefaultDirectoryButton_Click(object sender, EventArgs e)
+        {
+            defaultDirectoryListBox.Items.RemoveAt(defaultDirectoryListBox.SelectedIndex);
+        }
+
+        private void AddDirectoryToListBox(string directory)
+        {
+            if (!Directory.Exists(directory))
+            {
+                MessageBox.Show(directory + " does not exist.");
+                return;
+            }
+            if (!defaultDirectoryListBox.Items.Contains(directory))
+            {
+                defaultDirectoryListBox.Items.Add(directory);
+            }
+        }
+
 
     }
 }

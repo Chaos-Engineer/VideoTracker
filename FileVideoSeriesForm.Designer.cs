@@ -41,6 +41,7 @@
             this.removeDirectoryButton = new System.Windows.Forms.Button();
             this.openDirectoryDialog = new System.Windows.Forms.OpenFileDialog();
             this.label3 = new System.Windows.Forms.Label();
+            this.findDefaultDirButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -55,7 +56,7 @@
             this.label1.Location = new System.Drawing.Point(4, 4);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(30, 13);
-            this.label1.TabStop = false;
+            this.label1.TabIndex = 10;
             this.label1.Text = "Title:";
             // 
             // titleBox
@@ -71,8 +72,18 @@
             this.label2.Location = new System.Drawing.Point(7, 34);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(63, 13);
-            this.label2.TabStop = false;
+            this.label2.TabIndex = 9;
             this.label2.Text = "Current File:";
+            // 
+            // Browse
+            // 
+            this.Browse.Location = new System.Drawing.Point(464, 25);
+            this.Browse.Name = "Browse";
+            this.Browse.Size = new System.Drawing.Size(125, 23);
+            this.Browse.TabIndex = 4;
+            this.Browse.Text = "Browse";
+            this.Browse.UseVisualStyleBackColor = true;
+            this.Browse.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Browse_MouseClick);
             // 
             // fileNameBox
             // 
@@ -83,65 +94,6 @@
             this.fileNameBox.TabIndex = 3;
             this.fileNameBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.fileNameBox_DragDrop);
             this.fileNameBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.fileNameBox_DragEnter);
-    
-            // 
-            // Browse
-            // 
-            this.Browse.Location = new System.Drawing.Point(464, 25);
-            this.Browse.Name = "Browse";
-            this.Browse.Size = new System.Drawing.Size(102, 23);
-            this.Browse.TabIndex = 4;
-            this.Browse.Text = "Browse";
-            this.Browse.UseVisualStyleBackColor = true;
-            this.Browse.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Browse_MouseClick);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 64);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(95, 13);
-            this.label3.TabStop = false;
-            this.label3.Text = "Search directories:";
-            // 
-            // directoryListBox
-            // 
-            this.directoryListBox.AllowDrop = true;
-            this.directoryListBox.FormattingEnabled = true;
-            this.directoryListBox.Location = new System.Drawing.Point(108, 64);
-            this.directoryListBox.Name = "directoryListBox";
-            this.directoryListBox.Size = new System.Drawing.Size(350, 56);
-            this.directoryListBox.TabStop = false;
-            this.directoryListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.directoryListBox_DragDrop);
-            this.directoryListBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.directoryListBox_DragEnter);
-            // 
-            // addDirButton
-            // 
-            this.addDirButton.Location = new System.Drawing.Point(464, 64);
-            this.addDirButton.Name = "addDirButton";
-            this.addDirButton.Size = new System.Drawing.Size(102, 23);
-            this.addDirButton.TabIndex = 5;
-            this.addDirButton.Text = "Add Directory";
-            this.addDirButton.UseVisualStyleBackColor = true;
-            this.addDirButton.Click += new System.EventHandler(this.addDirButton_Click);
-            // 
-            // removeDirectoryButton
-            // 
-            this.removeDirectoryButton.Location = new System.Drawing.Point(464, 93);
-            this.removeDirectoryButton.Name = "removeDirectoryButton";
-            this.removeDirectoryButton.Size = new System.Drawing.Size(102, 23);
-            this.removeDirectoryButton.TabIndex = 6;
-            this.removeDirectoryButton.Text = "Remove Directory";
-            this.removeDirectoryButton.UseVisualStyleBackColor = true;
-            this.removeDirectoryButton.Click += new System.EventHandler(this.removeDirectoryButton_Click);
-            // 
-            // openDirectoryDialog
-            // 
-            this.openDirectoryDialog.CheckFileExists = false;
-            this.openDirectoryDialog.CheckPathExists = false;
-            this.openDirectoryDialog.Filter = "Video files|*.avi;*.mp4;*.mkv|All files|*.*";
-            this.openDirectoryDialog.SupportMultiDottedExtensions = true;
-            this.openDirectoryDialog.Title = "Any file from additional directory";
             // 
             // OK
             // 
@@ -163,13 +115,73 @@
             this.Cancel.Text = "Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
             // 
-            // VideoSeriesForm
+            // directoryListBox
+            // 
+            this.directoryListBox.AllowDrop = true;
+            this.directoryListBox.FormattingEnabled = true;
+            this.directoryListBox.Location = new System.Drawing.Point(108, 64);
+            this.directoryListBox.Name = "directoryListBox";
+            this.directoryListBox.Size = new System.Drawing.Size(350, 56);
+            this.directoryListBox.TabIndex = 7;
+            this.directoryListBox.TabStop = false;
+            this.directoryListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.directoryListBox_DragDrop);
+            this.directoryListBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.directoryListBox_DragEnter);
+            // 
+            // addDirButton
+            // 
+            this.addDirButton.Location = new System.Drawing.Point(464, 64);
+            this.addDirButton.Name = "addDirButton";
+            this.addDirButton.Size = new System.Drawing.Size(125, 23);
+            this.addDirButton.TabIndex = 5;
+            this.addDirButton.Text = "Add Directory";
+            this.addDirButton.UseVisualStyleBackColor = true;
+            this.addDirButton.Click += new System.EventHandler(this.addDirButton_Click);
+            // 
+            // removeDirectoryButton
+            // 
+            this.removeDirectoryButton.Location = new System.Drawing.Point(464, 94);
+            this.removeDirectoryButton.Name = "removeDirectoryButton";
+            this.removeDirectoryButton.Size = new System.Drawing.Size(125, 23);
+            this.removeDirectoryButton.TabIndex = 6;
+            this.removeDirectoryButton.Text = "Remove Directory";
+            this.removeDirectoryButton.UseVisualStyleBackColor = true;
+            this.removeDirectoryButton.Click += new System.EventHandler(this.removeDirectoryButton_Click);
+            // 
+            // openDirectoryDialog
+            // 
+            this.openDirectoryDialog.CheckFileExists = false;
+            this.openDirectoryDialog.CheckPathExists = false;
+            this.openDirectoryDialog.Filter = "Video files|*.avi;*.mp4;*.mkv|All files|*.*";
+            this.openDirectoryDialog.SupportMultiDottedExtensions = true;
+            this.openDirectoryDialog.Title = "Any file from additional directory";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 64);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(95, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Search directories:";
+            // 
+            // findDefaultDirButton
+            // 
+            this.findDefaultDirButton.Location = new System.Drawing.Point(464, 123);
+            this.findDefaultDirButton.Name = "findDefaultDirButton";
+            this.findDefaultDirButton.Size = new System.Drawing.Size(125, 23);
+            this.findDefaultDirButton.TabIndex = 11;
+            this.findDefaultDirButton.Text = "Find in Default Dirs";
+            this.findDefaultDirButton.UseVisualStyleBackColor = true;
+            this.findDefaultDirButton.Click += new System.EventHandler(this.findDefaultDirButton_Click);
+            // 
+            // FileVideoSeriesForm
             // 
             this.AcceptButton = this.OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(586, 182);
+            this.ClientSize = new System.Drawing.Size(651, 175);
+            this.Controls.Add(this.findDefaultDirButton);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.removeDirectoryButton);
             this.Controls.Add(this.addDirButton);
@@ -204,6 +216,7 @@
         private System.Windows.Forms.Button removeDirectoryButton;
         private System.Windows.Forms.OpenFileDialog openDirectoryDialog;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button findDefaultDirButton;
 
     }
 }
