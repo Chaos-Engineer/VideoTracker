@@ -194,7 +194,8 @@
             this.Controls.Add(this.titleBox);
             this.Controls.Add(this.label1);
             this.Name = "FileVideoSeriesForm";
-            this.Text = "Select Video Series";
+            this.ShowInTaskbar = false;
+            this.Text = "Select Video Series Files";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FileVideoSeriesForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();

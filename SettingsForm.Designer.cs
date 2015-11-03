@@ -328,6 +328,8 @@
             this.Controls.Add(this.cancelButton);
             this.Location = new System.Drawing.Point(6, 6);
             this.Name = "SettingsForm";
+            this.ShowInTaskbar = false;
+            this.Text = "Settings Menu";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SettingsForm_FormClosing);
             this.tabControl.ResumeLayout(false);
             this.generalSettings.ResumeLayout(false);

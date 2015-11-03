@@ -102,6 +102,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "AmazonVideoSeriesForm";
+            this.ShowInTaskbar = false;
             this.Text = "Select Amazon Video On-Demand Series";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AmazonVideoSeriesForm_FormClosing);
             this.ResumeLayout(false);

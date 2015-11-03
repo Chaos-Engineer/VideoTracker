@@ -102,6 +102,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.URL);
             this.Name = "CrunchyRollVideoSeriesForm";
+            this.ShowInTaskbar = false;
             this.Text = "Select CrunchyRoll Video Series";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CrunchyRollVideoSeriesForm_FormClosing);
             this.ResumeLayout(false);

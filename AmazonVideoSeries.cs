@@ -58,7 +58,9 @@ namespace VideoTracker
 
         public override bool LoadGlobalSettings(VideoTrackerData vtd)
         {
-            if (vtd.awsPublicKey == null || vtd.awsSecretKey == null || vtd.awsAffiliateID == null)
+            if (String.IsNullOrWhiteSpace(vtd.awsPublicKey) ||
+                String.IsNullOrWhiteSpace(vtd.awsSecretKey) || 
+                String.IsNullOrWhiteSpace(vtd.awsAffiliateID))
             {
                 MessageBox.Show("Amazon Affiliate ID parameters must be set before loading " +
                     "Amazon On-Demand Video programs");
