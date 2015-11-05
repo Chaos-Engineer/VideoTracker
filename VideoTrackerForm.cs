@@ -133,6 +133,10 @@ namespace VideoTracker
 
         }
 
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadAllSeries();
+        }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -257,20 +261,34 @@ namespace VideoTracker
                 return;
             }
 
-            // File was successfully loaded; create panels and load videos. The
-            // load operation will complete asynchronously, so the asynchronous
-            // thread must call EnableFileOperations on completion.
+            // File was successfully loaded; create panels and load videos.
             mainPanel.Controls.Clear();
-            Interlocked.Add(ref configFileThreads, (long) videoTrackerData.videoSeriesList.Count);
             configFileValid = true;
+            LoadAllSeries();
+            configFile = file;
+        }
+
+        private void LoadAllSeries()
+        {
+            // Don't allow this routine to be called if a previous call is still in progress.
+            // The load operation will complete asynchronously, so the asynchronous
+            // thread must decrement configFileThreads and call EnableFileOperations 
+            // on completion.
+            if (Interlocked.Read(ref configFileThreads) != 0)
+            {
+                return;
+            }
+            Interlocked.Add(ref configFileThreads, (long)videoTrackerData.videoSeriesList.Count);
+
             foreach (VideoSeries vs in videoTrackerData.videoSeriesList)
             {
                 // Check for corrupted video in configuration file. This
                 // shouldn't happen unless there was a bug adding a series.
-                if (vs.title == "") { vs.title = "UNKNOWN";}
-                if (vs.currentVideo == null) {
+                if (vs.title == "") { vs.title = "UNKNOWN"; }
+                if (vs.currentVideo == null)
+                {
                     vs.currentVideo = new VideoFile();
-                    vs.currentVideo.key =  vs.currentVideo.title = "NO FILE FOUND";
+                    vs.currentVideo.key = vs.currentVideo.title = "NO FILE FOUND";
                     MessageBox.Show("Invalid data for title " + vs.title + ". " +
                         "\n\nAuto-save will not be performed until configuration is saved manually");
                     configFileValid = false;
@@ -278,7 +296,7 @@ namespace VideoTracker
                 vs.LoadGlobalSettings(videoTrackerData);
                 vs.LoadFiles(vs.title, vs.currentVideo.title, videoTrackerData);
             }
-            configFile = file;
+
         }
 
         private void SaveData(string file)
@@ -291,7 +309,6 @@ namespace VideoTracker
                     FileShare.Read))
                 {
                     serializer.Serialize(stream, videoTrackerData);
-                    stream.Close();
                 }
                 File.Copy(file + ".tmp", file, true);
             }
@@ -351,7 +368,7 @@ namespace VideoTracker
         public bool autoSave;
         public List<VideoSeries> videoSeriesList;
 
-        [XmlIgnore]
+        [XmlIgnore,NonSerialized]
         public VideoTrackerForm videoTrackerForm;
 
         public VideoTrackerData()

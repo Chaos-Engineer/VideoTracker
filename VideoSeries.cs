@@ -38,7 +38,7 @@ namespace VideoTracker
         public VideoFile currentVideo;
         // Not serialized - this list can be changed between invocations of the 
         // program and so must be built at run-time.
-        [XmlIgnore]
+        [XmlIgnore,NonSerialized]
         public SortedList<string, VideoFile> videoFiles;
         
 
@@ -50,13 +50,13 @@ namespace VideoTracker
         public abstract void PlayCurrent();
 
         // Not serialized - dynamic values and system data structures.
-        [XmlIgnore]
+        [XmlIgnore,NonSerialized]
         private VideoPlayerPanel panel;
-        [XmlIgnore]
+        [XmlIgnore,NonSerialized]
         private bool valid;
-        [XmlIgnore]
+        [XmlIgnore,NonSerialized]
         protected string errorString;
-        [XmlIgnore]
+        [XmlIgnore,NonSerialized]
         private BackgroundWorker backgroundWorker;
 
         static VideoSeries()
@@ -85,6 +85,7 @@ namespace VideoTracker
             return true;
         }
 
+
         public void LoadFiles(string title, string currentKey, VideoTrackerData videoTrackerData)
         {
             videoFiles.Clear();
@@ -92,14 +93,14 @@ namespace VideoTracker
             if (this.panel == null) { 
                 this.panel = new VideoPlayerPanel(videoTrackerData, this);
             }
-            panel.BeginFileLoad(this);
+            this.panel.BeginFileLoad(this);
             this.backgroundWorker.RunWorkerAsync(currentKey);
         }
 
         private void LoadDataCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
 
-            // If no files were found, then mark the series as invalid. If we've previously 
+            // If no files were found, then mark the series as invalid. If we've 
             // loaded the series successfully in the past, then the "currentVideo" field 
             // is still valid, so retain that value. Otherwise insert "dummyFile", to allow
             // a "NO FILES FOUND" message to display in the panel.

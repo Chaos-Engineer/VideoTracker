@@ -32,7 +32,7 @@ namespace AmazonProductAdvtApi
         private string endPoint;
         private string akid;
         private byte[] secret;
-        private HMAC signer;
+        //private HMAC signer;
 
         private const string REQUEST_URI = "/onca/xml";
         private const string REQUEST_METHOD = "GET";
@@ -54,7 +54,7 @@ namespace AmazonProductAdvtApi
             this.endPoint = destination.ToLower();
             this.akid = awsAccessKeyId;
             this.secret = Encoding.UTF8.GetBytes(awsSecretKey);
-            this.signer = new HMACSHA256(this.secret);
+            //this.signer = new HMACSHA256(this.secret);
         }
 
         /*
@@ -91,8 +91,13 @@ namespace AmazonProductAdvtApi
             byte[] toSign = Encoding.UTF8.GetBytes(stringToSign);
 
             // Compute the signature and convert to Base64.
-            byte[] sigBytes = signer.ComputeHash(toSign);
-            string signature = Convert.ToBase64String(sigBytes);
+            string signature;
+            using (HMAC signer = new HMACSHA256(this.secret))
+            {
+                byte[] sigBytes = signer.ComputeHash(toSign);
+                signature = Convert.ToBase64String(sigBytes);
+            }
+
             
             // now construct the complete URL and return to caller.
             StringBuilder qsBuilder = new StringBuilder();

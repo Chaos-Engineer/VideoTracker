@@ -40,7 +40,9 @@
             this.addProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addAmazonVideoOnDemandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addCrunchyRollVideoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -49,7 +51,7 @@
             // 
             this.mainPanel.AutoSize = true;
             this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainPanel.Location = new System.Drawing.Point(0, 24);
             this.mainPanel.Name = "mainPanel";
@@ -124,6 +126,8 @@
             this.addProgramToolStripMenuItem,
             this.addAmazonVideoOnDemandToolStripMenuItem,
             this.addCrunchyRollVideoToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.refreshToolStripMenuItem,
             this.settingsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -150,12 +154,25 @@
             this.addCrunchyRollVideoToolStripMenuItem.Text = "Add CrunchyRoll Video";
             this.addCrunchyRollVideoToolStripMenuItem.Click += new System.EventHandler(this.addCrunchyRollVideoToolStripMenuItem_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(220, 6);
+            // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.refreshToolStripMenuItem.Text = "Refresh";
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -200,6 +217,8 @@
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addAmazonVideoOnDemandToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addCrunchyRollVideoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
     }
 }
 

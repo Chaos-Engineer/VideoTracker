@@ -23,7 +23,11 @@ namespace VideoTracker
 
         public List<string> directoryList;
 
-        [XmlIgnore]
+        // addDelay is a debugging flag used to test threading. If set, then the 
+        // LoadSeriesAsynch call will have an additional delay added before
+        // completion, so we can watch how the display gets updated on the completion
+        // of each thread.
+        [XmlIgnore, NonSerialized]
         private static string addDelay = ConfigurationManager.AppSettings["AddDelay"];
 
 
