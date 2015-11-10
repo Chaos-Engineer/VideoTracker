@@ -52,7 +52,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.applyButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
-            this.openDefaultDirectoryDialog = new System.Windows.Forms.OpenFileDialog();
+            this.openDefaultDirectoryDialog = new Ookii.Dialogs.VistaFolderBrowserDialog();
             this.tabControl.SuspendLayout();
             this.generalSettings.SuspendLayout();
             this.fileSettings.SuspendLayout();
@@ -309,11 +309,7 @@
             // 
             // openDefaultDirectoryDialog
             // 
-            this.openDefaultDirectoryDialog.CheckFileExists = false;
-            this.openDefaultDirectoryDialog.CheckPathExists = false;
-            this.openDefaultDirectoryDialog.Filter = "Video files|*.avi;*.mp4;*.mkv|All files|*.*";
-            this.openDefaultDirectoryDialog.SupportMultiDottedExtensions = true;
-            this.openDefaultDirectoryDialog.Title = "Any file from additional directory";
+            this.openDefaultDirectoryDialog.Description = "Select default directory";
             // 
             // SettingsForm
             // 
@@ -368,6 +364,6 @@
         private System.Windows.Forms.Button removeDefaultDirectoryButton;
         private System.Windows.Forms.Button addDefaultDirectoryButton;
         private System.Windows.Forms.ListBox defaultDirectoryListBox;
-        private System.Windows.Forms.OpenFileDialog openDefaultDirectoryDialog;
+        private Ookii.Dialogs.VistaFolderBrowserDialog openDefaultDirectoryDialog;
     }
 }

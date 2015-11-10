@@ -1,4 +1,5 @@
-﻿namespace VideoTracker
+﻿using Ookii.Dialogs;
+namespace VideoTracker
 {
     partial class FileVideoSeriesForm 
     {
@@ -39,7 +40,7 @@
             this.directoryListBox = new System.Windows.Forms.ListBox();
             this.addDirButton = new System.Windows.Forms.Button();
             this.removeDirectoryButton = new System.Windows.Forms.Button();
-            this.openDirectoryDialog = new System.Windows.Forms.OpenFileDialog();
+            this.openDirectoryDialog = new VistaFolderBrowserDialog();
             this.label3 = new System.Windows.Forms.Label();
             this.findDefaultDirButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -149,11 +150,7 @@
             // 
             // openDirectoryDialog
             // 
-            this.openDirectoryDialog.CheckFileExists = false;
-            this.openDirectoryDialog.CheckPathExists = false;
-            this.openDirectoryDialog.Filter = "Video files|*.avi;*.mp4;*.mkv|All files|*.*";
-            this.openDirectoryDialog.SupportMultiDottedExtensions = true;
-            this.openDirectoryDialog.Title = "Any file from additional directory";
+            this.openDirectoryDialog.Description = "Select Program Directory";
             // 
             // label3
             // 
@@ -215,7 +212,7 @@
         private System.Windows.Forms.ListBox directoryListBox;
         private System.Windows.Forms.Button addDirButton;
         private System.Windows.Forms.Button removeDirectoryButton;
-        private System.Windows.Forms.OpenFileDialog openDirectoryDialog;
+        private Ookii.Dialogs.VistaFolderBrowserDialog openDirectoryDialog;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button findDefaultDirButton;
 

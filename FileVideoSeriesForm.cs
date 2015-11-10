@@ -7,6 +7,7 @@
 //       global list of default directories. If we're not able to find any matching files in the default directories,
 //       then this field must be specified.
 
+using Ookii.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -128,10 +129,10 @@ namespace VideoTracker
 
         private void addDirButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dd = openDirectoryDialog;
+            VistaFolderBrowserDialog dd = openDirectoryDialog;
             if (dd.ShowDialog() == DialogResult.OK)
             {
-                AddDirectoryToListBox(Path.GetDirectoryName(dd.FileName));
+                AddDirectoryToListBox(dd.SelectedPath);
             }
         }
 

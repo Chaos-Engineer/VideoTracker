@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
+using Ookii.Dialogs;
 
 namespace VideoTracker
 {
@@ -153,10 +154,10 @@ namespace VideoTracker
 
         private void addDefaultDirectoryButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dd = openDefaultDirectoryDialog;
+            VistaFolderBrowserDialog dd = openDefaultDirectoryDialog;
             if (dd.ShowDialog() == DialogResult.OK)
             {
-                AddDirectoryToListBox(Path.GetDirectoryName(dd.FileName));
+                AddDirectoryToListBox(dd.SelectedPath);
             }
         }
 
