@@ -108,7 +108,7 @@ namespace VideoTracker
             this.VisibleControls(true);
             this.UpdatePanel();
             this.videoTrackerForm.ResizeMainPanel();
-            this.videoTrackerForm.ThreadComplete();
+            this.videoTrackerForm.WorkerThreadComplete();
         }
 
         private void SetSelectorWidth(int width)

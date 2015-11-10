@@ -20,7 +20,7 @@ namespace VideoTracker
         private string configFile;
         private bool configFileValid = false;
         private int numPanels;
-        private long configFileThreads; // Interlocked variables must be long
+        private long workerThreads; // Interlocked variables must be long
         private VideoTrackerData videoTrackerData;
 
         public VideoTrackerForm(string launchFile)
@@ -231,8 +231,8 @@ namespace VideoTracker
         //   without errors.
         public void CheckAutoSave()
         {
-            // Note: configFileThreads can be updated asynchronously.
-            if (Interlocked.Read(ref configFileThreads) == 0 && videoTrackerData.autoSave && configFileValid)
+            // Note: workerThreads can be updated asynchronously.
+            if (Interlocked.Read(ref workerThreads) == 0 && videoTrackerData.autoSave && configFileValid)
             {
                 SaveData(configFile);
             }
@@ -272,13 +272,12 @@ namespace VideoTracker
         {
             // Don't allow this routine to be called if a previous call is still in progress.
             // The load operation will complete asynchronously, so the asynchronous
-            // thread must decrement configFileThreads and call EnableFileOperations 
+            // thread must decrement workerThreads and call EnableFileOperations 
             // on completion.
-            if (Interlocked.Read(ref configFileThreads) != 0)
+            if (Interlocked.Read(ref workerThreads) != 0)
             {
                 return;
             }
-            Interlocked.Add(ref configFileThreads, (long)videoTrackerData.videoSeriesList.Count);
 
             foreach (VideoSeries vs in videoTrackerData.videoSeriesList)
             {
@@ -320,9 +319,14 @@ namespace VideoTracker
             configFileValid = true;
         }
 
-        public void ThreadComplete()
+        public void RegisterWorkerThread()
         {
-            long threads = Interlocked.Decrement(ref this.configFileThreads);
+            Interlocked.Increment(ref this.workerThreads);
+        }
+
+        public void WorkerThreadComplete()
+        {
+            long threads = Interlocked.Decrement(ref this.workerThreads);
             if (threads == 0)
             {
                 EnableFileOperations(true);

@@ -93,14 +93,23 @@ namespace VideoTracker
 
         protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
         {
+            //
+            // An Amazon ASIN (product ID) is the letter "B", followed by two digits, followed 
+            // by seven alphanumeric characters. In a URL, it is always preceded by a "/" and 
+            // followed by either "/" or "?".
+            //
+            // Run the "keywords" argument through that regex. If it matches, then do a 
+            // search on that ASIN. Otherwise, do a keyword search on the argument and
+            // use the first result as the ASIN.
+            //
             string asin;
-            Regex r = new Regex(@"/B\d{2}.{7}/");
+            Regex r = new Regex(@"/(B\d{2}.{7})[/|\?]"); 
             MatchCollection m = r.Matches(this.keywords);
 
 
             if (m.Count > 0)
             {
-                asin = m[0].Value.Replace("/", "");
+                asin = m[0].Groups[1].ToString();
             }
             else
             {
@@ -213,8 +222,8 @@ namespace VideoTracker
             //PrettyPrint(doc);
 
             //
-            // If the Season ASIN has a Parent, then this is a multi season episode. Otherwise
-            // it's a single-season episode.
+            // If the Season ASIN has a Parent, then this is an episode of a multi-season program. Otherwise
+            // it's an episode of a single-season program.
             nsmgr = new XmlNamespaceManager(doc.NameTable);
             nsmgr.AddNamespace("ns", NAMESPACE);
             relationship = TagToString(doc, "Relationship");
@@ -402,8 +411,9 @@ namespace VideoTracker
 
         private static void PrettyPrint(XmlDocument doc)
         {
-            // Debugging routine - needs to be modified so that it doesn't
-            // write to the console.
+            // Debugging routine for the original command-line version of the program.
+            // Currently needs to be modified so that writes to a message box instead
+            // of the console.
             using (XmlTextWriter writer = new XmlTextWriter(Console.Out))
             {
                 writer.Formatting = Formatting.Indented;

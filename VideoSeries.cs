@@ -85,15 +85,16 @@ namespace VideoTracker
             return true;
         }
 
-
         public void LoadFiles(string title, string currentKey, VideoTrackerData videoTrackerData)
         {
+            videoTrackerData.videoTrackerForm.RegisterWorkerThread();
             videoFiles.Clear();
             this.title = title;
             if (this.panel == null) { 
                 this.panel = new VideoPlayerPanel(videoTrackerData, this);
             }
             this.panel.BeginFileLoad(this);
+
             this.backgroundWorker.RunWorkerAsync(currentKey);
         }
 
