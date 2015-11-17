@@ -141,11 +141,11 @@ namespace VideoTracker
     [Serializable]
     public class VideoFile
     {
-        public string title;
-        public string internalName;
-        public int postSeason;
-        public int season;
-        public int episode;
-        public string key;
+        public string title;            // Episode title to display
+        public string internalName;     // Internal reference to episode (e.g. filename or URL)
+        public int season;              // Season number
+        public int episode;             // Episode number
+        public int postSeason;          // Set to "1" if this is a post-season special
+        public string key;              // Unique value, used to sort episodes
     }
 }

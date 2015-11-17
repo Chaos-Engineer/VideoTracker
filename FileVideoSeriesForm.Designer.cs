@@ -1,5 +1,4 @@
-﻿using Ookii.Dialogs;
-namespace VideoTracker
+﻿namespace VideoTracker
 {
     partial class FileVideoSeriesForm 
     {
@@ -40,7 +39,7 @@ namespace VideoTracker
             this.directoryListBox = new System.Windows.Forms.ListBox();
             this.addDirButton = new System.Windows.Forms.Button();
             this.removeDirectoryButton = new System.Windows.Forms.Button();
-            this.openDirectoryDialog = new VistaFolderBrowserDialog();
+            this.openDirectoryDialog = new Ookii.Dialogs.VistaFolderBrowserDialog();
             this.label3 = new System.Windows.Forms.Label();
             this.findDefaultDirButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -99,7 +98,7 @@ namespace VideoTracker
             // OK
             // 
             this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OK.Location = new System.Drawing.Point(163, 147);
+            this.OK.Location = new System.Drawing.Point(188, 158);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 7;
@@ -109,7 +108,7 @@ namespace VideoTracker
             // Cancel
             // 
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(327, 147);
+            this.Cancel.Location = new System.Drawing.Point(355, 158);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 8;
@@ -122,7 +121,7 @@ namespace VideoTracker
             this.directoryListBox.FormattingEnabled = true;
             this.directoryListBox.Location = new System.Drawing.Point(108, 64);
             this.directoryListBox.Name = "directoryListBox";
-            this.directoryListBox.Size = new System.Drawing.Size(350, 56);
+            this.directoryListBox.Size = new System.Drawing.Size(350, 82);
             this.directoryListBox.TabIndex = 7;
             this.directoryListBox.TabStop = false;
             this.directoryListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.directoryListBox_DragDrop);
@@ -177,7 +176,7 @@ namespace VideoTracker
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(651, 175);
+            this.ClientSize = new System.Drawing.Size(611, 193);
             this.Controls.Add(this.findDefaultDirButton);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.removeDirectoryButton);
@@ -192,6 +191,7 @@ namespace VideoTracker
             this.Controls.Add(this.label1);
             this.Name = "FileVideoSeriesForm";
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Select Video Series Files";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FileVideoSeriesForm_FormClosing);
             this.ResumeLayout(false);

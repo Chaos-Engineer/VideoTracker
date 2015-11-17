@@ -98,9 +98,9 @@ namespace VideoTracker
             // by seven alphanumeric characters. In a URL, it is always preceded by a "/" and 
             // followed by either "/" or "?".
             //
-            // Run the "keywords" argument through that regex. If it matches, then do a 
-            // search on that ASIN. Otherwise, do a keyword search on the argument and
-            // use the first result as the ASIN.
+            // Run the "keywords" argument through that regex. If it matches, then use that  
+            // as the ASIN. Otherwise, do a keyword search on the argument and use the first 
+            // result as the ASIN.
             //
             string asin;
             Regex r = new Regex(@"/(B\d{2}.{7})[/|\?]"); 

@@ -40,6 +40,9 @@
             this.defaultDirectoryListBox = new System.Windows.Forms.ListBox();
             this.label8 = new System.Windows.Forms.Label();
             this.amazonSettings = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -183,6 +186,9 @@
             // 
             // amazonSettings
             // 
+            this.amazonSettings.Controls.Add(this.label12);
+            this.amazonSettings.Controls.Add(this.label11);
+            this.amazonSettings.Controls.Add(this.label10);
             this.amazonSettings.Controls.Add(this.label2);
             this.amazonSettings.Controls.Add(this.label3);
             this.amazonSettings.Controls.Add(this.linkLabel1);
@@ -199,6 +205,33 @@
             this.amazonSettings.TabIndex = 1;
             this.amazonSettings.Text = "Amazon";
             this.amazonSettings.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(373, 107);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(149, 13);
+            this.label12.TabIndex = 15;
+            this.label12.Text = "(40 Mixed-case Alphanumeric)";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(373, 81);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(146, 13);
+            this.label11.TabIndex = 14;
+            this.label11.Text = "(20 Uppercase alphanumeric)";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(373, 56);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(103, 13);
+            this.label10.TabIndex = 13;
+            this.label10.Text = "(####-####-####)";
             // 
             // label2
             // 
@@ -241,8 +274,9 @@
             // affiliateIdTextBox
             // 
             this.affiliateIdTextBox.Location = new System.Drawing.Point(75, 49);
+            this.affiliateIdTextBox.MaxLength = 14;
             this.affiliateIdTextBox.Name = "affiliateIdTextBox";
-            this.affiliateIdTextBox.Size = new System.Drawing.Size(100, 20);
+            this.affiliateIdTextBox.Size = new System.Drawing.Size(292, 20);
             this.affiliateIdTextBox.TabIndex = 10;
             // 
             // label5
@@ -257,6 +291,7 @@
             // publicKeyTextBox
             // 
             this.publicKeyTextBox.Location = new System.Drawing.Point(75, 78);
+            this.publicKeyTextBox.MaxLength = 20;
             this.publicKeyTextBox.Name = "publicKeyTextBox";
             this.publicKeyTextBox.Size = new System.Drawing.Size(292, 20);
             this.publicKeyTextBox.TabIndex = 11;
@@ -273,6 +308,7 @@
             // secretKeyTextBox
             // 
             this.secretKeyTextBox.Location = new System.Drawing.Point(75, 104);
+            this.secretKeyTextBox.MaxLength = 40;
             this.secretKeyTextBox.Name = "secretKeyTextBox";
             this.secretKeyTextBox.Size = new System.Drawing.Size(292, 20);
             this.secretKeyTextBox.TabIndex = 12;
@@ -365,5 +401,8 @@
         private System.Windows.Forms.Button addDefaultDirectoryButton;
         private System.Windows.Forms.ListBox defaultDirectoryListBox;
         private Ookii.Dialogs.VistaFolderBrowserDialog openDefaultDirectoryDialog;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
     }
 }

@@ -56,22 +56,22 @@
             // 
             // keywordBox
             // 
-            this.keywordBox.Location = new System.Drawing.Point(146, 30);
+            this.keywordBox.Location = new System.Drawing.Point(134, 30);
             this.keywordBox.Name = "keywordBox";
-            this.keywordBox.Size = new System.Drawing.Size(299, 20);
+            this.keywordBox.Size = new System.Drawing.Size(311, 20);
             this.keywordBox.TabIndex = 2;
             // 
             // titleBox
             // 
-            this.titleBox.Location = new System.Drawing.Point(146, 5);
+            this.titleBox.Location = new System.Drawing.Point(134, 5);
             this.titleBox.Name = "titleBox";
-            this.titleBox.Size = new System.Drawing.Size(299, 20);
+            this.titleBox.Size = new System.Drawing.Size(311, 20);
             this.titleBox.TabIndex = 1;
             // 
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(70, 59);
+            this.okButton.Location = new System.Drawing.Point(111, 59);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 3;
@@ -81,7 +81,7 @@
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(185, 59);
+            this.cancelButton.Location = new System.Drawing.Point(265, 59);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 4;
@@ -93,6 +93,8 @@
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(450, 94);
             this.Controls.Add(this.cancelButton);
@@ -103,6 +105,7 @@
             this.Controls.Add(this.label1);
             this.Name = "AmazonVideoSeriesForm";
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Select Amazon Video On-Demand Series";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AmazonVideoSeriesForm_FormClosing);
             this.ResumeLayout(false);

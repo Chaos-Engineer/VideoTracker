@@ -13,11 +13,11 @@
 5 - Declare a new Windows Form class (xxxVideoSeriesForm) to define the form used to enter the series 
     information.
 6 - Add a new option to the VideoTrackerForm menu to display that form class.
-7 - Write the (VideoTrackerData) and (VideoTrackerData, xxxVideoSeries) constructors for the Form Class. The
+7 - If there are any new global variables for this class, add them to the VideoTrackerData class.
+8 - Add an interface to set these new global variables to the SettingsForm class
+9 - Write the (VideoTrackerData) and (VideoTrackerData, xxxVideoSeries) constructors for the Form Class. The
     first one is used to add a new series. The second one is used to edit an existing series and presets the 
 	displayed fields to the current series values.
-8 - If there are any new global variables for this class, add them to the VideoTrackerData class.
-9 - Add an interface to set these new global variables to the SettingsForm class
 10 - Add the FormClosing event to the Form Class. This should call the multi-argument constructor, the 
     LoadGlobalSettings method if needed and the base LoadFiles method. (LoadFiles will set up a call to 
 	the class-specific LoadSeriesAsync method, which will do the actual file load.)
@@ -25,5 +25,8 @@
     LoadSeriesAsync should do the actual work of getting information about each video and adding it to the
 	videoFiles member.
 
+	NUGET PACKAGES:
+	- csquery: Used for HTML screen-scraping (CrunchyRollVideoSeries)
+	- ookii: Allows access to the Vista-style directory selector dialog, not otherwise available in .NET.
 
 Use "git push origin master" to publish updated package.

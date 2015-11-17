@@ -55,15 +55,11 @@ namespace VideoTracker
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-            using (OpenFileDialog fd = new OpenFileDialog())
-            {
-                if (fd.ShowDialog() == DialogResult.OK)
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    configFile = fd.FileName;
+                    configFile = openFileDialog.FileName;
                     LoadData(configFile);
                 }
-            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -73,13 +69,10 @@ namespace VideoTracker
 
         private void saveAsMenuItem_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog fd = new OpenFileDialog())
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (fd.ShowDialog() == DialogResult.OK)
-                {
-                    configFile = fd.FileName;
-                    SaveData(configFile);
-                }
+                configFile = saveFileDialog.FileName;
+                SaveData(configFile);
             }
         }
 

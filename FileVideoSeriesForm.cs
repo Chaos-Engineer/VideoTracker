@@ -7,7 +7,6 @@
 //       global list of default directories. If we're not able to find any matching files in the default directories,
 //       then this field must be specified.
 
-using Ookii.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +18,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ookii.Dialogs;
 
 namespace VideoTracker
 {

@@ -17,9 +17,18 @@ namespace VideoTracker
     public class FileVideoSeries : VideoSeries
     {
 
-        private bool allowUndelimitedEpisodes;  // Make this configurable
+        // If set, 3-digit episode numbers are allowed. Otherwise, they're interpreted 
+        // as a season/episode combination. For example, "Episode101.avi" is taken as
+        // Season 1, Episode 01.
+        private bool allowThreeDigitEpisodes;  // Make this configurable
+        // If set, the file name contains only an episode number, not a season number.
+        // The first digit string is interpreted as the episode number and any
+        // subsequent digit strings are ignored.
         private bool noSeasonNumber;            // Make this configurable
-        private List<string> postSeasonStrings; // Make this configurable
+        // If the file name contains one of the postSeasonStrings, then it is interpreted
+        // as a post-season special and appears after the regular episodes. (For example,
+        // EpisodeS01E02.avi comes before Episode-S01-Christmas-Special.avi.)
+        private List<string> postSeasonStrings; // Make this configurable.
 
         public List<string> directoryList;
 
@@ -33,7 +42,7 @@ namespace VideoTracker
 
         public FileVideoSeries()
         {
-            this.allowUndelimitedEpisodes = true; 
+            this.allowThreeDigitEpisodes = true; 
             this.noSeasonNumber = false;
             this.postSeasonStrings = new List<string>();
             this.postSeasonStrings.Add("SPECIAL");
@@ -64,8 +73,8 @@ namespace VideoTracker
                 Regex whitespace = new Regex(@"\s+");
                 string fileSearchString = whitespace.Replace(title, "*");
                 string regexSearchString = whitespace.Replace(Regex.Escape(title), ".*");
-                string seasonEpisodeRegex = regexSearchString + @"\D*?(\d+)\D+?(\d+)";
-                string EpisodeOnlyRegex = regexSearchString + @"\D*?(\d+)";
+                string seasonEpisodeRegex = regexSearchString + @"\D*?(\d+)\D+?(\d+)";  // Find first two digit strings
+                string EpisodeOnlyRegex = regexSearchString + @"\D*?(\d+)";             // Find first digit string only
                 string currentFile = e.Argument.ToString();
                 Dictionary<int, int> seasons = new Dictionary<int, int>();
                 bool seasonValid = true;
@@ -152,7 +161,7 @@ namespace VideoTracker
                         // If the first number is 3 or more digits, then this usually indicates
                         // that it contains both the season and episode numbers, e.g. 101 is
                         // Season 1, Episode 1, not season 101.
-                        if (allowUndelimitedEpisodes)
+                        if (allowThreeDigitEpisodes)
                         {
                             if (v.season > 100)
                             {
@@ -175,10 +184,11 @@ namespace VideoTracker
                         v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.postSeason, v.episode, v.title);
 
                         videoFiles.Add(v.key, v);
-                        // Note that we use the internal file name rather than the key.
-                        // If this is a new video series, then the user entered a filename
-                        // on the form. The key name is unknown at that time because the
-                        // keys cannot be generated until all files are loaded.
+                        // Note that we identify the current video using the internal file 
+                        // name rather than the key. If this is a new video series, then the 
+                        // user entered a filename on the form. The key name is unknown at
+                        // that time, because it can't be calculated until this routine has
+                        // been executed.
                         if (v.internalName == currentFile)
                         {
                             this.currentVideo = v;
