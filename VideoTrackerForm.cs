@@ -191,7 +191,7 @@ namespace VideoTracker
         // program, or change the number of columns in the display.
         public void ResizeMainPanel()
         {
-
+            this.SuspendLayout();
             // Find the maximum initial width of the VideoPlayerPanel controls, and set
             // the width of each panel to that maximum.
             int max = 0;
@@ -211,9 +211,9 @@ namespace VideoTracker
             if (this.mainPanel.ColumnCount != this.videoTrackerData.columns)
             {
                 this.mainPanel.ColumnCount = this.videoTrackerData.columns;
-                this.mainPanel.PerformLayout();
             }
             // Update the main window
+            this.ResumeLayout(true);
             this.PerformLayout();
         }
 

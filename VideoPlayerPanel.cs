@@ -23,18 +23,13 @@ namespace VideoTracker
         public VideoPlayerPanel(VideoTrackerData vtd, VideoSeries vs)
         {
             InitializeComponent();
-            this.updateInProgress = false;
+            this.updateInProgress = false;  // Set when a call to UpdatePanel is in progress
 
             this.videoSeries = vs;
-
             this.videoTrackerForm = vtd.videoTrackerForm;
             this.videoTrackerData = vtd;
 
-            this.seriesName.Text = "Loading " + vs.title;
-            this.VisibleControls(false);
-            this.PerformLayout();
-            this.initialWidth = this.Width;
-
+            BeginFileLoad(vs);
             this.videoTrackerForm.AddTitle(this, vs);
         }
 
@@ -85,6 +80,36 @@ namespace VideoTracker
             videoSeries.EditForm(videoTrackerData);
         }
 
+        // Panel drag-and-drop code:
+        // - MouseDown event - Start a drop-and-drop sequence, with the input argument
+        //   set to the index of the panel being moved.
+        // - DragEnter event - Validate that we're dragging in a valid value
+        // - DragDrop event - Get the index of the panel being dragged into and call the
+        //   main form's MoveTitle method.
+        private void flowLayoutPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            int index = videoTrackerData.videoSeriesList.IndexOf(this.videoSeries);
+            DoDragDrop(index, DragDropEffects.Move);
+        }
+
+        private void flowLayoutPanel_DragEnter(object sender, DragEventArgs e)
+        {
+            if (((e.AllowedEffect & DragDropEffects.Move) != 0)
+                    && e.Data.GetDataPresent(typeof(int)))
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+        }
+
+        private void flowLayoutPanel_DragDrop(object sender, DragEventArgs e)
+        {
+            int source = (int)e.Data.GetData(typeof(int));
+            int dest = videoTrackerData.videoSeriesList.IndexOf(this.videoSeries);
+            videoTrackerForm.MoveTitle(source, dest);
+        }
+
+
+
         public void BeginFileLoad(VideoSeries vs)
         {
             this.seriesName.Text = "Loading " + vs.title;
@@ -107,6 +132,17 @@ namespace VideoTracker
             this.SetSelectorWidth(maxWidth);
             this.VisibleControls(true);
             this.UpdatePanel();
+
+            // Allow the panel to autosize itself and save the resulting width. Afterwards, 
+            // turn autosizing off again. The main application window will set all panels
+            // to match the width of the largest one.
+            this.flowLayoutPanel.AutoSize = true;
+            this.ResumeLayout(false);
+            this.PerformLayout();
+            this.initialWidth = flowLayoutPanel.Width;
+            this.flowLayoutPanel.AutoSize = false;
+
+            // Update the sizes of the panels in the main application window.
             this.videoTrackerForm.ResizeMainPanel();
             this.videoTrackerForm.WorkerThreadComplete();
         }
@@ -189,11 +225,6 @@ namespace VideoTracker
                 }
             }
 
-            flowLayoutPanel.AutoSize = true;
-            ResumeLayout(false);
-            PerformLayout();
-            initialWidth = flowLayoutPanel.Width;
-            flowLayoutPanel.AutoSize = false;
             videoTrackerForm.CheckAutoSave();
             updateInProgress = false;
         }
@@ -217,32 +248,6 @@ namespace VideoTracker
             this.playNextButton.Visible = flag;
         }
 
-        // Panel drag-and-drop code:
-        // - MouseDown event - Start a drop-and-drop sequence, with the input argument
-        //   set to the index of the panel being moved.
-        // - DragEnter event - Validate that we're dragging in a valid value
-        // - DragDrop event - Get the index of the panel being dragged into and call the
-        //   main form's MoveTitle method.
-        private void flowLayoutPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            int index = videoTrackerData.videoSeriesList.IndexOf(this.videoSeries);
-            DoDragDrop(index, DragDropEffects.Move);
-        }
-
-        private void flowLayoutPanel_DragEnter(object sender, DragEventArgs e)
-        {
-            if (((e.AllowedEffect & DragDropEffects.Move) != 0)
-                    && e.Data.GetDataPresent(typeof(int))) {
-                       e.Effect = DragDropEffects.Move;
-            }
-        }
-
-        private void flowLayoutPanel_DragDrop(object sender, DragEventArgs e)
-        {
-            int source = (int) e.Data.GetData(typeof(int));
-            int dest = videoTrackerData.videoSeriesList.IndexOf(this.videoSeries);
-            videoTrackerForm.MoveTitle(source, dest);
-        }
 
     }
 }
