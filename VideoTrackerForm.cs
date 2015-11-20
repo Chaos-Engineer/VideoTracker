@@ -23,6 +23,12 @@ namespace VideoTracker
         private long workerThreads; // Interlocked variables must be long
         private VideoTrackerData videoTrackerData;
 
+        private int currentHeight;      // Saved height of main window (used when resizing)
+        private int currentWidth;       // Saved width of main window (used when resizing)
+        private int panelWidth;         // Width of individual panel controls, excluding margin (used to change width)
+        private int actualPanelWidth;   // Width of individual panel controls, including margin
+        private int actualPanelHeight;  // Height of individual panel controls, including margin
+
         public VideoTrackerForm(string launchFile)
         {
             InitializeComponent();
@@ -65,6 +71,15 @@ namespace VideoTracker
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        // Program is exiting - save current state before exiting.
+        private void VideoTrackerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing || e.CloseReason == CloseReason.ApplicationExitCall)
+            {
+                CheckAutoSave();
+            }
         }
 
         private void saveAsMenuItem_Click(object sender, EventArgs e)
@@ -138,12 +153,41 @@ namespace VideoTracker
             }
         }
 
+        // If the resize movement was mostly left-to-right, then assume that the number of
+        // columns should change, and if the resize movement was mostly up-and-down, then
+        // assume that the number of rows should change.
+        //
+        // Based on that information, calculate the number of columns desired and resize the
+        // display.
+        private void VideoTrackerForm_ResizeEnd(object sender, EventArgs e)
+        {
+            int columns;
+            int dWidth = Math.Abs(this.Width - this.currentWidth);
+            int dHeight = Math.Abs(this.Height - this.currentHeight);
+
+            if (dWidth >= dHeight)  
+            {
+                // Change number of columns
+                columns = (int) Math.Round((float)this.mainPanel.ClientSize.Width / (float)this.actualPanelWidth);
+                if (columns == 0) columns = 1;
+            }
+            else 
+            {
+                // Change number of rows (and calculate corresponding number of rows.)
+                int rows = (int)Math.Round((float)this.mainPanel.ClientSize.Height / (float)this.actualPanelHeight);
+                if (rows == 0) rows = 1;
+                columns = ((this.numPanels -1) / rows) + 1;
+            }
+
+            this.videoTrackerData.columns = columns;
+            ResizeMainPanel();
+        }
 
         public void AddTitle(VideoPlayerPanel panel, VideoSeries vs)
         {
             // AddTitle can be called from "Add new program" or from "File Load". If it's
-            // called from "File Load", then it's already in videoSeriesList and doesn't
-            // need to be added again.
+            // called from "File Load", then the program is already in videoSeriesList and 
+            // doesn't need to be added again.
             if (!this.videoTrackerData.videoSeriesList.Contains(vs))
             {
                 this.videoTrackerData.videoSeriesList.Add(vs);
@@ -194,17 +238,21 @@ namespace VideoTracker
             this.SuspendLayout();
             // Find the maximum initial width of the VideoPlayerPanel controls, and set
             // the width of each panel to that maximum.
-            int max = 0;
+            this.panelWidth = 0;
+            this.actualPanelWidth = 0;
+            this.actualPanelHeight = 0;
             foreach (VideoPlayerPanel vp in mainPanel.Controls)
             {
-                if (vp.initialWidth > max)
+                if (vp.initialWidth > this.panelWidth)
                 {
-                    max = vp.initialWidth;
+                    this.panelWidth = vp.initialWidth;
+                    this.actualPanelWidth = vp.Margin.Left +  vp.initialWidth  + vp.Margin.Right;
+                    this.actualPanelHeight = vp.Margin.Top  + vp.DisplayRectangle.Height + vp.Margin.Bottom;
                 }
             }
             foreach (VideoPlayerPanel vp in mainPanel.Controls)
             {
-                vp.SetWidth(max);
+                vp.SetWidth(this.panelWidth);
             }
 
             // Adjust the number of columns if it has changed.
@@ -212,8 +260,26 @@ namespace VideoTracker
             {
                 this.mainPanel.ColumnCount = this.videoTrackerData.columns;
             }
-            // Update the main window
-            this.ResumeLayout(true);
+            // Update the main window with auto-sizing enabled.
+            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            this.AutoSize = true;
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+            // Get the dimensions of the auto-sized window, set the fixed dimensions
+            // to those values, and then disable auto-sizing.
+            //
+            // Note: In order for the user to be able to change the size of the window,
+            // AutoSizeMode must be sent to GrowOnly. (This is a bug in Windows; the
+            // AutoSizeMode property should be ignored when AutoSize is set to false.)
+            this.SuspendLayout();
+            this.currentHeight = this.Height;
+            this.currentWidth = this.Width;
+            this.AutoSize = false;
+            this.AutoSizeMode = AutoSizeMode.GrowOnly;
+            this.Height = this.currentHeight;
+            this.Width = this.currentWidth;
+            this.ResumeLayout(false);
             this.PerformLayout();
         }
 
@@ -331,15 +397,6 @@ namespace VideoTracker
             loadToolStripMenuItem.Enabled = flag;
             saveAsMenuItem.Enabled = flag;
             autoSaveToolStripMenuItem.Enabled = flag;
-        }
-
-        // Program is exiting.
-        private void VideoTrackerForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing || e.CloseReason == CloseReason.ApplicationExitCall)
-            {
-                CheckAutoSave();
-            }
         }
     }
 
