@@ -28,25 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.mainPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addAmazonVideoOnDemandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addCrunchyRollVideoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
+            this.fileMenuItem = new System.Windows.Forms.MenuItem();
+            this.loadMenuItem = new System.Windows.Forms.MenuItem();
+            this.saveMenuItem = new System.Windows.Forms.MenuItem();
+            this.saveAsMenuItem = new System.Windows.Forms.MenuItem();
+            this.autoSaveMenuItem = new System.Windows.Forms.MenuItem();
+            this.exitMenuItem = new System.Windows.Forms.MenuItem();
+            this.editMenuItem = new System.Windows.Forms.MenuItem();
+            this.addProgramMenuItem = new System.Windows.Forms.MenuItem();
+            this.addAmazonVideoOnDemandMenuItem = new System.Windows.Forms.MenuItem();
+            this.addCrunchyRollVideoMenuItem = new System.Windows.Forms.MenuItem();
+            this.refreshMenuItem = new System.Windows.Forms.MenuItem();
+            this.settingsMenuItem = new System.Windows.Forms.MenuItem();
+            this.helpMenuItem = new System.Windows.Forms.MenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainPanel
@@ -55,132 +55,111 @@
             this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainPanel.Location = new System.Drawing.Point(0, 24);
+            this.mainPanel.Location = new System.Drawing.Point(0, 0);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(341, 183);
+            this.mainPanel.Size = new System.Drawing.Size(341, 207);
             this.mainPanel.TabIndex = 0;
             // 
-            // menuStrip
+            // mainMenu
             // 
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.editToolStripMenuItem,
-            this.helpToolStripMenuItem});
-            this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(341, 24);
-            this.menuStrip.TabIndex = 1;
-            this.menuStrip.Text = "menuStrip";
+            this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.fileMenuItem,
+            this.editMenuItem,
+            this.helpMenuItem});
             // 
-            // fileToolStripMenuItem
+            // fileMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadToolStripMenuItem,
-            this.saveToolStripMenuItem,
+            this.fileMenuItem.Index = 0;
+            this.fileMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.loadMenuItem,
+            this.saveMenuItem,
             this.saveAsMenuItem,
-            this.autoSaveToolStripMenuItem,
-            this.exitToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.autoSaveMenuItem,
+            this.exitMenuItem});
+            this.fileMenuItem.Text = "File";
             // 
-            // loadToolStripMenuItem
+            // loadMenuItem
             // 
-            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.loadToolStripMenuItem.Text = "Load";
-            this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
+            this.loadMenuItem.Index = 0;
+            this.loadMenuItem.Text = "Load";
+            this.loadMenuItem.Click += new System.EventHandler(this.loadMenuItem_Click);
             // 
-            // saveToolStripMenuItem
+            // saveMenuItem
             // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            this.saveMenuItem.Index = 1;
+            this.saveMenuItem.Text = "Save";
+            this.saveMenuItem.Click += new System.EventHandler(this.saveMenuItem_Click);
             // 
             // saveAsMenuItem
             // 
-            this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.saveAsMenuItem.Index = 2;
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.saveAsMenuItem_Click);
             // 
-            // autoSaveToolStripMenuItem
+            // autoSaveMenuItem
             // 
-            this.autoSaveToolStripMenuItem.Checked = true;
-            this.autoSaveToolStripMenuItem.CheckOnClick = true;
-            this.autoSaveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.autoSaveToolStripMenuItem.Name = "autoSaveToolStripMenuItem";
-            this.autoSaveToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.autoSaveToolStripMenuItem.Text = "Auto Save";
-            this.autoSaveToolStripMenuItem.Click += new System.EventHandler(this.autoSaveToolStripMenuItem_Click);
+            this.autoSaveMenuItem.Checked = true;
+            this.autoSaveMenuItem.Index = 3;
+            this.autoSaveMenuItem.Text = "Auto Save";
+            this.autoSaveMenuItem.Click += new System.EventHandler(this.autoSaveMenuItem_Click);
             // 
-            // exitToolStripMenuItem
+            // exitMenuItem
             // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.exitMenuItem.Index = 4;
+            this.exitMenuItem.Text = "Exit";
+            this.exitMenuItem.Click += new System.EventHandler(this.exitMenuItem_Click);
             // 
-            // editToolStripMenuItem
+            // editMenuItem
             // 
-            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addProgramToolStripMenuItem,
-            this.addAmazonVideoOnDemandToolStripMenuItem,
-            this.addCrunchyRollVideoToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.refreshToolStripMenuItem,
-            this.settingsToolStripMenuItem});
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.editToolStripMenuItem.Text = "Edit";
+            this.editMenuItem.Index = 1;
+            this.editMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.addProgramMenuItem,
+            this.addAmazonVideoOnDemandMenuItem,
+            this.addCrunchyRollVideoMenuItem,
+            this.refreshMenuItem,
+            this.settingsMenuItem});
+            this.editMenuItem.Text = "Edit";
             // 
-            // addProgramToolStripMenuItem
+            // addProgramMenuItem
             // 
-            this.addProgramToolStripMenuItem.Name = "addProgramToolStripMenuItem";
-            this.addProgramToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.addProgramToolStripMenuItem.Text = "Add Video Files";
-            this.addProgramToolStripMenuItem.Click += new System.EventHandler(this.addVideoFileToolStripMenuItem_Click);
+            this.addProgramMenuItem.Index = 0;
+            this.addProgramMenuItem.Text = "Add Video Files";
+            this.addProgramMenuItem.Click += new System.EventHandler(this.addVideoFileMenuItem_Click);
             // 
-            // addAmazonVideoOnDemandToolStripMenuItem
+            // addAmazonVideoOnDemandMenuItem
             // 
-            this.addAmazonVideoOnDemandToolStripMenuItem.Name = "addAmazonVideoOnDemandToolStripMenuItem";
-            this.addAmazonVideoOnDemandToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.addAmazonVideoOnDemandToolStripMenuItem.Text = "Add Amazon Video On-Demand";
-            this.addAmazonVideoOnDemandToolStripMenuItem.Click += new System.EventHandler(this.addAmazonVideoOnDemandToolStripMenuItem_Click);
+            this.addAmazonVideoOnDemandMenuItem.Index = 1;
+            this.addAmazonVideoOnDemandMenuItem.Text = "Add Amazon Video On-Demand";
+            this.addAmazonVideoOnDemandMenuItem.Click += new System.EventHandler(this.addAmazonVideoOnDemandMenuItem_Click);
             // 
-            // addCrunchyRollVideoToolStripMenuItem
+            // addCrunchyRollVideoMenuItem
             // 
-            this.addCrunchyRollVideoToolStripMenuItem.Name = "addCrunchyRollVideoToolStripMenuItem";
-            this.addCrunchyRollVideoToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.addCrunchyRollVideoToolStripMenuItem.Text = "Add CrunchyRoll Video";
-            this.addCrunchyRollVideoToolStripMenuItem.Click += new System.EventHandler(this.addCrunchyRollVideoToolStripMenuItem_Click);
+            this.addCrunchyRollVideoMenuItem.Index = 2;
+            this.addCrunchyRollVideoMenuItem.Text = "Add CrunchyRoll Video";
+            this.addCrunchyRollVideoMenuItem.Click += new System.EventHandler(this.addCrunchyRollVideoMenuItem_Click);
+            // 
+            // refreshMenuItem
+            // 
+            this.refreshMenuItem.Index = 3;
+            this.refreshMenuItem.Shortcut = System.Windows.Forms.Shortcut.F5;
+            this.refreshMenuItem.Text = "Refresh";
+            this.refreshMenuItem.Click += new System.EventHandler(this.refreshMenuItem_Click);
+            // 
+            // settingsMenuItem
+            // 
+            this.settingsMenuItem.Index = 4;
+            this.settingsMenuItem.Text = "Settings";
+            this.settingsMenuItem.Click += new System.EventHandler(this.settingsMenuItem_Click);
+            // 
+            // helpMenuItem
+            // 
+            this.helpMenuItem.Index = 2;
+            this.helpMenuItem.Text = "Help";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(220, 6);
-            // 
-            // refreshToolStripMenuItem
-            // 
-            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.refreshToolStripMenuItem.Text = "Refresh";
-            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.settingsToolStripMenuItem.Text = "Settings";
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
-            this.helpToolStripMenuItem.Text = "Help";
             // 
             // openFileDialog
             // 
@@ -203,14 +182,11 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(341, 207);
             this.Controls.Add(this.mainPanel);
-            this.Controls.Add(this.menuStrip);
-            this.MainMenuStrip = this.menuStrip;
+            this.Menu = this.mainMenu;
             this.Name = "VideoTrackerForm";
             this.Text = "VideoTracker";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VideoTrackerForm_FormClosing);
             this.ResizeEnd += new System.EventHandler(this.VideoTrackerForm_ResizeEnd);
-            this.menuStrip.ResumeLayout(false);
-            this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -218,21 +194,21 @@
 
         #endregion
         private System.Windows.Forms.TableLayoutPanel mainPanel;
-        private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem autoSaveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addProgramToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveAsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addAmazonVideoOnDemandToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addCrunchyRollVideoToolStripMenuItem;
+        private System.Windows.Forms.MainMenu mainMenu;
+        private System.Windows.Forms.MenuItem fileMenuItem;
+        private System.Windows.Forms.MenuItem editMenuItem;
+        private System.Windows.Forms.MenuItem helpMenuItem;
+        private System.Windows.Forms.MenuItem loadMenuItem;
+        private System.Windows.Forms.MenuItem autoSaveMenuItem;
+        private System.Windows.Forms.MenuItem addProgramMenuItem;
+        private System.Windows.Forms.MenuItem exitMenuItem;
+        private System.Windows.Forms.MenuItem settingsMenuItem;
+        private System.Windows.Forms.MenuItem saveAsMenuItem;
+        private System.Windows.Forms.MenuItem saveMenuItem;
+        private System.Windows.Forms.MenuItem addAmazonVideoOnDemandMenuItem;
+        private System.Windows.Forms.MenuItem addCrunchyRollVideoMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
+        private System.Windows.Forms.MenuItem refreshMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }

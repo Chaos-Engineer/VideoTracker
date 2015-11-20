@@ -59,7 +59,7 @@ namespace VideoTracker
             }
         }
 
-        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        private void loadMenuItem_Click(object sender, EventArgs e)
         {
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -68,7 +68,7 @@ namespace VideoTracker
                 }
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void exitMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
@@ -91,16 +91,16 @@ namespace VideoTracker
             }
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveMenuItem_Click(object sender, EventArgs e)
         {
 
             SaveData(configFile);
         }
 
-        private void autoSaveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void autoSaveMenuItem_Click(object sender, EventArgs e)
         {
             videoTrackerData.autoSave = !videoTrackerData.autoSave;
-            autoSaveToolStripMenuItem.Checked = videoTrackerData.autoSave;
+            autoSaveMenuItem.Checked = videoTrackerData.autoSave;
             if (videoTrackerData.autoSave)
             {
                 MessageBox.Show("Autosave enabled");
@@ -115,7 +115,7 @@ namespace VideoTracker
         // Open up a New Series dialog. Do not check status here; the operation
         // completes asynchronously.
         //
-        private void addVideoFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addVideoFileMenuItem_Click(object sender, EventArgs e)
         {
             using (FileVideoSeriesForm vsf = new FileVideoSeriesForm(videoTrackerData))
             {
@@ -123,7 +123,7 @@ namespace VideoTracker
             }
         }
 
-        private void addAmazonVideoOnDemandToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addAmazonVideoOnDemandMenuItem_Click(object sender, EventArgs e)
         {
             using (AmazonVideoSeriesForm vsf = new AmazonVideoSeriesForm(videoTrackerData))
             {
@@ -132,7 +132,7 @@ namespace VideoTracker
         }
 
 
-        private void addCrunchyRollVideoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addCrunchyRollVideoMenuItem_Click(object sender, EventArgs e)
         {
             using (CrunchyRollVideoSeriesForm csf = new CrunchyRollVideoSeriesForm(videoTrackerData))
             {
@@ -141,12 +141,12 @@ namespace VideoTracker
 
         }
 
-        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        private void refreshMenuItem_Click(object sender, EventArgs e)
         {
             LoadAllSeries();
         }
 
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void settingsMenuItem_Click(object sender, EventArgs e)
         {
             using (SettingsForm sf = new SettingsForm(videoTrackerData)) {
                 sf.ShowDialog();
@@ -394,9 +394,10 @@ namespace VideoTracker
 
         public void EnableFileOperations(bool flag)
         {
-            loadToolStripMenuItem.Enabled = flag;
+            loadMenuItem.Enabled = flag;
+            saveMenuItem.Enabled = flag;
             saveAsMenuItem.Enabled = flag;
-            autoSaveToolStripMenuItem.Enabled = flag;
+            autoSaveMenuItem.Enabled = flag;
         }
     }
 
