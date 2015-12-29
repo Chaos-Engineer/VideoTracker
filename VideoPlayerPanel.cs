@@ -108,8 +108,6 @@ namespace VideoTracker
             videoTrackerForm.MoveTitle(source, dest);
         }
 
-
-
         public void BeginFileLoad(VideoSeries vs)
         {
             this.seriesName.Text = "Loading " + vs.title;

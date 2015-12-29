@@ -58,9 +58,9 @@ namespace VideoTracker
 
         public override bool LoadGlobalSettings(VideoTrackerData vtd)
         {
-            if (String.IsNullOrWhiteSpace(vtd.awsPublicKey) ||
-                String.IsNullOrWhiteSpace(vtd.awsSecretKey) || 
-                String.IsNullOrWhiteSpace(vtd.awsAffiliateID))
+            if (String.IsNullOrWhiteSpace(vtd.globals[gdc.PUBLICKEY]) ||
+                String.IsNullOrWhiteSpace(vtd.globals[gdc.SECRETKEY]) || 
+                String.IsNullOrWhiteSpace(vtd.globals[gdc.AFFILIATEID]))
             {
                 MessageBox.Show("Amazon Affiliate ID parameters must be set before loading " +
                     "Amazon On-Demand Video programs");
@@ -69,8 +69,8 @@ namespace VideoTracker
                 s.ShowDialog();
                 return false;
             }
-            this.helper = new SignedRequestHelper(vtd.awsPublicKey, vtd.awsSecretKey, DESTINATION);
-            this.awsAffiliateID = vtd.awsAffiliateID;
+            this.helper = new SignedRequestHelper(vtd.globals[gdc.PUBLICKEY], vtd.globals[gdc.SECRETKEY], DESTINATION);
+            this.awsAffiliateID = vtd.globals[gdc.AFFILIATEID];
             return (true);
         }
 
@@ -83,11 +83,6 @@ namespace VideoTracker
         public override void PlayCurrent()
         {
             string url = GetURLFromAsin(currentVideo.internalName);
-            if (url == null)
-            {
-                MessageBox.Show("ASIN " + currentVideo.internalName + " not available on Amazon");
-                return;
-            }
             Process.Start(url);
         }
 
@@ -181,6 +176,10 @@ namespace VideoTracker
                 string title = TagToString(doc, "Title");
                 VideoFile v = new VideoFile();
                 v.title = title;
+                // The thing we want to play is actually GetURLFromAsin(asin). However,
+                // that's too many requests to send to the Amazon servers at once, so
+                // we'll just save the "asin", and defer the GetURLFromAsin call until
+                // the video is actually played.
                 v.internalName = asin;
                 v.episode = 1;
                 v.season = 1;
@@ -326,6 +325,10 @@ namespace VideoTracker
                         {
                             v.title = episode + " - " + title;
                         }
+                        // The thing we want to play is actually GetURLFromAsin(asin). However,
+                        // that's too many requests to send to the Amazon servers at once, so
+                        // we'll just save the "asin", and defer the GetURLFromAsin call until
+                        // the video is actually played.
                         v.internalName = asin;
                         v.episode = episode;
                         v.season = season;

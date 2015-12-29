@@ -10,6 +10,8 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Net;
 using System.Web;
+// Plays videos from the CrunchyRoll website, using screen-scraping to determine the URLs associated
+// with a series.
 
 namespace VideoTracker
 {
@@ -28,11 +30,6 @@ namespace VideoTracker
         {
             this.URL = URL;
             this.title = title;
-        }
-
-        public override void PlayCurrent()
-        {
-            Process.Start(currentVideo.internalName);
         }
 
         public override void EditForm(VideoTrackerData vtd)

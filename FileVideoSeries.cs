@@ -61,10 +61,6 @@ namespace VideoTracker
             vsf.ShowDialog();
         }
 
-        public override void PlayCurrent()
-        {
-            Process.Start(currentVideo.internalName);
-        }
 
         protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
         {

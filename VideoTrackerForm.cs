@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Threading;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace VideoTracker
 {
@@ -61,24 +62,10 @@ namespace VideoTracker
 
         private void loadMenuItem_Click(object sender, EventArgs e)
         {
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    configFile = openFileDialog.FileName;
-                    LoadData(configFile);
-                }
-        }
-
-        private void exitMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
-        // Program is exiting - save current state before exiting.
-        private void VideoTrackerForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing || e.CloseReason == CloseReason.ApplicationExitCall)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                CheckAutoSave();
+                configFile = openFileDialog.FileName;
+                LoadData(configFile);
             }
         }
 
@@ -99,15 +86,29 @@ namespace VideoTracker
 
         private void autoSaveMenuItem_Click(object sender, EventArgs e)
         {
-            videoTrackerData.autoSave = !videoTrackerData.autoSave;
-            autoSaveMenuItem.Checked = videoTrackerData.autoSave;
-            if (videoTrackerData.autoSave)
+            videoTrackerData.globals.Set(gdc.AUTOSAVE, !videoTrackerData.globals.GetBool(gdc.AUTOSAVE));
+            autoSaveMenuItem.Checked = videoTrackerData.globals.GetBool(gdc.AUTOSAVE);
+            if (autoSaveMenuItem.Checked)
             {
                 MessageBox.Show("Autosave enabled");
             }
             else
             {
                 MessageBox.Show("Autosave disabled");
+            }
+        }
+
+        private void exitMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        // Program is exiting - save current state before exiting.
+        private void VideoTrackerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing || e.CloseReason == CloseReason.ApplicationExitCall)
+            {
+                CheckAutoSave();
             }
         }
 
@@ -148,7 +149,8 @@ namespace VideoTracker
 
         private void settingsMenuItem_Click(object sender, EventArgs e)
         {
-            using (SettingsForm sf = new SettingsForm(videoTrackerData)) {
+            using (SettingsForm sf = new SettingsForm(videoTrackerData))
+            {
                 sf.ShowDialog();
             }
         }
@@ -165,21 +167,21 @@ namespace VideoTracker
             int dWidth = Math.Abs(this.Width - this.currentWidth);
             int dHeight = Math.Abs(this.Height - this.currentHeight);
 
-            if (dWidth >= dHeight)  
+            if (dWidth >= dHeight)
             {
                 // Change number of columns
-                columns = (int) Math.Round((float)this.mainPanel.ClientSize.Width / (float)this.actualPanelWidth);
+                columns = (int)Math.Round((float)this.mainPanel.ClientSize.Width / (float)this.actualPanelWidth);
                 if (columns == 0) columns = 1;
             }
-            else 
+            else
             {
                 // Change number of rows (and calculate corresponding number of rows.)
                 int rows = (int)Math.Round((float)this.mainPanel.ClientSize.Height / (float)this.actualPanelHeight);
                 if (rows == 0) rows = 1;
-                columns = ((this.numPanels -1) / rows) + 1;
+                columns = ((this.numPanels - 1) / rows) + 1;
             }
 
-            this.videoTrackerData.columns = columns;
+            this.videoTrackerData.globals[gdc.COLUMNS] = columns.ToString();
             ResizeMainPanel();
         }
 
@@ -199,7 +201,7 @@ namespace VideoTracker
             this.CheckAutoSave();
         }
 
-        public void DeleteTitle(VideoPlayerPanel panel, VideoSeries vs)    
+        public void DeleteTitle(VideoPlayerPanel panel, VideoSeries vs)
         {
             this.videoTrackerData.videoSeriesList.Remove(vs);
             this.mainPanel.Controls.Remove(panel);
@@ -246,8 +248,8 @@ namespace VideoTracker
                 if (vp.initialWidth > this.panelWidth)
                 {
                     this.panelWidth = vp.initialWidth;
-                    this.actualPanelWidth = vp.Margin.Left +  vp.initialWidth  + vp.Margin.Right;
-                    this.actualPanelHeight = vp.Margin.Top  + vp.DisplayRectangle.Height + vp.Margin.Bottom;
+                    this.actualPanelWidth = vp.Margin.Left + vp.initialWidth + vp.Margin.Right;
+                    this.actualPanelHeight = vp.Margin.Top + vp.DisplayRectangle.Height + vp.Margin.Bottom;
                 }
             }
             foreach (VideoPlayerPanel vp in mainPanel.Controls)
@@ -256,9 +258,12 @@ namespace VideoTracker
             }
 
             // Adjust the number of columns if it has changed.
-            if (this.mainPanel.ColumnCount != this.videoTrackerData.columns)
+
+            // This "ConvertToInt" call assigns a default value of 1 if columns is currently undefined.
+            int columns = videoTrackerData.globals.GetInt(gdc.COLUMNS, 1);
+            if (this.mainPanel.ColumnCount != columns)
             {
-                this.mainPanel.ColumnCount = this.videoTrackerData.columns;
+                this.mainPanel.ColumnCount = columns;
             }
             // Update the main window with auto-sizing enabled.
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
@@ -291,7 +296,9 @@ namespace VideoTracker
         public void CheckAutoSave()
         {
             // Note: workerThreads can be updated asynchronously.
-            if (Interlocked.Read(ref workerThreads) == 0 && videoTrackerData.autoSave && configFileValid)
+            if (Interlocked.Read(ref workerThreads) == 0 
+                && videoTrackerData.globals.GetBool(gdc.AUTOSAVE, "true") // Default to true if global is undefined.
+                && configFileValid)
             {
                 SaveData(configFile);
             }
@@ -319,7 +326,6 @@ namespace VideoTracker
                 configFileValid = false;
                 return;
             }
-
             // File was successfully loaded; create panels and load videos.
             mainPanel.Controls.Clear();
             configFileValid = true;
@@ -389,6 +395,7 @@ namespace VideoTracker
             if (threads == 0)
             {
                 EnableFileOperations(true);
+                CheckAutoSave();
             }
         }
 
@@ -398,6 +405,14 @@ namespace VideoTracker
             saveMenuItem.Enabled = flag;
             saveAsMenuItem.Enabled = flag;
             autoSaveMenuItem.Enabled = flag;
+        }
+
+        private void aboutMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("VideoTracker\n" +
+                "Build V" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\n" +
+                "Copyright (c) 2015 Extraordinary Popular Delusions",
+                "About VideoTracker");
         }
     }
 
@@ -409,21 +424,10 @@ namespace VideoTracker
         // they can be serialized in the configuration file.
         //
 
-        // General Globals
-        public int columns;
-
-        // Globals for FileSeries
-        public List<string> defaultDirectoryList;
-
-        // Globals for AmazonVideoSeries
-        public string awsPublicKey;
-        public string awsSecretKey;
-        public string awsAffiliateID;
-
-        public bool autoSave;
+        public SerializableStringDictionary globals;
         public List<VideoSeries> videoSeriesList;
 
-        [XmlIgnore,NonSerialized]
+        [XmlIgnore, NonSerialized]
         public VideoTrackerForm videoTrackerForm;
 
         public VideoTrackerData()
@@ -433,15 +437,152 @@ namespace VideoTracker
 
         public VideoTrackerData(VideoTrackerForm vtf)
         {
-            this.autoSave = true;
-            this.awsPublicKey = null;
-            this.awsSecretKey = null;
-            this.awsAffiliateID = null;
             this.videoTrackerForm = vtf;
-            this.defaultDirectoryList = new List<string>();
             this.videoSeriesList = new List<VideoSeries>();
+            this.globals = new SerializableStringDictionary();
+            this.globals.Set(gdc.COLUMNS, 1);
+            this.globals.Set(gdc.AUTOSAVE, true);
+        }
+    }
+
+    public static class gdc
+    {
+        public static Tuple<string, string> AUTOSAVE    = new Tuple<string, string>("main", "autosave");
+        public static Tuple<string, string> COLUMNS     = new Tuple<string, string>("main", "columns");
+
+        public static Tuple<string, string> DEFDIRLIST  = new Tuple<string, string>("fileseries", "defaultdirectorylist");
+
+        public static Tuple<string, string> PUBLICKEY   = new Tuple<string, string>("amazon", "publickey");
+        public static Tuple<string, string> SECRETKEY   = new Tuple<string, string>("amazon", "secretkey");
+        public static Tuple<string, string> AFFILIATEID = new Tuple<string, string>("amazon", "affiliateid");
+    }
+    //
+    // Definition for a string dictionary which is serializable and which returns the null string
+    // when we attempt to reference an undefined key.
+    //
+    // Serialization is done as a series of "<item key="value">" tags.
+    //
+    [XmlRoot("Dictionary")]
+    public class SerializableStringDictionary : SortedDictionary<Tuple<string, string>, string>, IXmlSerializable
+    {
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+            return null;
+        }
+        public void ReadXml(System.Xml.XmlReader reader)
+        {
+            XmlSerializer keySerializer = new XmlSerializer(typeof(string));
+            XmlSerializer valueSerializer = new XmlSerializer(typeof(string));
+            bool wasEmpty = reader.IsEmptyElement;
+            reader.Read();
+            if (wasEmpty)
+                return;
+            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+            {
+                string tag = reader.Name;
+                while (reader.MoveToNextAttribute())
+                {
+                    this.Add(new Tuple<string, string>(tag, reader.Name), reader.Value);
+                }
+                reader.Read();
+            }
+            reader.ReadEndElement();
+        }
+        public void WriteXml(System.Xml.XmlWriter writer)
+        {
+            XmlSerializer keySerializer = new XmlSerializer(typeof(string));
+            XmlSerializer valueSerializer = new XmlSerializer(typeof(string));
+            foreach (Tuple<string, string> key in this.Keys)
+            {
+                writer.WriteStartElement(key.Item1);
+                writer.WriteAttributeString(key.Item2, this[key]);
+                writer.WriteEndElement();
+            }
         }
 
-      
+        public bool GetBool(Tuple<string, string> key, string defval="false")
+        {
+            if (this[key] == "")
+            {
+                this[key] = defval;
+            }    
+            return (this[key] == "true");
+        }
+
+
+        public int GetInt(Tuple<string, string> key, int defval = 0)
+        {
+            int value;
+            if (!Int32.TryParse(this[key], out value))
+            {
+                value = defval;
+                this[key] = value.ToString();
+            }
+            return (value);
+        }
+
+        public List<string> GetList(Tuple<string, string> key, char delim = '|')
+        {
+            if (this[key] == "") return (new List<string>());
+            List<string> val = this[key].Split(delim).ToList<string>();
+            return (val);
+        }
+
+        public string[] GetArray(Tuple<string, string> key, char delim = '|')
+        {
+            if (this[key] == "") return (new string[0]);
+            string[] val = this[key].Split(delim);
+            return (val);
+        }
+
+        public void Set(Tuple<string, string> key, object value, char delim = '|')
+        {
+            Type t = value.GetType();
+            if (t == typeof(bool))
+            {
+                if ((bool)value)
+                {
+                    this[key] = "true";
+                }
+                else
+                {
+                    this[key] = "false";
+                }
+            }
+            else if (t == typeof(int))
+            {
+                this[key] = value.ToString();
+            }
+            else if (t == typeof(string)) {
+                this[key] = (string) value;
+            }
+            else if (t == typeof(string[]))
+            {
+                this[key] = String.Join(delim.ToString(), (string[]) value);
+            }
+            else if (t == typeof(List<string>))
+            {
+                this[key] = String.Join(delim.ToString(), (List<string>) value);
+            }
+            else
+            {
+                MessageBox.Show("VideoTrackerData.Set(): Unknown type " + value.GetType().ToString());
+            }
+        }
+        public new string this[Tuple<string, string> key]
+        {
+            get
+            {
+                if (base.ContainsKey(key))
+                {
+                    return base[key];
+                }
+                return ("");
+            }
+            set
+            {
+                base[key] = value;
+            }
+        }
     }
 }

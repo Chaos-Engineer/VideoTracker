@@ -47,7 +47,6 @@ namespace VideoTracker
 
         protected abstract void LoadSeriesAsync(object sender, DoWorkEventArgs e);
         public abstract void EditForm(VideoTrackerData videoTrackerData);
-        public abstract void PlayCurrent();
 
         // Not serialized - dynamic values and system data structures.
         [XmlIgnore,NonSerialized]
@@ -83,6 +82,11 @@ namespace VideoTracker
         public virtual bool LoadGlobalSettings(VideoTrackerData videoTrackerData)
         {
             return true;
+        }
+
+        public virtual void PlayCurrent()
+        {
+            Process.Start(currentVideo.internalName);
         }
 
         public void LoadFiles(string title, string currentKey, VideoTrackerData videoTrackerData)

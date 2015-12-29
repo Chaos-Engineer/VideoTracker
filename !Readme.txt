@@ -5,8 +5,8 @@
     called by the Form class, where the arguments are the values defined by the form. (Title, Current Episode,
 	and all series-specific arguments)
 3 - Add these method headers:
-        public override bool LoadGlobalSettings(VideoTrackerData vtd)  [ONLY IF GLOBAL CONFIGURATION VARIABLES NEEDED]
-        public override void PlayCurrent()
+        public override bool LoadGlobalSettings(VideoTrackerData vtd)  [OPTIONAL: IF GLOBAL CONFIGURATION VARIABLES NEEDED]
+        public override void PlayCurrent() [OPTIONAL: DEFAULT ROUTINE IS "Process.Start(currentVideo.internalName)"]
         public override void EditForm(VideoTrackerData vtd)
         protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
 4 - Add an [XmlInclude] for the new class in VideoSeries.cs, to allow it to be serializable.
@@ -21,9 +21,9 @@
 10 - Add the FormClosing event to the Form Class. This should call the multi-argument constructor, the 
     LoadGlobalSettings method if needed and the base LoadFiles method. (LoadFiles will set up a call to 
 	the class-specific LoadSeriesAsync method, which will do the actual file load.)
-11 - Write the series type routines. Most of them can be copied from existing code with slight modifications. 
-    LoadSeriesAsync should do the actual work of getting information about each video and adding it to the
-	videoFiles member.
+10 - Write the PlayCurrent() routine if the default can't be used
+11 - Write the LoadSeriesAsync() routine. This should getting information about each video based on the 
+	series values, convert them into VideoFile objects, and add them to the videoFiles collection.
 
 	NUGET PACKAGES:
 	- csquery: Used for HTML screen-scraping (CrunchyRollVideoSeries)

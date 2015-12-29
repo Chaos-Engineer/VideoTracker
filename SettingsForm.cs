@@ -24,33 +24,20 @@ namespace VideoTracker
             this.videoTrackerData = vtd;
 
             // Global settings
-            if (vtd.columns > 0)
-            {
-                columnsTextBox.Text = vtd.columns.ToString();
-            }
-            else
-            {
-                columnsTextBox.Text = "1";
-            }
+
+            // The "ConvertToInt" call assigns a default value of 1 if currently undefined.
+            columnsTextBox.Text = vtd.globals.GetInt(gdc.COLUMNS, 1).ToString();
 
             // File series settings
-            if (vtd.defaultDirectoryList != null && vtd.defaultDirectoryList.Count > 0)
+            if (vtd.globals[gdc.DEFDIRLIST] != null && vtd.globals.GetArray(gdc.DEFDIRLIST).Length > 0)
             {
-                defaultDirectoryListBox.Items.AddRange(vtd.defaultDirectoryList.ToArray<string>());
+                defaultDirectoryListBox.Items.AddRange(vtd.globals.GetArray(gdc.DEFDIRLIST).ToArray<string>());
             }
 
             // Amazon series settings
-            if (vtd.awsPublicKey != null)
-            {
-                publicKeyTextBox.Text = vtd.awsPublicKey;
-            }
-            if (vtd.awsSecretKey != null)
-            {
-                secretKeyTextBox.Text = vtd.awsSecretKey;
-            }
-            if (vtd.awsAffiliateID != null) {
-                affiliateIdTextBox.Text = vtd.awsAffiliateID;
-            }
+            publicKeyTextBox.Text = vtd.globals[gdc.PUBLICKEY];
+            secretKeyTextBox.Text = vtd.globals[gdc.SECRETKEY];
+            affiliateIdTextBox.Text = vtd.globals[gdc.AFFILIATEID];
         }
 
         //
@@ -115,19 +102,22 @@ namespace VideoTracker
         private void ApplyChanges()
         {
             // Program-wide globals
-            if (!Int32.TryParse(columnsTextBox.Text, out videoTrackerData.columns))
+            int columns;
+            if (!Int32.TryParse(columnsTextBox.Text, out columns))
             {
-                videoTrackerData.columns = 1;
+                columns = 1;
             }
+            videoTrackerData.globals[gdc.COLUMNS] = columns.ToString();
+
             videoTrackerData.videoTrackerForm.ResizeMainPanel();
 
             // File series globals
-            videoTrackerData.defaultDirectoryList = defaultDirectoryListBox.Items.OfType<string>().ToList();
+            videoTrackerData.globals.Set(gdc.DEFDIRLIST, defaultDirectoryListBox.Items.OfType<string>().ToList());
 
             // Amazon series globals
-            videoTrackerData.awsPublicKey = publicKeyTextBox.Text;
-            videoTrackerData.awsSecretKey = secretKeyTextBox.Text;
-            videoTrackerData.awsAffiliateID = affiliateIdTextBox.Text;
+            videoTrackerData.globals.Set(gdc.PUBLICKEY, publicKeyTextBox.Text);
+            videoTrackerData.globals.Set(gdc.SECRETKEY, secretKeyTextBox.Text);
+            videoTrackerData.globals.Set(gdc.AFFILIATEID, affiliateIdTextBox.Text);
             this.settingsValid = true;
         }
 
