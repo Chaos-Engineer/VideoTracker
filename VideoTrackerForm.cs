@@ -455,11 +455,14 @@ namespace VideoTracker
 
     public static class gdk
     {
+        // Group=MAIN
         public const string AUTOSAVE    = "autosave";
         public const string COLUMNS     = "columns";
 
+        // Group=FILE
         public const string DEFDIRLIST  = "defaultdirectorylist";
 
+        // Group=AMAZON
         public const string PUBLICKEY   = "publickey";
         public const string SECRETKEY   = "secretkey";
         public const string AFFILIATEID = "affiliateid";
@@ -469,10 +472,13 @@ namespace VideoTracker
     // Definition for a data dictionary. There are two keys, "group" (for a category of data) and
     // "key" (for an element within that category).
     //
-    // Serialization is done as a series of "<item key="value">" tags.
+    // Serialization is done as a series of "<group key1="value1" key2="value2" ...>" tags.
     //
     // There exists a set of helper routines to convert data to/from string format. Currently the
     // following data types are supported: Strings, booleans, integers, string arrays, and string lists.
+    // The "set" routine converts any supported data type into a string. The "get" routines convert
+    // from strings back to the requested data type, optionally returning a default value if the
+    // key is undefined.
     //
     // If a value for a particular group/key pair is not found, a blank string is returned.
     //
@@ -508,12 +514,12 @@ namespace VideoTracker
             XmlSerializer valueSerializer = new XmlSerializer(typeof(string));
             foreach (string group in this.Keys)
             {
+                writer.WriteStartElement(group);
                 foreach (string key in this[group].Keys)
                 {
-                    writer.WriteStartElement(group);
                     writer.WriteAttributeString(key, this[group][key]);
-                    writer.WriteEndElement();
                 }
+                writer.WriteEndElement();
             }
         }
         
