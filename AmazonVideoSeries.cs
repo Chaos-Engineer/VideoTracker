@@ -72,20 +72,19 @@ namespace VideoTracker
         {
 
             // Initialize the signer object.
-            VideoTrackerData vtd = (VideoTrackerData)e.Argument;
-            if (String.IsNullOrWhiteSpace(vtd.globals[gdc.PUBLICKEY]) ||
-                  String.IsNullOrWhiteSpace(vtd.globals[gdc.SECRETKEY]) ||
-                  String.IsNullOrWhiteSpace(vtd.globals[gdc.AFFILIATEID]))
+            VideoTrackerData vtd = (VideoTrackerData) e.Argument;
+
+            if (String.IsNullOrWhiteSpace(vtd.globals[gdg.AMAZON][gdk.PUBLICKEY]) ||
+                  String.IsNullOrWhiteSpace(vtd.globals[gdg.AMAZON][gdk.SECRETKEY]) ||
+                  String.IsNullOrWhiteSpace(vtd.globals[gdg.AMAZON][gdk.AFFILIATEID]))
             {
-                MessageBox.Show("Amazon Affiliate ID parameters must be set before loading " +
-                    "Amazon On-Demand Video programs");
-                SettingsForm s = new SettingsForm(vtd);
-                s.tabControl.SelectTab("amazonSettings");
-                s.ShowDialog();
+                errorString = "Amazon affiliate ID keys have not been set.";
                 return;
             }
-            this.helper = new SignedRequestHelper(vtd.globals[gdc.PUBLICKEY], vtd.globals[gdc.SECRETKEY], DESTINATION);
-            this.awsAffiliateID = vtd.globals[gdc.AFFILIATEID];
+
+            this.helper = new SignedRequestHelper(vtd.globals[gdg.AMAZON][gdk.PUBLICKEY],
+                vtd.globals[gdg.AMAZON][gdk.SECRETKEY], DESTINATION);
+            this.awsAffiliateID = vtd.globals[gdg.AMAZON][gdk.AFFILIATEID];
 
             //
             // An Amazon ASIN (product ID) is the letter "B", followed by two digits, followed 

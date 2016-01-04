@@ -99,7 +99,7 @@ namespace VideoTracker
 
             if (directoryListBox.Items.Count == 0)
             {
-                if (videoTrackerData.globals.GetList(gdc.DEFDIRLIST).Count == 0)
+                if (videoTrackerData.globals.GetList(gdg.FILE, gdk.DEFDIRLIST).Count == 0)
                 {
                     MessageBox.Show("Directory list (or default directory list) must be set.");
                     return (false);
@@ -215,7 +215,7 @@ namespace VideoTracker
                     directoryListBox.Items.Remove(d);
                 }
             }
-            foreach (String d in videoTrackerData.globals.GetList(gdc.DEFDIRLIST)) {
+            foreach (String d in videoTrackerData.globals.GetList(gdg.FILE, gdk.DEFDIRLIST)) {
                 foreach (String f in Directory.GetFiles(d, search, SearchOption.AllDirectories )) {
                     AddDirectoryToListBox(Path.GetDirectoryName(f));
                 }

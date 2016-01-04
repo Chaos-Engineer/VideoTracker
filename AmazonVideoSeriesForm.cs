@@ -42,6 +42,21 @@ namespace VideoTracker
                 return;
             }
 
+            // Check global variables
+            if (String.IsNullOrWhiteSpace(videoTrackerData.globals[gdg.AMAZON][gdk.PUBLICKEY]) ||
+                  String.IsNullOrWhiteSpace(videoTrackerData.globals[gdg.AMAZON][gdk.SECRETKEY]) ||
+                  String.IsNullOrWhiteSpace(videoTrackerData.globals[gdg.AMAZON][gdk.AFFILIATEID]))
+            {
+                MessageBox.Show("Amazon Affiliate ID parameters must be set before loading " +
+                    "Amazon On-Demand Video programs");
+                SettingsForm s = new SettingsForm(videoTrackerData);
+                s.tabControl.SelectTab("amazonSettings");
+                s.ShowDialog();
+                e.Cancel = true;
+                return;
+            }
+
+
             // Check input for validity
             if (titleBox.Text.Equals(""))
             {

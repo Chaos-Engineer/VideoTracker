@@ -86,8 +86,10 @@ namespace VideoTracker
 
         private void autoSaveMenuItem_Click(object sender, EventArgs e)
         {
-            videoTrackerData.globals.Set(gdc.AUTOSAVE, !videoTrackerData.globals.GetBool(gdc.AUTOSAVE));
-            autoSaveMenuItem.Checked = videoTrackerData.globals.GetBool(gdc.AUTOSAVE);
+            // Toggle value.
+            videoTrackerData.globals.Set(gdg.MAIN, gdk.AUTOSAVE, 
+                !videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE));
+            autoSaveMenuItem.Checked = videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE);
             if (autoSaveMenuItem.Checked)
             {
                 MessageBox.Show("Autosave enabled");
@@ -180,7 +182,7 @@ namespace VideoTracker
                 columns = ((this.numPanels - 1) / rows) + 1;
             }
             if (columns <= 0) columns = 1;
-            this.videoTrackerData.globals[gdc.COLUMNS] = columns.ToString();
+            this.videoTrackerData.globals[gdg.MAIN][gdk.COLUMNS] = columns.ToString();
             ResizeMainPanel();
         }
 
@@ -259,7 +261,7 @@ namespace VideoTracker
             // Adjust the number of columns if it has changed.
 
             // This "ConvertToInt" call assigns a default value of 1 if columns is currently undefined.
-            int columns = videoTrackerData.globals.GetInt(gdc.COLUMNS, 1);
+            int columns = videoTrackerData.globals.GetInt(gdg.MAIN, gdk.COLUMNS, 1);
             if (this.mainPanel.ColumnCount != columns)
             {
                 this.mainPanel.ColumnCount = columns;
@@ -296,7 +298,7 @@ namespace VideoTracker
         {
             // Note: workerThreads can be updated asynchronously.
             if (Interlocked.Read(ref workerThreads) == 0 
-                && videoTrackerData.globals.GetBool(gdc.AUTOSAVE, "true") // Default to true if global is undefined.
+                && videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE, "true") // Default to true
                 && configFileValid)
             {
                 SaveData(configFile);
@@ -422,7 +424,7 @@ namespace VideoTracker
         // they can be serialized in the configuration file.
         //
 
-        public SerializableStringDictionary globals;
+        public SerializableGroupDictionary globals;
         public List<VideoSeries> videoSeriesList;
 
         [XmlIgnore, NonSerialized]
@@ -437,31 +439,45 @@ namespace VideoTracker
         {
             this.videoTrackerForm = vtf;
             this.videoSeriesList = new List<VideoSeries>();
-            this.globals = new SerializableStringDictionary();
-            this.globals.Set(gdc.COLUMNS, 1);
-            this.globals.Set(gdc.AUTOSAVE, true);
+            this.globals = new SerializableGroupDictionary();
+            this.globals.Set(gdg.MAIN, gdk.COLUMNS, 1);
+            this.globals.Set(gdg.MAIN, gdk.AUTOSAVE, true);
         }
     }
-
-    public static class gdc
+    // Global constants associated with elements of SerializableGroupDictionary. "GDG" (global dictionary 
+    // group) contains known group names, and "GDK" (global dictionary key) contains known key names.
+    public static class gdg
     {
-        public static Tuple<string, string> AUTOSAVE    = new Tuple<string, string>("main", "autosave");
-        public static Tuple<string, string> COLUMNS     = new Tuple<string, string>("main", "columns");
-
-        public static Tuple<string, string> DEFDIRLIST  = new Tuple<string, string>("fileseries", "defaultdirectorylist");
-
-        public static Tuple<string, string> PUBLICKEY   = new Tuple<string, string>("amazon", "publickey");
-        public static Tuple<string, string> SECRETKEY   = new Tuple<string, string>("amazon", "secretkey");
-        public static Tuple<string, string> AFFILIATEID = new Tuple<string, string>("amazon", "affiliateid");
+        public const string MAIN   = "main";
+        public const string FILE   = "fileseries";
+        public const string AMAZON = "amazon";
     }
+
+    public static class gdk
+    {
+        public const string AUTOSAVE    = "autosave";
+        public const string COLUMNS     = "columns";
+
+        public const string DEFDIRLIST  = "defaultdirectorylist";
+
+        public const string PUBLICKEY   = "publickey";
+        public const string SECRETKEY   = "secretkey";
+        public const string AFFILIATEID = "affiliateid";
+    }
+
     //
-    // Definition for a string dictionary which is serializable and which returns the null string
-    // when we attempt to reference an undefined key.
+    // Definition for a data dictionary. There are two keys, "group" (for a category of data) and
+    // "key" (for an element within that category).
     //
     // Serialization is done as a series of "<item key="value">" tags.
     //
-    [XmlRoot("Dictionary")]
-    public class SerializableStringDictionary : SortedDictionary<Tuple<string, string>, string>, IXmlSerializable
+    // There exists a set of helper routines to convert data to/from string format. Currently the
+    // following data types are supported: Strings, booleans, integers, string arrays, and string lists.
+    //
+    // If a value for a particular group/key pair is not found, a blank string is returned.
+    //
+    [XmlRoot("SerializableGroupDictionary")]
+    public class SerializableGroupDictionary : SortedDictionary<string, StringDictionary>, IXmlSerializable
     {
         public System.Xml.Schema.XmlSchema GetSchema()
         {
@@ -480,7 +496,7 @@ namespace VideoTracker
                 string tag = reader.Name;
                 while (reader.MoveToNextAttribute())
                 {
-                    this.Add(new Tuple<string, string>(tag, reader.Name), reader.Value);
+                    this[tag][reader.Name] = reader.Value;
                 }
                 reader.Read();
             }
@@ -490,84 +506,112 @@ namespace VideoTracker
         {
             XmlSerializer keySerializer = new XmlSerializer(typeof(string));
             XmlSerializer valueSerializer = new XmlSerializer(typeof(string));
-            foreach (Tuple<string, string> key in this.Keys)
+            foreach (string group in this.Keys)
             {
-                writer.WriteStartElement(key.Item1);
-                writer.WriteAttributeString(key.Item2, this[key]);
-                writer.WriteEndElement();
+                foreach (string key in this[group].Keys)
+                {
+                    writer.WriteStartElement(group);
+                    writer.WriteAttributeString(key, this[group][key]);
+                    writer.WriteEndElement();
+                }
             }
         }
-
-        public bool GetBool(Tuple<string, string> key, string defval="false")
+        
+        public bool GetBool(string group, string key, string defval="false")
         {
-            if (this[key] == "")
+            if (this[group][key] == "")
             {
-                this[key] = defval;
+                this[group][key] = defval;
             }    
-            return (this[key] == "true");
+            return (this[group][key] == "true");
         }
 
 
-        public int GetInt(Tuple<string, string> key, int defval = 0)
+        public int GetInt(string group, string key, int defval = 0)
         {
             int value;
-            if (!Int32.TryParse(this[key], out value))
+            if (!Int32.TryParse(this[group][key], out value))
             {
                 value = defval;
-                this[key] = value.ToString();
+                this[group][key] = value.ToString();
             }
             return (value);
         }
 
-        public List<string> GetList(Tuple<string, string> key, char delim = '|')
+        public List<string> GetList(string group, string key, char delim = '|')
         {
-            if (this[key] == "") return (new List<string>());
-            List<string> val = this[key].Split(delim).ToList<string>();
+            if (this[group][key] == "") return (new List<string>());
+            List<string> val = this[group][key].Split(delim).ToList<string>();
             return (val);
         }
 
-        public string[] GetArray(Tuple<string, string> key, char delim = '|')
+        public string[] GetArray(string group, string key, char delim = '|')
         {
-            if (this[key] == "") return (new string[0]);
-            string[] val = this[key].Split(delim);
+            if (this[group][key] == "") return (new string[0]);
+            string[] val = this[group][key].Split(delim);
             return (val);
         }
 
-        public void Set(Tuple<string, string> key, object value, char delim = '|')
+        public void Set(string group, string key, object value, char delim = '|')
         {
             Type t = value.GetType();
             if (t == typeof(bool))
             {
                 if ((bool)value)
                 {
-                    this[key] = "true";
+                    this[group][key] = "true";
                 }
                 else
                 {
-                    this[key] = "false";
+                    this[group][key] = "false";
                 }
             }
             else if (t == typeof(int))
             {
-                this[key] = value.ToString();
+                this[group][key] = value.ToString();
             }
             else if (t == typeof(string)) {
-                this[key] = (string) value;
+                this[group][key] = (string) value;
             }
             else if (t == typeof(string[]))
             {
-                this[key] = String.Join(delim.ToString(), (string[]) value);
+                this[group][key] = String.Join(delim.ToString(), (string[]) value);
             }
             else if (t == typeof(List<string>))
             {
-                this[key] = String.Join(delim.ToString(), (List<string>) value);
+                this[group][key] = String.Join(delim.ToString(), (List<string>) value);
             }
             else
             {
                 MessageBox.Show("VideoTrackerData.Set(): Unknown type " + value.GetType().ToString());
             }
         }
-        public new string this[Tuple<string, string> key]
+
+        public new StringDictionary this[string group]
+        {
+            get
+            {
+                if (!base.ContainsKey(group))
+                {
+                    base[group] = new StringDictionary();
+                }
+                return base[group];
+            }
+            set
+            {
+                base[group] = value;
+            }
+        }
+    }
+
+    //
+    // Dictionary of strings.
+    //
+    // If a key is not defined, then return a blank string.
+    //
+    public class StringDictionary : SortedDictionary<string,string>
+    {
+        public new string this[string key]
         {
             get
             {

@@ -129,7 +129,7 @@
             this.fileSettings.Name = "fileSettings";
             this.fileSettings.Size = new System.Drawing.Size(575, 145);
             this.fileSettings.TabIndex = 2;
-            this.fileSettings.Text = "File Settings";
+            this.fileSettings.Text = "Video Files";
             this.fileSettings.UseVisualStyleBackColor = true;
             // 
             // label9
@@ -180,9 +180,9 @@
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.Location = new System.Drawing.Point(3, 3);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(77, 13);
+            this.label8.Size = new System.Drawing.Size(69, 13);
             this.label8.TabIndex = 1;
-            this.label8.Text = "File Settings";
+            this.label8.Text = "Video Files";
             // 
             // amazonSettings
             // 
@@ -352,6 +352,8 @@
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(671, 196);
             this.Controls.Add(this.tabControl);
@@ -361,6 +363,7 @@
             this.Location = new System.Drawing.Point(6, 6);
             this.Name = "SettingsForm";
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Settings Menu";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SettingsForm_FormClosing);
             this.tabControl.ResumeLayout(false);

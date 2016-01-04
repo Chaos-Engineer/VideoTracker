@@ -22,7 +22,8 @@
 	method. (LoadFiles will set up a call to the class-specific LoadSeriesAsync method, which will do the actual file load.)
 10 - Write the PlayCurrent() routine if the default can't be used
 11 - Write the LoadSeriesAsync() routine. This should get information about each video based on the 
-	series values, convert them into VideoFile objects, and add them to the videoFiles collection.
+	series values, convert them into VideoFile objects, and add them to the videoFiles collection. If
+	no files can be loaded, store an error message in the errorString variable.
 
 	NUGET PACKAGES:
 	- csquery: Used for HTML screen-scraping (CrunchyRollVideoSeries)

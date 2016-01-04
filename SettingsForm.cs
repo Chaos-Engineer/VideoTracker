@@ -26,18 +26,18 @@ namespace VideoTracker
             // Global settings
 
             // The "ConvertToInt" call assigns a default value of 1 if currently undefined.
-            columnsTextBox.Text = vtd.globals.GetInt(gdc.COLUMNS, 1).ToString();
+            columnsTextBox.Text = vtd.globals.GetInt(gdg.MAIN, gdk.COLUMNS, 1).ToString();
 
             // File series settings
-            if (vtd.globals[gdc.DEFDIRLIST] != null && vtd.globals.GetArray(gdc.DEFDIRLIST).Length > 0)
+            if (vtd.globals[gdg.FILE][gdk.DEFDIRLIST] != null && vtd.globals.GetArray(gdg.FILE, gdk.DEFDIRLIST).Length > 0)
             {
-                defaultDirectoryListBox.Items.AddRange(vtd.globals.GetArray(gdc.DEFDIRLIST).ToArray<string>());
+                defaultDirectoryListBox.Items.AddRange(vtd.globals.GetArray(gdg.FILE, gdk.DEFDIRLIST).ToArray<string>());
             }
 
             // Amazon series settings
-            publicKeyTextBox.Text = vtd.globals[gdc.PUBLICKEY];
-            secretKeyTextBox.Text = vtd.globals[gdc.SECRETKEY];
-            affiliateIdTextBox.Text = vtd.globals[gdc.AFFILIATEID];
+            publicKeyTextBox.Text = vtd.globals[gdg.AMAZON][gdk.PUBLICKEY];
+            secretKeyTextBox.Text = vtd.globals[gdg.AMAZON][gdk.SECRETKEY];
+            affiliateIdTextBox.Text = vtd.globals[gdg.AMAZON][gdk.AFFILIATEID];
         }
 
         //
@@ -107,17 +107,17 @@ namespace VideoTracker
             {
                 columns = 1;
             }
-            videoTrackerData.globals[gdc.COLUMNS] = columns.ToString();
+            videoTrackerData.globals[gdg.MAIN][gdk.COLUMNS] = columns.ToString();
 
             videoTrackerData.videoTrackerForm.ResizeMainPanel();
 
             // File series globals
-            videoTrackerData.globals.Set(gdc.DEFDIRLIST, defaultDirectoryListBox.Items.OfType<string>().ToList());
+            videoTrackerData.globals.Set(gdg.FILE, gdk.DEFDIRLIST, defaultDirectoryListBox.Items.OfType<string>().ToList());
 
             // Amazon series globals
-            videoTrackerData.globals.Set(gdc.PUBLICKEY, publicKeyTextBox.Text);
-            videoTrackerData.globals.Set(gdc.SECRETKEY, secretKeyTextBox.Text);
-            videoTrackerData.globals.Set(gdc.AFFILIATEID, affiliateIdTextBox.Text);
+            videoTrackerData.globals.Set(gdg.AMAZON, gdk.PUBLICKEY, publicKeyTextBox.Text);
+            videoTrackerData.globals.Set(gdg.AMAZON, gdk.SECRETKEY, secretKeyTextBox.Text);
+            videoTrackerData.globals.Set(gdg.AMAZON, gdk.AFFILIATEID, affiliateIdTextBox.Text);
             this.settingsValid = true;
         }
 
