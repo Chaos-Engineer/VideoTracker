@@ -171,7 +171,6 @@ namespace VideoTracker
             {
                 // Change number of columns
                 columns = (int)Math.Round((float)this.mainPanel.ClientSize.Width / (float)this.actualPanelWidth);
-                if (columns == 0) columns = 1;
             }
             else
             {
@@ -180,7 +179,7 @@ namespace VideoTracker
                 if (rows == 0) rows = 1;
                 columns = ((this.numPanels - 1) / rows) + 1;
             }
-
+            if (columns <= 0) columns = 1;
             this.videoTrackerData.globals[gdc.COLUMNS] = columns.ToString();
             ResizeMainPanel();
         }
@@ -206,10 +205,7 @@ namespace VideoTracker
             this.videoTrackerData.videoSeriesList.Remove(vs);
             this.mainPanel.Controls.Remove(panel);
             this.numPanels--;
-            if (numPanels > 0)
-            {
-                this.ResizeMainPanel();
-            }
+            this.ResizeMainPanel();
             this.CheckAutoSave();
         }
 
@@ -238,6 +234,9 @@ namespace VideoTracker
         public void ResizeMainPanel()
         {
             this.SuspendLayout();
+
+            blankLabel.Visible = (this.numPanels == 0); // Display a caption if there are no panels.
+
             // Find the maximum initial width of the VideoPlayerPanel controls, and set
             // the width of each panel to that maximum.
             this.panelWidth = 0;

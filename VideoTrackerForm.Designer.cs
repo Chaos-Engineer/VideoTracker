@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.mainPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.blankLabel = new System.Windows.Forms.Label();
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.fileMenuItem = new System.Windows.Forms.MenuItem();
             this.loadMenuItem = new System.Windows.Forms.MenuItem();
@@ -60,6 +61,19 @@
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(341, 207);
             this.mainPanel.TabIndex = 0;
+            // 
+            // blankLabel
+            // 
+            this.blankLabel.AutoSize = true;
+            this.blankLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.blankLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.blankLabel.Font = new System.Drawing.Font("Copperplate Gothic Light", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.blankLabel.Location = new System.Drawing.Point(0, 0);
+            this.blankLabel.Name = "blankLabel";
+            this.blankLabel.Padding = new System.Windows.Forms.Padding(25);
+            this.blankLabel.Size = new System.Drawing.Size(338, 66);
+            this.blankLabel.TabIndex = 1;
+            this.blankLabel.Text = "Use the Edit menu to add a new program";
             // 
             // mainMenu
             // 
@@ -190,6 +204,7 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(341, 207);
+            this.Controls.Add(this.blankLabel);
             this.Controls.Add(this.mainPanel);
             this.Menu = this.mainMenu;
             this.Name = "VideoTrackerForm";
@@ -204,6 +219,7 @@
         #endregion
         private System.Windows.Forms.TableLayoutPanel mainPanel;
         private System.Windows.Forms.MainMenu mainMenu;
+        private System.Windows.Forms.Label blankLabel;
         private System.Windows.Forms.MenuItem fileMenuItem;
         private System.Windows.Forms.MenuItem editMenuItem;
         private System.Windows.Forms.MenuItem helpMenuItem;
