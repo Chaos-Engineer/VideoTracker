@@ -71,15 +71,10 @@ namespace VideoTracker
 
             if (fileVideoSeries == null) {
                 fileVideoSeries = new FileVideoSeries();
-                if (!fileVideoSeries.LoadGlobalSettings(videoTrackerData))
-                {
-                    e.Cancel = true;
-                    return;
-                }
             }
 
-
-            fileVideoSeries.Initialize(directoryListBox.Items.OfType<String>().ToList());
+            fileVideoSeries.InitializeFromForm(directoryListBox.Items.OfType<String>().ToList(),
+                this.fileNameBox.Text);
             fileVideoSeries.LoadFiles(titleBox.Text, fileNameBox.Text, videoTrackerData);
             e.Cancel = false;
         }

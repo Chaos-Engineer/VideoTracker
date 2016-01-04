@@ -33,12 +33,14 @@ namespace VideoTracker
         public List<string> directoryList;
 
         // addDelay is a debugging flag used to test threading. If set, then the 
-        // LoadSeriesAsynch call will have an additional delay added before
+        // LoadSeriesAsync call will have an additional delay added before
         // completion, so we can watch how the display gets updated on the completion
         // of each thread.
         [XmlIgnore, NonSerialized]
         private static string addDelay = ConfigurationManager.AppSettings["AddDelay"];
 
+        [XmlIgnore, NonSerialized]
+        private string currentFileName;
 
         public FileVideoSeries()
         {
@@ -50,9 +52,10 @@ namespace VideoTracker
             this.directoryList = null;
         }
 
-        public void Initialize(List<string> directoryList)
+        public void InitializeFromForm(List<string> directoryList, string currentFileName)
         {
             this.directoryList = directoryList;
+            this.currentFileName = currentFileName;
         }
 
         public override void EditForm(VideoTrackerData videoTrackerData)
@@ -66,12 +69,13 @@ namespace VideoTracker
         {
             try
             {
+                VideoTrackerData vtd = (VideoTrackerData)e.Argument;
+
                 Regex whitespace = new Regex(@"\s+");
                 string fileSearchString = whitespace.Replace(title, "*");
                 string regexSearchString = whitespace.Replace(Regex.Escape(title), ".*");
                 string seasonEpisodeRegex = regexSearchString + @"\D*?(\d+)\D+?(\d+)";  // Find first two digit strings
                 string EpisodeOnlyRegex = regexSearchString + @"\D*?(\d+)";             // Find first digit string only
-                string currentFile = e.Argument.ToString();
                 Dictionary<int, int> seasons = new Dictionary<int, int>();
                 bool seasonValid = true;
                 bool parsingEpisode = true;
@@ -89,7 +93,11 @@ namespace VideoTracker
                     }
                     catch (DirectoryNotFoundException)
                     {
-                        continue; // Silently ignore - directory or network share not found
+                        continue; // Silently ignore - directory not found
+                    }
+                    catch (IOException)
+                    {
+                        continue; // Silently ignore - network share not found
                     }
 
                     foreach (string file in files)
@@ -185,20 +193,11 @@ namespace VideoTracker
                         // user entered a filename on the form. The key name is unknown at
                         // that time, because it can't be calculated until this routine has
                         // been executed.
-                        if (v.internalName == currentFile)
+                        if (v.internalName == this.currentFileName)
                         {
                             this.currentVideo = v;
                         }
                     }
-                }
-                // The current video file has been deleted from disk, but other files were found.
-                // Reset the current video to the first file in the series. (If no other files
-                // were found, then leave currentVideo unchanged - it might be that the directory
-                // is a network share that's temporarily unavailable, and the files will become
-                // visible later.)
-                if (this.currentVideo == null && videoFiles.Count > 0)
-                {
-                    this.currentVideo = videoFiles.Values[0];
                 }
 
                 //
@@ -206,8 +205,8 @@ namespace VideoTracker
                 // number, then assume that the first number in the filename is the episode, and that
                 // any remaining numbers are meaningless.
                 //
-                // We don't need to recalculate the key, as this will not change the sort order of
-                // the list. 
+                // We don't need to recalculate the key, as the renumbering being done here will not 
+                // change the sort order of the series.
                 //
                 if (videoFiles.Count >= 3)
                 {

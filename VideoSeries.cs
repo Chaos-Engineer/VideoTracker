@@ -57,6 +57,8 @@ namespace VideoTracker
         protected string errorString;
         [XmlIgnore,NonSerialized]
         private BackgroundWorker backgroundWorker;
+        [XmlIgnore, NonSerialized]
+        private static DateTime lastAlert = DateTime.Now.AddDays(-1);
 
         static VideoSeries()
         {
@@ -79,11 +81,6 @@ namespace VideoTracker
                 new RunWorkerCompletedEventHandler(LoadDataCompleted);
         }
 
-        public virtual bool LoadGlobalSettings(VideoTrackerData videoTrackerData)
-        {
-            return true;
-        }
-
         public virtual void PlayCurrent()
         {
             Process.Start(currentVideo.internalName);
@@ -98,8 +95,7 @@ namespace VideoTracker
                 this.panel = new VideoPlayerPanel(videoTrackerData, this);
             }
             this.panel.BeginFileLoad(this);
-
-            this.backgroundWorker.RunWorkerAsync(currentKey);
+            this.backgroundWorker.RunWorkerAsync(videoTrackerData);
         }
 
         private void LoadDataCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -111,7 +107,13 @@ namespace VideoTracker
             // a "NO FILES FOUND" message to display in the panel.
             if (this.videoFiles.Count == 0)
             {
-                MessageBox.Show("Error loading " + this.title + ".\n" + errorString);
+                // Only display one messagebox every 10 seconds, to prevent multiple alerts if
+                // a problem affects more than one series.
+                if ((DateTime.Now - lastAlert).TotalSeconds > 10)
+                {
+                    lastAlert = DateTime.Now;
+                    MessageBox.Show("Error loading " + this.title + " (and possibly others).\n" + errorString);
+                }
                 this.valid = false;
                 if (this.currentVideo != null)
                 {

@@ -41,7 +41,7 @@ namespace VideoTracker
         protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
         {
             string key, html;
-
+            VideoTrackerData vtd = (VideoTrackerData) e.Argument;
             //
             // Crunchyroll lists all episodes of a season on a single page, in <div> blocks like the one below.
             //

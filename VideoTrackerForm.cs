@@ -357,7 +357,6 @@ namespace VideoTracker
                         "\n\nAuto-save will not be performed until configuration is saved manually");
                     configFileValid = false;
                 }
-                vs.LoadGlobalSettings(videoTrackerData);
                 vs.LoadFiles(vs.title, vs.currentVideo.title, videoTrackerData);
             }
 

@@ -65,12 +65,6 @@ namespace VideoTracker
 
             if (crunchyRollVideoSeries == null) {
                 crunchyRollVideoSeries = new CrunchyRollVideoSeries(URL.Text, Title.Text);
-                if (!crunchyRollVideoSeries.LoadGlobalSettings(videoTrackerData))
-                {
-                    e.Cancel = true;
-                    return;
-                }
-
             }
             crunchyRollVideoSeries.LoadFiles(Title.Text, "", videoTrackerData);
             e.Cancel = false;

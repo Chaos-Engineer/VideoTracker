@@ -5,7 +5,6 @@
     called by the Form class, where the arguments are the values defined by the form. (Title, Current Episode,
 	and all series-specific arguments)
 3 - Add these method headers:
-        public override bool LoadGlobalSettings(VideoTrackerData vtd)  [OPTIONAL: IF GLOBAL CONFIGURATION VARIABLES NEEDED]
         public override void PlayCurrent() [OPTIONAL: DEFAULT ROUTINE IS "Process.Start(currentVideo.internalName)"]
         public override void EditForm(VideoTrackerData vtd)
         protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
@@ -18,11 +17,11 @@
 9 - Write the (VideoTrackerData) and (VideoTrackerData, xxxVideoSeries) constructors for the Form Class. The
     first one is used to add a new series. The second one is used to edit an existing series and presets the 
 	displayed fields to the current series values.
-10 - Add the FormClosing event to the Form Class. This should call the multi-argument constructor, the 
-    LoadGlobalSettings method if needed and the base LoadFiles method. (LoadFiles will set up a call to 
-	the class-specific LoadSeriesAsync method, which will do the actual file load.)
+10 - Add the FormClosing event to the Form Class. This should call the multi-argument constructor, an optional
+    InitializeFromForm routine to copy form properties into the VideoSeries object, and the base LoadFiles 
+	method. (LoadFiles will set up a call to the class-specific LoadSeriesAsync method, which will do the actual file load.)
 10 - Write the PlayCurrent() routine if the default can't be used
-11 - Write the LoadSeriesAsync() routine. This should getting information about each video based on the 
+11 - Write the LoadSeriesAsync() routine. This should get information about each video based on the 
 	series values, convert them into VideoFile objects, and add them to the videoFiles collection.
 
 	NUGET PACKAGES:

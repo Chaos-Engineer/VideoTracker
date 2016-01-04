@@ -58,16 +58,12 @@ namespace VideoTracker
             if (amazonVideoSeries == null)
             {
                 amazonVideoSeries = new AmazonVideoSeries();
-                if (!amazonVideoSeries.LoadGlobalSettings(videoTrackerData)) {
-                    e.Cancel = true;
-                    return;
-                }
                 currentKey = null;
             } else {
                 currentKey = amazonVideoSeries.currentVideo.key;
             }
               
-            amazonVideoSeries.Initialize(keywordBox.Text);
+            amazonVideoSeries.InitializeFromForm(keywordBox.Text);
             amazonVideoSeries.LoadFiles(titleBox.Text, currentKey, videoTrackerData);
 
             e.Cancel = false;
