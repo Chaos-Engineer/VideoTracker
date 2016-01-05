@@ -389,6 +389,7 @@ namespace VideoTracker
                 }
                 catch (System.Net.WebException)
                 {
+                    //MessageBox.Show("WebException. Retrying in 5 seconds");
                     System.Threading.Thread.Sleep(5000);
                 }
                 catch (Exception ex)

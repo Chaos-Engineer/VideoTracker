@@ -547,6 +547,22 @@ namespace VideoTracker
         {
             this[group].Set(key, value, delim);
         }
+
+        public new StringDictionary this[string group]
+        {
+            get
+            {
+                if (!base.ContainsKey(group))
+                {
+                    base[group] = new StringDictionary();
+                }
+                return (base[group]);
+            }
+            set
+            {
+                base[group] = value;
+            }
+        }
     }
 
     //
