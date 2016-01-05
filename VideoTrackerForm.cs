@@ -444,6 +444,8 @@ namespace VideoTracker
             this.globals.Set(gdg.MAIN, gdk.AUTOSAVE, true);
         }
     }
+
+
     // Global constants associated with elements of SerializableGroupDictionary. "GDG" (global dictionary 
     // group) contains known group names, and "GDK" (global dictionary key) contains known key names.
     public static class gdg
@@ -474,16 +476,12 @@ namespace VideoTracker
     //
     // Serialization is done as a series of "<group key1="value1" key2="value2" ...>" tags.
     //
-    // There exists a set of helper routines to convert data to/from string format. Currently the
-    // following data types are supported: Strings, booleans, integers, string arrays, and string lists.
-    // The "set" routine converts any supported data type into a string. The "get" routines convert
-    // from strings back to the requested data type, optionally returning a default value if the
-    // key is undefined.
-    //
-    // If a value for a particular group/key pair is not found, a blank string is returned.
+    // The per-group dictionaries of keys are implemented using the StringDictionary class, 
+    // which automatically assigns default values to undefined keys and which has helper
+    // routines to convert supported data types to/from strings.
     //
     [XmlRoot("SerializableGroupDictionary")]
-    public class SerializableGroupDictionary : SortedDictionary<string, StringDictionary>, IXmlSerializable
+    public class SerializableGroupDictionary : Dictionary<string, StringDictionary>, IXmlSerializable
     {
         public System.Xml.Schema.XmlSchema GetSchema()
         {
@@ -523,90 +521,31 @@ namespace VideoTracker
             }
         }
         
+        // Helper methods for data conversion. These just call the corresponding
+        // methods in StringDictionary.
         public bool GetBool(string group, string key, string defval="false")
         {
-            if (this[group][key] == "")
-            {
-                this[group][key] = defval;
-            }    
-            return (this[group][key] == "true");
+            return (this[group].GetBool(key, defval));
         }
-
 
         public int GetInt(string group, string key, int defval = 0)
         {
-            int value;
-            if (!Int32.TryParse(this[group][key], out value))
-            {
-                value = defval;
-                this[group][key] = value.ToString();
-            }
-            return (value);
+            return (this[group].GetInt(key, defval));;
         }
 
         public List<string> GetList(string group, string key, char delim = '|')
         {
-            if (this[group][key] == "") return (new List<string>());
-            List<string> val = this[group][key].Split(delim).ToList<string>();
-            return (val);
+            return(this[group].GetList(key, delim));
         }
 
         public string[] GetArray(string group, string key, char delim = '|')
         {
-            if (this[group][key] == "") return (new string[0]);
-            string[] val = this[group][key].Split(delim);
-            return (val);
+            return (this[group].GetArray(key, delim));
         }
 
         public void Set(string group, string key, object value, char delim = '|')
         {
-            Type t = value.GetType();
-            if (t == typeof(bool))
-            {
-                if ((bool)value)
-                {
-                    this[group][key] = "true";
-                }
-                else
-                {
-                    this[group][key] = "false";
-                }
-            }
-            else if (t == typeof(int))
-            {
-                this[group][key] = value.ToString();
-            }
-            else if (t == typeof(string)) {
-                this[group][key] = (string) value;
-            }
-            else if (t == typeof(string[]))
-            {
-                this[group][key] = String.Join(delim.ToString(), (string[]) value);
-            }
-            else if (t == typeof(List<string>))
-            {
-                this[group][key] = String.Join(delim.ToString(), (List<string>) value);
-            }
-            else
-            {
-                MessageBox.Show("VideoTrackerData.Set(): Unknown type " + value.GetType().ToString());
-            }
-        }
-
-        public new StringDictionary this[string group]
-        {
-            get
-            {
-                if (!base.ContainsKey(group))
-                {
-                    base[group] = new StringDictionary();
-                }
-                return base[group];
-            }
-            set
-            {
-                base[group] = value;
-            }
+            this[group].Set(key, value, delim);
         }
     }
 
@@ -615,17 +554,96 @@ namespace VideoTracker
     //
     // If a key is not defined, then return a blank string.
     //
-    public class StringDictionary : SortedDictionary<string,string>
+    // There exists a set of helper routines to convert data to/from string format. Currently the
+    // following data types are supported: Strings, booleans, integers, string arrays, and string lists.
+    // Lists and arrays have all the elements concatenated into a string, with a user-defined character
+    // used as a delimiter.
+    //
+    // The "set" routine converts any supported data type into a string. The "get" routines convert
+    // from strings back to the requested data type, optionally returning a default value if the
+    // key is undefined. 
+    //
+    public class StringDictionary : Dictionary<string,string>
     {
+        public bool GetBool(string key, string defval="false")
+        {
+            if (this[key] == "")
+            {
+                this[key] = defval;
+            }    
+            return (this[key] == "true");
+        }
+
+        public int GetInt(string key, int defval = 0)
+        {
+            int value;
+            if (!Int32.TryParse(this[key], out value))
+            {
+                value = defval;
+                this[key] = value.ToString();
+            }
+            return (value);
+        }
+
+        public List<string> GetList(string key, char delim = '|')
+        {
+            if (this[key] == "") return (new List<string>());
+            List<string> val = this[key].Split(delim).ToList<string>();
+            return (val);
+        }
+
+        public string[] GetArray(string key, char delim = '|')
+        {
+            if (this[key] == "") return (new string[0]);
+            string[] val = this[key].Split(delim);
+            return (val);
+        }
+
+        public void Set(string key, object value, char delim = '|')
+        {
+            Type t = value.GetType();
+            if (t == typeof(bool))
+            {
+                if ((bool)value)
+                {
+                    this[key] = "true";
+                }
+                else
+                {
+                    this[key] = "false";
+                }
+            }
+            else if (t == typeof(int))
+            {
+                this[key] = value.ToString();
+            }
+            else if (t == typeof(string))
+            {
+                this[key] = (string)value;
+            }
+            else if (t == typeof(string[]))
+            {
+                this[key] = String.Join(delim.ToString(), (string[])value);
+            }
+            else if (t == typeof(List<string>))
+            {
+                this[key] = String.Join(delim.ToString(), (List<string>)value);
+            }
+            else
+            {
+                MessageBox.Show("VideoTrackerData.Set(): Unknown type " + value.GetType().ToString());
+            }
+        }
+
         public new string this[string key]
         {
             get
             {
-                if (base.ContainsKey(key))
+                if (!base.ContainsKey(key))
                 {
-                    return base[key];
+                    base[key] = "";
                 }
-                return ("");
+                return (base[key]);
             }
             set
             {
