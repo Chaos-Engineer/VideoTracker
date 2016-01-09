@@ -2,5 +2,7 @@ bin/*
 Data/*
 obj/*
 backup/*
+VideoTrackerLib/obj/*
+VideoTrackerLib/bin/*
 *.suo
 *.exe

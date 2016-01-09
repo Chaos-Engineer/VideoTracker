@@ -72,8 +72,8 @@ namespace VideoTracker
                 VideoTrackerData vtd = (VideoTrackerData)e.Argument;
 
                 Regex whitespace = new Regex(@"\s+");
-                string fileSearchString = whitespace.Replace(title, "*");
-                string regexSearchString = whitespace.Replace(Regex.Escape(title), ".*");
+                string fileSearchString = whitespace.Replace(seriesTitle, "*");
+                string regexSearchString = whitespace.Replace(Regex.Escape(seriesTitle), ".*");
                 string seasonEpisodeRegex = regexSearchString + @"\D*?(\d+)\D+?(\d+)";  // Find first two digit strings
                 string EpisodeOnlyRegex = regexSearchString + @"\D*?(\d+)";             // Find first digit string only
                 Dictionary<int, int> seasons = new Dictionary<int, int>();
@@ -83,7 +83,7 @@ namespace VideoTracker
 
                 if (addDelay.Equals("true"))
                 {
-                    Thread.Sleep(1000 * title.Length); // Force delay 
+                    Thread.Sleep(1000 * seriesTitle.Length); // Force delay 
                 }
                 foreach (string directory in directoryList)
                 {
@@ -104,7 +104,7 @@ namespace VideoTracker
                     {
                         VideoFile v = new VideoFile();
                         v.internalName = file;
-                        v.title = Path.GetFileName(file);
+                        v.episodeTitle = Path.GetFileName(file);
 
                         parsingEpisode = true;
                         // This handles strings with season and episode numbers, in formats
@@ -185,7 +185,7 @@ namespace VideoTracker
                                 if (v.episode == 0) { v.episode = 1; }
                             }
                         }
-                        v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.postSeason, v.episode, v.title);
+                        v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.postSeason, v.episode, v.episodeTitle);
 
                         videoFiles.Add(v.key, v);
                         // Note that we identify the current video using the internal file 
@@ -234,6 +234,7 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
+                this.videoFiles.Clear(); // Make sure error is reported if list was partially loaded.
                 errorString = ex.ToString();
             }
         }

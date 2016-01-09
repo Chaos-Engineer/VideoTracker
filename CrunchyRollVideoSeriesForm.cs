@@ -27,7 +27,7 @@ namespace VideoTracker
             InitializeComponent();
             this.crunchyRollVideoSeries = cs;
             this.videoTrackerData = vtd;
-            this.Title.Text = cs.title;
+            this.Title.Text = cs.seriesTitle;
             this.URL.Text = cs.URL;
         }
 

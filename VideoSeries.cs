@@ -31,10 +31,11 @@ namespace VideoTracker
     [XmlInclude(typeof(FileVideoSeries))]
     [XmlInclude(typeof(AmazonVideoSeries))]
     [XmlInclude(typeof(CrunchyRollVideoSeries))]
+    [XmlInclude(typeof(PluginSeries))]
     public abstract class VideoSeries
     {
 
-        public string title;
+        public string seriesTitle;
         public VideoFile currentVideo;
         // Not serialized - this list can be changed between invocations of the 
         // program and so must be built at run-time.
@@ -58,18 +59,18 @@ namespace VideoTracker
         [XmlIgnore,NonSerialized]
         private BackgroundWorker backgroundWorker;
         [XmlIgnore, NonSerialized]
-        private static DateTime lastAlert = DateTime.Now.AddDays(-1);
+        protected static DateTime lastAlert = DateTime.Now.AddDays(-1);
 
         static VideoSeries()
         {
             dummyFile = new VideoFile();
-            dummyFile.title = dummyFileKey;
+            dummyFile.episodeTitle = dummyFileKey;
             dummyFile.key = dummyFileKey;
         }
 
         public VideoSeries()
         {
-            this.title = "";
+            this.seriesTitle = "";
             this.currentVideo = null;
             this.panel = null;
             this.videoFiles = new SortedList<string, VideoFile>();
@@ -81,7 +82,7 @@ namespace VideoTracker
                 new RunWorkerCompletedEventHandler(LoadDataCompleted);
         }
 
-        public virtual void PlayCurrent()
+        public virtual void Play()
         {
             Process.Start(currentVideo.internalName);
         }
@@ -90,7 +91,7 @@ namespace VideoTracker
         {
             videoTrackerData.videoTrackerForm.RegisterWorkerThread();
             videoFiles.Clear();
-            this.title = title;
+            this.seriesTitle = title;
             if (this.panel == null) { 
                 this.panel = new VideoPlayerPanel(videoTrackerData, this);
             }
@@ -112,7 +113,7 @@ namespace VideoTracker
                 if ((DateTime.Now - lastAlert).TotalSeconds > 10)
                 {
                     lastAlert = DateTime.Now;
-                    MessageBox.Show("Error loading " + this.title + " (and possibly others).\n" + errorString);
+                    MessageBox.Show("Error loading " + this.seriesTitle + " (and possibly others).\n" + errorString);
                 }
                 this.valid = false;
                 if (this.currentVideo != null)
@@ -142,16 +143,5 @@ namespace VideoTracker
         {
             return this.valid;
         }
-    }
-
-    [Serializable]
-    public class VideoFile
-    {
-        public string title;            // Episode title to display
-        public string internalName;     // Internal reference to episode (e.g. filename or URL)
-        public int season;              // Season number
-        public int episode;             // Episode number
-        public int postSeason;          // Set to "1" if this is a post-season special
-        public string key;              // Unique value, used to sort episodes
     }
 }

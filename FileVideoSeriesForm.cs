@@ -41,10 +41,10 @@ namespace VideoTracker
             this.fileVideoSeries = vs;
             this.videoTrackerData = vtd;
 
-            this.titleBox.Text = vs.title;
+            this.titleBox.Text = vs.seriesTitle;
             if (vs.currentVideo != null)
             {
-                this.fileNameBox.Text = vs.currentVideo.title;
+                this.fileNameBox.Text = vs.currentVideo.episodeTitle;
             }
             foreach (string dir in vs.directoryList)
             {

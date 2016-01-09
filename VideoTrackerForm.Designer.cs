@@ -42,6 +42,7 @@
             this.addProgramMenuItem = new System.Windows.Forms.MenuItem();
             this.addAmazonVideoOnDemandMenuItem = new System.Windows.Forms.MenuItem();
             this.addCrunchyRollVideoMenuItem = new System.Windows.Forms.MenuItem();
+            this.editSeparator = new System.Windows.Forms.MenuItem();
             this.refreshMenuItem = new System.Windows.Forms.MenuItem();
             this.settingsMenuItem = new System.Windows.Forms.MenuItem();
             this.helpMenuItem = new System.Windows.Forms.MenuItem();
@@ -131,6 +132,7 @@
             this.addProgramMenuItem,
             this.addAmazonVideoOnDemandMenuItem,
             this.addCrunchyRollVideoMenuItem,
+            this.editSeparator,
             this.refreshMenuItem,
             this.settingsMenuItem});
             this.editMenuItem.Text = "Edit";
@@ -153,16 +155,21 @@
             this.addCrunchyRollVideoMenuItem.Text = "Add CrunchyRoll Video";
             this.addCrunchyRollVideoMenuItem.Click += new System.EventHandler(this.addCrunchyRollVideoMenuItem_Click);
             // 
+            // editSeparator
+            // 
+            this.editSeparator.Index = 3;
+            this.editSeparator.Text = "-";
+            // 
             // refreshMenuItem
             // 
-            this.refreshMenuItem.Index = 3;
+            this.refreshMenuItem.Index = 4;
             this.refreshMenuItem.Shortcut = System.Windows.Forms.Shortcut.F5;
             this.refreshMenuItem.Text = "Refresh";
             this.refreshMenuItem.Click += new System.EventHandler(this.refreshMenuItem_Click);
             // 
             // settingsMenuItem
             // 
-            this.settingsMenuItem.Index = 4;
+            this.settingsMenuItem.Index = 5;
             this.settingsMenuItem.Text = "Settings";
             this.settingsMenuItem.Click += new System.EventHandler(this.settingsMenuItem_Click);
             // 
@@ -237,6 +244,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.MenuItem aboutMenuItem;
+        private System.Windows.Forms.MenuItem editSeparator;
     }
 }
 

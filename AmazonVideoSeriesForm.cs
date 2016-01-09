@@ -28,7 +28,7 @@ namespace VideoTracker
             InitializeComponent();
             this.amazonVideoSeries = vs;
             this.videoTrackerData = vtd;
-            this.titleBox.Text = vs.title;
+            this.titleBox.Text = vs.seriesTitle;
             this.keywordBox.Text = vs.keywords;
         }
         

@@ -62,7 +62,7 @@ namespace VideoTracker
             vsf.ShowDialog();
         }
 
-        public override void PlayCurrent()
+        public override void Play()
         {
             string url = GetURLFromAsin(currentVideo.internalName);
             Process.Start(url);
@@ -173,7 +173,7 @@ namespace VideoTracker
                 asin = TagToString(doc, "ASIN");
                 string title = TagToString(doc, "Title");
                 VideoFile v = new VideoFile();
-                v.title = title;
+                v.episodeTitle = title;
                 // The thing we want to play is actually GetURLFromAsin(asin). However,
                 // that's too many requests to send to the Amazon servers at once, so
                 // we'll just save the "asin", and defer the GetURLFromAsin call until
@@ -317,11 +317,11 @@ namespace VideoTracker
                         VideoFile v = new VideoFile();
                         if (multiseason)
                         {
-                            v.title = season + "." + episode + " - " + title;
+                            v.episodeTitle = season + "." + episode + " - " + title;
                         }
                         else
                         {
-                            v.title = episode + " - " + title;
+                            v.episodeTitle = episode + " - " + title;
                         }
                         // The thing we want to play is actually GetURLFromAsin(asin). However,
                         // that's too many requests to send to the Amazon servers at once, so
@@ -331,7 +331,7 @@ namespace VideoTracker
                         v.episode = episode;
                         v.season = season;
                         v.postSeason = 0;
-                        v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.postSeason, v.episode, v.title);
+                        v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.postSeason, v.episode, v.episodeTitle);
                         videoFiles.Add(v.key, v);
                     }
 

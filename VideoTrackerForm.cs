@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
+//using System.Windows;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization;
@@ -29,6 +29,8 @@ namespace VideoTracker
         private int panelWidth;         // Width of individual panel controls, excluding margin (used to change width)
         private int actualPanelWidth;   // Width of individual panel controls, including margin
         private int actualPanelHeight;  // Height of individual panel controls, including margin
+
+        private bool pluginsLoaded = false;
 
         public VideoTrackerForm(string launchFile)
         {
@@ -332,6 +334,17 @@ namespace VideoTracker
             configFileValid = true;
             LoadAllSeries();
             configFile = file;
+
+            // Add plugins to Edit menu on the first run.
+            if (!pluginsLoaded)
+            {
+                foreach (string key in videoTrackerData.globals[gdg.PLUGINS].Keys)
+                {
+                    InsertPluginMenuItem(key, videoTrackerData.globals[key][gpk.ADD]);
+                }
+                pluginsLoaded = true;
+            }
+
         }
 
         private void LoadAllSeries()
@@ -349,16 +362,16 @@ namespace VideoTracker
             {
                 // Check for corrupted video in configuration file. This
                 // shouldn't happen unless there was a bug adding a series.
-                if (vs.title == "") { vs.title = "UNKNOWN"; }
+                if (vs.seriesTitle == "") { vs.seriesTitle = "UNKNOWN"; }
                 if (vs.currentVideo == null)
                 {
                     vs.currentVideo = new VideoFile();
-                    vs.currentVideo.key = vs.currentVideo.title = "NO FILE FOUND";
-                    MessageBox.Show("Invalid data for title " + vs.title + ". " +
+                    vs.currentVideo.key = vs.currentVideo.episodeTitle = "NO FILE FOUND";
+                    MessageBox.Show("Invalid data for title " + vs.seriesTitle + ". " +
                         "\n\nAuto-save will not be performed until configuration is saved manually");
                     configFileValid = false;
                 }
-                vs.LoadFiles(vs.title, vs.currentVideo.title, videoTrackerData);
+                vs.LoadFiles(vs.seriesTitle, vs.currentVideo.episodeTitle, videoTrackerData);
             }
 
         }
@@ -407,6 +420,46 @@ namespace VideoTracker
             autoSaveMenuItem.Enabled = flag;
         }
 
+        delegate void Procedure();
+        public void InsertPluginMenuItem(string name, string add)
+        {
+
+            MenuItem plugin = new MenuItem(name);
+            plugin.Click += (sender, e) => this.PluginLauncher(name);
+            plugin.Name = name;
+            plugin.Text = add;
+
+            foreach (MenuItem item in editMenuItem.MenuItems) {
+                if (item.Text == "-") // This is the only way to identify a seperator bar.
+                {
+                    editMenuItem.MenuItems.Add(item.Index, plugin);
+                    break;
+                }
+            }
+
+
+        }
+        public void DeletePluginMenuItem(string name)
+        {
+            MenuItem[] items = editMenuItem.MenuItems.Find(name, false);
+            editMenuItem.MenuItems.Remove(items[0]);
+        }
+
+        // The PluginSeries constructor attaches the new object to videoTrackerData,
+        // so it will remain in-scope after this rotuine exits.
+        public void PluginLauncher(string name) 
+        {
+            string file = videoTrackerData.globals[gdg.PLUGINS][name];
+            PluginSeries ps = new PluginSeries(name, videoTrackerData);
+            string errorString;
+            if (!ps.PerformConfiguration(videoTrackerData, out errorString)) {
+               if (errorString != "") MessageBox.Show(errorString);
+               return;
+            }
+            ps.LoadFiles(ps.pluginSeriesDictionary["title"], "", videoTrackerData);
+        }
+
+
         private void aboutMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("VideoTracker\n" +
@@ -450,23 +503,24 @@ namespace VideoTracker
     // group) contains known group names, and "GDK" (global dictionary key) contains known key names.
     public static class gdg
     {
-        public const string MAIN   = "main";
-        public const string FILE   = "fileseries";
+        public const string MAIN = "main";
+        public const string FILE = "fileseries";
         public const string AMAZON = "amazon";
+        public const string PLUGINS = "plugins";
     }
 
     public static class gdk
     {
         // Group=MAIN
-        public const string AUTOSAVE    = "autosave";
-        public const string COLUMNS     = "columns";
+        public const string AUTOSAVE = "autosave";
+        public const string COLUMNS = "columns";
 
         // Group=FILE
-        public const string DEFDIRLIST  = "defaultdirectorylist";
+        public const string DEFDIRLIST = "defaultdirectorylist";
 
         // Group=AMAZON
-        public const string PUBLICKEY   = "publickey";
-        public const string SECRETKEY   = "secretkey";
+        public const string PUBLICKEY = "publickey";
+        public const string SECRETKEY = "secretkey";
         public const string AFFILIATEID = "affiliateid";
     }
 
@@ -489,8 +543,6 @@ namespace VideoTracker
         }
         public void ReadXml(System.Xml.XmlReader reader)
         {
-            XmlSerializer keySerializer = new XmlSerializer(typeof(string));
-            XmlSerializer valueSerializer = new XmlSerializer(typeof(string));
             bool wasEmpty = reader.IsEmptyElement;
             reader.Read();
             if (wasEmpty)
@@ -508,8 +560,6 @@ namespace VideoTracker
         }
         public void WriteXml(System.Xml.XmlWriter writer)
         {
-            XmlSerializer keySerializer = new XmlSerializer(typeof(string));
-            XmlSerializer valueSerializer = new XmlSerializer(typeof(string));
             foreach (string group in this.Keys)
             {
                 writer.WriteStartElement(group);
@@ -563,6 +613,11 @@ namespace VideoTracker
                 base[group] = value;
             }
         }
+
+        public new void Remove(string key)
+        {
+            if (this.ContainsKey(key)) base.Remove(key);
+        }
     }
 
     //
@@ -579,8 +634,41 @@ namespace VideoTracker
     // from strings back to the requested data type, optionally returning a default value if the
     // key is undefined. 
     //
-    public class StringDictionary : Dictionary<string,string>
+    [XmlRoot("StringDictionary")]
+    public class StringDictionary : SortedDictionary<string,string>, IXmlSerializable
     {
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(System.Xml.XmlReader reader)
+        {
+            bool wasEmpty = reader.IsEmptyElement;
+            reader.Read();
+            if (wasEmpty)
+                return;
+            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+            {
+                while (reader.MoveToNextAttribute())
+                {
+                    this[reader.Name] = reader.Value;
+                }
+                reader.Read();
+            }
+            reader.ReadEndElement();
+        }
+        public void WriteXml(System.Xml.XmlWriter writer)
+        {
+                writer.WriteStartElement("stringdictionary");
+                foreach (string key in this.Keys)
+                {
+                    writer.WriteAttributeString(key, this[key]);
+                }
+                writer.WriteEndElement();
+        }
+
+
         public bool GetBool(string key, string defval="false")
         {
             if (this[key] == "")
@@ -665,6 +753,11 @@ namespace VideoTracker
             {
                 base[key] = value;
             }
+        }
+
+        public new void Remove(string key)
+        {
+            if (this.ContainsKey(key)) base.Remove(key);
         }
     }
 }

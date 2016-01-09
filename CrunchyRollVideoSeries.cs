@@ -29,7 +29,7 @@ namespace VideoTracker
         public CrunchyRollVideoSeries(string URL, string title)
         {
             this.URL = URL;
-            this.title = title;
+            this.seriesTitle = title;
         }
 
         public override void EditForm(VideoTrackerData vtd)
@@ -112,7 +112,7 @@ namespace VideoTracker
 
                 v.key = key;
                 v.internalName = episodeUrl;
-                v.title = v.episode + " - " + desc;
+                v.episodeTitle = v.episode + " - " + desc;
                 v.season = 1;
                 videoFiles.Add(key, v);
 

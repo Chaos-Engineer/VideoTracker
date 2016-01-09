@@ -15,13 +15,18 @@ namespace VideoTracker
 {
     public partial class SettingsForm : Form
     {
+        private const string UNREGISTER = "Unregister";
+        private const string CONFIGURE = "Configure";
+
         private bool settingsValid;
         private VideoTrackerData videoTrackerData;
+        private VideoTrackerForm videoTrackerForm;
 
         public SettingsForm(VideoTrackerData vtd)
         {
             InitializeComponent();
             this.videoTrackerData = vtd;
+            this.videoTrackerForm = vtd.videoTrackerForm;
 
             // Global settings
 
@@ -38,6 +43,9 @@ namespace VideoTracker
             publicKeyTextBox.Text = vtd.globals[gdg.AMAZON][gdk.PUBLICKEY];
             secretKeyTextBox.Text = vtd.globals[gdg.AMAZON][gdk.SECRETKEY];
             affiliateIdTextBox.Text = vtd.globals[gdg.AMAZON][gdk.AFFILIATEID];
+
+            // Plugin settings
+            BuildPluginTable();
         }
 
         //
@@ -169,5 +177,96 @@ namespace VideoTracker
             }
         }
 
+        private void BuildPluginTable()
+        {
+            pluginPanel.SuspendLayout();
+            pluginPanel.Controls.Add(new CustomLabel("Plug-In"), 0, 0);
+            pluginPanel.Controls.Add(new CustomLabel("Description"), 1, 0);
+            foreach (string key in videoTrackerData.globals[gdg.PLUGINS].Keys)
+            {
+                AddPluginRow(key, videoTrackerData.globals[key][gpk.DESC]);
+            }
+            pluginPanel.ResumeLayout(false);
+            pluginPanel.PerformLayout();
+        }
+
+        private void AddPluginRow(string key, string description)
+        {
+            int index = pluginPanel.RowCount++;
+            RowStyle style = new RowStyle(SizeType.AutoSize);
+            pluginPanel.RowStyles.Add(style);
+            CustomLabel keyLabel = new CustomLabel(key);
+            CustomLabel fileLabel = new CustomLabel(description);
+            pluginPanel.Controls.Add(keyLabel, 0, index);
+            pluginPanel.Controls.Add(fileLabel, 1, index);
+            CustomButton configButton = new CustomButton(this, key, CONFIGURE, index);
+            CustomButton deleteButton = new CustomButton(this, key, UNREGISTER, index);
+            pluginPanel.Controls.Add(configButton, 2, index);
+            pluginPanel.Controls.Add(deleteButton, 3, index);
+        }
+
+        private void registerButton_Click(object sender, EventArgs e)
+        {
+
+            OpenFileDialog fd = openPluginFileDialog;
+            if (fd.ShowDialog() != DialogResult.OK) return;
+
+            string pluginFile = fd.FileName;
+            string pluginName;
+
+            if (PluginSeries.Register(pluginFile, videoTrackerData, out pluginName))
+            {
+                string pluginAdd = videoTrackerData.globals[pluginName][gpk.ADD];
+                string pluginDesc = videoTrackerData.globals[pluginName][gpk.DESC];
+                AddPluginRow(pluginName, pluginDesc);
+                this.videoTrackerForm.InsertPluginMenuItem(pluginName, pluginAdd);
+            }
+
+        }
+
+        public void customButton_Click(object sender, EventArgs e)
+        {
+            CustomButton b = (CustomButton) sender;
+            if (b.Text == UNREGISTER)
+            {
+                videoTrackerData.globals[gdg.PLUGINS].Remove(b.Name);
+                foreach (string key in videoTrackerData.globals[b.Name].Keys)
+                {
+                    videoTrackerData.globals.Remove(b.Name);
+                }
+                pluginPanel.RowStyles[b.rowNum].SizeType = SizeType.Absolute;
+                pluginPanel.RowStyles[b.rowNum].Height = 0; // Deleting row is difficult - just hide it.
+                this.videoTrackerForm.DeletePluginMenuItem(b.Name);
+            }
+            if (b.Text == CONFIGURE) {
+                string errorString;
+                PluginSeries.PerformGlobalConfiguration(b.Name, videoTrackerData, out errorString);
+                if (errorString != "") MessageBox.Show(errorString);
+            }
+        }
+    }
+
+    // Utility class to create a label, with AutoSize set to true and with the text passed into the constructor.
+    public class CustomLabel : Label
+    {
+        public CustomLabel(string text)
+        {
+            this.Text = text;
+            this.AutoSize = true;
+        }
+    }
+
+    public class CustomButton : Button
+    {
+        public int rowNum;
+        public CustomButton(SettingsForm settingsForm, string key, string text, int rowNum)
+        {
+            this.Name = key;
+            this.Text = text;
+            this.AutoSize = true;
+            this.UseVisualStyleBackColor = true;
+            this.rowNum = rowNum;
+            this.Click += new System.EventHandler(settingsForm.customButton_Click);
+        }
     }
 }

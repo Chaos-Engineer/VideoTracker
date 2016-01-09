@@ -59,7 +59,15 @@ namespace VideoTracker
 
         private void playButton_Click(object sender, EventArgs e)
         {
-            videoSeries.PlayCurrent();        }
+            try
+            {
+                videoSeries.Play();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to play file\n" + ex.ToString());
+            }
+        }
 
         private void playNextButton_Click(object sender, EventArgs e)
         {
@@ -110,7 +118,7 @@ namespace VideoTracker
 
         public void BeginFileLoad(VideoSeries vs)
         {
-            this.seriesName.Text = "Loading " + vs.title;
+            this.seriesName.Text = "Loading " + vs.seriesTitle;
             VisibleControls(false);
             this.initialWidth = Width;
         }
@@ -121,12 +129,12 @@ namespace VideoTracker
             this.videoSelector.Items.Clear();
             foreach (VideoFile f in vs.videoFiles.Values)
             {
-                string filename = f.title;
+                string filename = f.episodeTitle;
                 this.videoSelector.Items.Add(filename);
                 temp = TextRenderer.MeasureText(filename, this.videoSelector.Font).Width;
                 if (temp > maxWidth) { maxWidth = temp; }
             }
-            this.seriesName.Text = vs.title;
+            this.seriesName.Text = vs.seriesTitle;
             this.SetSelectorWidth(maxWidth);
             this.VisibleControls(true);
             this.UpdatePanel();
@@ -170,7 +178,7 @@ namespace VideoTracker
                 nextButton.Enabled = false;
                 playNextButton.Enabled = false;
                 playButton.Enabled = false;
-                seriesName.Text = videoSeries.title; // Title only, no episode number available.
+                seriesName.Text = videoSeries.seriesTitle; // Title only, no episode number available.
             }
             else
             {
@@ -185,13 +193,13 @@ namespace VideoTracker
                 int remaining = maxIndex - index;
                 if (v.postSeason == 1)
                 {
-                    seriesName.Text = videoSeries.title + " Season: " + v.season + 
+                    seriesName.Text = videoSeries.seriesTitle + " Season: " + v.season + 
                                     " Special: " + v.episode + 
                                     " (" + remaining + " remaining)";
                 }
                 else
                 {
-                    seriesName.Text = videoSeries.title + " Season: " + v.season + 
+                    seriesName.Text = videoSeries.seriesTitle + " Season: " + v.season + 
                                     " Episode: " + v.episode +
                                     " (" + remaining + " remaining)";
                 }
