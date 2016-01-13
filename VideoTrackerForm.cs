@@ -425,7 +425,7 @@ namespace VideoTracker
         {
 
             MenuItem plugin = new MenuItem(name);
-            plugin.Click += (sender, e) => this.PluginLauncher(name);
+            plugin.Click += (sender, e) => this.PluginLoader(name);
             plugin.Name = name;
             plugin.Text = add;
 
@@ -446,13 +446,13 @@ namespace VideoTracker
         }
 
         // The PluginSeries constructor attaches the new object to videoTrackerData,
-        // so it will remain in-scope after this rotuine exits.
-        public void PluginLauncher(string name) 
+        // so it will remain in-scope after this routine exits.
+        public void PluginLoader(string name) 
         {
             string file = videoTrackerData.globals[gdg.PLUGINS][name];
             PluginSeries ps = new PluginSeries(name, videoTrackerData);
             string errorString;
-            if (!ps.PerformConfiguration(videoTrackerData, out errorString)) {
+            if (!ps.ConfigureSeries(videoTrackerData, out errorString)) {
                if (errorString != "") MessageBox.Show(errorString);
                return;
             }
@@ -506,6 +506,7 @@ namespace VideoTracker
         public const string MAIN = "main";
         public const string FILE = "fileseries";
         public const string AMAZON = "amazon";
+        public const string PLUGIN_GLOBALS = "plugin_globals";
         public const string PLUGINS = "plugins";
     }
 
@@ -522,6 +523,9 @@ namespace VideoTracker
         public const string PUBLICKEY = "publickey";
         public const string SECRETKEY = "secretkey";
         public const string AFFILIATEID = "affiliateid";
+
+        // Group=PLUGIN_GLOBALS
+        public const string PYTHONPATH = "pythonpath";
     }
 
     //
@@ -534,7 +538,7 @@ namespace VideoTracker
     // which automatically assigns default values to undefined keys and which has helper
     // routines to convert supported data types to/from strings.
     //
-    [XmlRoot("SerializableGroupDictionary")]
+    [Serializable, XmlRoot("SerializableGroupDictionary")]
     public class SerializableGroupDictionary : Dictionary<string, StringDictionary>, IXmlSerializable
     {
         public System.Xml.Schema.XmlSchema GetSchema()
@@ -634,7 +638,7 @@ namespace VideoTracker
     // from strings back to the requested data type, optionally returning a default value if the
     // key is undefined. 
     //
-    [XmlRoot("StringDictionary")]
+    [Serializable, XmlRoot("StringDictionary")]
     public class StringDictionary : SortedDictionary<string,string>, IXmlSerializable
     {
         public System.Xml.Schema.XmlSchema GetSchema()
@@ -745,7 +749,7 @@ namespace VideoTracker
             {
                 if (!base.ContainsKey(key))
                 {
-                    base[key] = "";
+                    return("");
                 }
                 return (base[key]);
             }

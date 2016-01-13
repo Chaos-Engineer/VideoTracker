@@ -126,6 +126,9 @@ namespace VideoTracker
             videoTrackerData.globals.Set(gdg.AMAZON, gdk.PUBLICKEY, publicKeyTextBox.Text);
             videoTrackerData.globals.Set(gdg.AMAZON, gdk.SECRETKEY, secretKeyTextBox.Text);
             videoTrackerData.globals.Set(gdg.AMAZON, gdk.AFFILIATEID, affiliateIdTextBox.Text);
+
+            // Plugin globals
+            videoTrackerData.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH] = pythonDirTextBox.Text;
             this.settingsValid = true;
         }
 
@@ -180,6 +183,8 @@ namespace VideoTracker
         private void BuildPluginTable()
         {
             pluginPanel.SuspendLayout();
+            this.pythonDirTextBox.Text = videoTrackerData.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH];
+
             pluginPanel.Controls.Add(new CustomLabel("Plug-In"), 0, 0);
             pluginPanel.Controls.Add(new CustomLabel("Description"), 1, 0);
             foreach (string key in videoTrackerData.globals[gdg.PLUGINS].Keys)
@@ -211,11 +216,10 @@ namespace VideoTracker
             OpenFileDialog fd = openPluginFileDialog;
             if (fd.ShowDialog() != DialogResult.OK) return;
 
-            string pluginFile = fd.FileName;
-            string pluginName;
-
-            if (PluginSeries.Register(pluginFile, videoTrackerData, out pluginName))
+            Plugin plugin = new Plugin();
+            if (plugin.Register(fd.FileName, videoTrackerData))
             {
+                string pluginName = plugin.pluginName;
                 string pluginAdd = videoTrackerData.globals[pluginName][gpk.ADD];
                 string pluginDesc = videoTrackerData.globals[pluginName][gpk.DESC];
                 AddPluginRow(pluginName, pluginDesc);
@@ -240,8 +244,18 @@ namespace VideoTracker
             }
             if (b.Text == CONFIGURE) {
                 string errorString;
-                PluginSeries.PerformGlobalConfiguration(b.Name, videoTrackerData, out errorString);
+                Plugin plugin = new Plugin(b.Name, videoTrackerData);
+                plugin.ConfigureGlobals(videoTrackerData, out errorString);
                 if (errorString != "") MessageBox.Show(errorString);
+            }
+        }
+
+        private void pythonDirectoryButtonClick(object sender, EventArgs e)
+        {
+            VistaFolderBrowserDialog dd = openPythonDirectoryDialog;
+            if (dd.ShowDialog() == DialogResult.OK)
+            {
+                pythonDirTextBox.Text = dd.SelectedPath;
             }
         }
     }

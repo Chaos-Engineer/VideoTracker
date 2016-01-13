@@ -14,7 +14,7 @@ namespace VideoTracker
         public string internalName;     // Internal reference to episode (e.g. filename or URL)
         public int season;              // Season number
         public int episode;             // Episode number
-        public int postSeason;          // Set to "1" if this is a post-season special
+        public int special;          // Set to "1" if this is a post-season special
         public string key;              // Unique value, used to sort episodes
     }
 
@@ -24,6 +24,7 @@ namespace VideoTracker
         public const string NAME = "name";
         public const string ADD  = "add";
         public const string DESC = "desc";
+        public const string FORCECONFIG = "forceconfig";
     }
 
     public class spk

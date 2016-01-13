@@ -26,17 +26,30 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Sample.py" />
-    <Compile Include="SampleConfigureGlobals.py" />
-    <Compile Include="SampleConfigureSeries.py" />
+    <Compile Include="Funimation\Funimation.py" />
+    <Compile Include="Sample\Sample.py" />
+    <Compile Include="Sample\SampleConfigureGlobals.py" />
+    <Compile Include="Template\Template.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SampleConfigureGlobals.xaml" />
-    <Content Include="SampleConfigureSeries.xaml">
+    <Content Include="Funimation\Funimation.xaml" />
+    <Content Include="Sample\SampleConfigureGlobals.xaml" />
+    <Content Include="Sample\Sample.xaml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Template\Template.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="IronPython, Version=2.7.5.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1">
+      <Name>IronPython</Name>
+      <AssemblyName>IronPython.dll</AssemblyName>
+      <HintPath>C:\Program Files\IronPython 2.7\Platforms\Net35\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules, Version=2.7.5.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1">
+      <Name>IronPython.Modules</Name>
+      <AssemblyName>IronPython.Modules.dll</AssemblyName>
+      <HintPath>C:\Program Files\IronPython 2.7\Platforms\Net35\IronPython.Modules.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Name>PresentationCore</Name>
       <AssemblyName>PresentationCore.dll</AssemblyName>
@@ -72,6 +85,12 @@
       <Project>{cae0cf02-4ce7-4d8c-894b-1233b1dc74af}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Funimation\" />
+    <Folder Include="Lib\" />
+    <Folder Include="Sample\" />
+    <Folder Include="Template\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

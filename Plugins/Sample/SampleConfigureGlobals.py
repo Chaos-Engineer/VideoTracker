@@ -3,7 +3,4 @@
 # here by the XAML designer should be moved to the main plugin file.
 class SampleConfigureGlobals(Window):
     def __init__(self):
-        wpf.LoadComponent(self, 'D:\MyProjects\VideoTracker\Plugins\SampleConfigureGlobals.xaml')
- 
-    
-
+        wpf.LoadComponent(self, 'SampleConfigureGlobals.xaml')

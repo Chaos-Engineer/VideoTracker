@@ -191,7 +191,7 @@ namespace VideoTracker
                 int maxIndex = videoSeries.videoFiles.Count - 1;
                 int index = videoSeries.videoFiles.IndexOfKey(v.key);
                 int remaining = maxIndex - index;
-                if (v.postSeason == 1)
+                if (v.special == 1)
                 {
                     seriesName.Text = videoSeries.seriesTitle + " Season: " + v.season + 
                                     " Special: " + v.episode + 

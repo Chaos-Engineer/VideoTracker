@@ -3,6 +3,7 @@ using Microsoft.Scripting.Hosting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,12 +14,14 @@ namespace VideoTracker
 {
     public class PluginSeries : VideoSeries
     {
-        public StringDictionary pluginSeriesDictionary = new StringDictionary();
-
         public string pluginName;
+        public string pluginFileName;
 
-        private dynamic runtime;
-        private static Dictionary<string, dynamic> pluginRuntimeDictionary = new Dictionary<string, dynamic>();
+        public StringDictionary pluginSeriesDictionary = new StringDictionary();
+        private StringDictionary pluginGlobalDictionary;
+
+        private dynamic scope = null;
+        private Plugin plugin = null;
 
         public PluginSeries()
         {
@@ -28,77 +31,14 @@ namespace VideoTracker
         public PluginSeries(string pluginName, VideoTrackerData vtd)
         {
             this.pluginName = pluginName;
+            this.pluginGlobalDictionary = vtd.globals[pluginName];
+            this.plugin = new Plugin(pluginName, vtd);
         }
-
-        public static bool Register(string pluginFile, VideoTrackerData vtd, out string pluginName)
-        {
-            dynamic runtime;
-            const string NEW = "**NEW**";
-            pluginName = "UNDEFINED";
-
-            try
-            {
-                runtime = PluginSeries.CreateRuntime(NEW, pluginFile);
-            }
-                catch (Exception ex)
-            {
-                MessageBox.Show("Unable to load Python file " + pluginFile + ":\n" + ex.ToString());
-                return false;
-            }
-
-            StringDictionary pluginRegisterDictionary = new StringDictionary();
-            try {
-                runtime.Register(pluginRegisterDictionary);
-            } catch (Exception ex) {
-                pluginRuntimeDictionary.Remove(NEW);
-                MessageBox.Show("Error calling Register in " + pluginFile + ":\n" + ex.ToString());
-                return false;
-            }
-
-            if (pluginRegisterDictionary[gpk.NAME] == "" || pluginRegisterDictionary[gpk.ADD] == ""
-                || pluginRegisterDictionary[gpk.DESC] == "") 
-            {
-                pluginRuntimeDictionary.Remove(NEW);
-                MessageBox.Show("Invalid Register routine in " + pluginFile + 
-                        ":\nMust set values for 'name', 'add', and 'desc' arguments");
-                return false;
-            }
-
-            pluginName = pluginRegisterDictionary[gpk.NAME];
-
-            pluginRuntimeDictionary[pluginName] = pluginRuntimeDictionary[NEW];
-            pluginRuntimeDictionary.Remove(NEW);
-
-            vtd.globals[gdg.PLUGINS][pluginName] = pluginFile;
-            foreach (string key in pluginRegisterDictionary.Keys)
-            {
-                if (key != gpk.NAME)
-                {
-                    vtd.globals[pluginName][key] = pluginRegisterDictionary[key];
-                }
-            }
-            return true;
-
-        }
-
-        
-        private static dynamic CreateRuntime(string name, string file)
-        {
-            if (!PluginSeries.pluginRuntimeDictionary.ContainsKey(name))
-            {
-                Dictionary<string, object> options = new Dictionary<string, object>();
-                options["Debug"] = true;
-                ScriptRuntime python = Python.CreateRuntime(options);
-                pluginRuntimeDictionary[name] = python.UseFile(file);
-            }
-            return pluginRuntimeDictionary[name];
-        }
-
 
         public override void EditForm(VideoTrackerData vtd)
         {
             string errorString;
-            if (!this.PerformConfiguration(vtd, out errorString))
+            if (!this.ConfigureSeries(vtd, out errorString))
             {
                 if (errorString != "") MessageBox.Show(errorString);
                 return;
@@ -108,40 +48,64 @@ namespace VideoTracker
             this.LoadFiles(this.pluginSeriesDictionary["title"], "", vtd);
         }
 
-        protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
+        public override void Play()
         {
-            VideoTrackerData vtd = (VideoTrackerData)e.Argument;
-            if (!vtd.globals[gdg.PLUGINS].ContainsKey(pluginName)) {
-                errorString = "Plugin '" + pluginName + "' is no longer registered.";
+
+            if (!scope.ContainsVariable("Play"))
+            {
+                base.Play();
                 return;
             }
-            string pluginFile = vtd.globals[gdg.PLUGINS][pluginName];
-
-
-            // Initialize the Python runtime 
             try
             {
-                runtime = PluginSeries.CreateRuntime(pluginName, pluginFile);
+                if (!scope.Play(pluginGlobalDictionary, currentVideo.internalName)) base.Play();
             }
             catch (Exception ex)
             {
-                errorString = "Unable to load Python file " + pluginFile + ":\n" + ex.ToString();
+                MessageBox.Show("Unable to call Play() in " + plugin.pluginFileName + ":\n" + ex.ToString());
+            }
+        }
+
+        protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
+        {
+            VideoTrackerData vtd = (VideoTrackerData)e.Argument;
+            if (!vtd.globals[gdg.PLUGINS].ContainsKey(pluginName))
+            {
+                errorString = "Plugin '" + pluginName + "' is no longer registered.";
+                return;
+            }
+            if (this.plugin == null)
+            {
+                this.plugin = new Plugin(pluginName, vtd);
+            }
+            // Initialize the Python runtime 
+            try
+            {
+                scope = plugin.LoadPlugin();
+            }
+            catch (Exception ex)
+            {
+                errorString = "Unable to load Python file " + plugin.pluginFileName + ":\n" + ex.ToString();
                 return;
             }
 
             // Get the global variables for this plug-in
-            StringDictionary pluginGlobalDictionary = vtd.globals[pluginName];
+            this.pluginGlobalDictionary = vtd.globals[pluginName];
 
             // Load the series episodes.
             try
             {
-                if (!runtime.LoadSeries(pluginGlobalDictionary, this.pluginSeriesDictionary,
-                        out this.videoFiles)) return;
+                string errorString = scope.LoadSeries(this.pluginGlobalDictionary, this.pluginSeriesDictionary,
+                        out this.videoFiles);
+                if (errorString != "") {
+                    this.videoFiles.Clear();
+                    return;
+                }
             }
             catch (Exception ex)
             {
                 this.videoFiles.Clear(); // Make sure error is reported if list was partially loaded.
-                errorString = "Error calling LoadSeries in " + pluginFile + ":\n" + ex.ToString();
+                errorString = "Error calling LoadSeries in " + plugin.pluginFileName + ":\n" + ex.ToString();
                 return;
             }
 
@@ -162,29 +126,26 @@ namespace VideoTracker
             return;
         }
 
-        public static bool PerformGlobalConfiguration(string pluginName, VideoTrackerData vtd, out string errorString)
+     
+        public bool ConfigureSeries(VideoTrackerData vtd, out string errorString)
         {
-            string pluginFile = vtd.globals[gdg.PLUGINS][pluginName];
-            StringDictionary pluginGlobalDictionary = vtd.globals[pluginName];
-            dynamic runtime;
-
+            //Plugin plugin = new Plugin(pluginName, vtd);
             errorString = "";
             // Initialize the Python runtime 
             try
             {
-                runtime = PluginSeries.CreateRuntime(pluginName, pluginFile);
+                scope = plugin.LoadPlugin();
             }
             catch (Exception ex)
             {
-                errorString = "Unable to load Python file " + pluginFile + ":\n" + ex.ToString();
+                errorString = "Unable to load Python file " + plugin.pluginFileName + ":\n" + ex.ToString();
                 return false;
             }
 
             // Get the local variables for this plugin
             try
             {
-                pluginGlobalDictionary = vtd.globals[pluginName];
-                if (!runtime.ConfigureGlobals(out pluginGlobalDictionary))
+                if (!scope.ConfigureSeries(out this.pluginSeriesDictionary))
                 {
                     // Operation cancelled - no need to report error
                     errorString = "";
@@ -193,52 +154,228 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                errorString = "Unable to call ConfigureGlobals in " + pluginFile + ":\n" + ex.ToString();
-                return false;
-            }
-            vtd.globals[pluginName] = pluginGlobalDictionary;
-            return true;
-        }
-
-        public bool PerformConfiguration(VideoTrackerData vtd, out string errorString)
-        {
-            string pluginFile = vtd.globals[gdg.PLUGINS][pluginName]; 
-            errorString = "";
-            // Initialize the Python runtime 
-            try
-            {
-                runtime = PluginSeries.CreateRuntime(pluginName, pluginFile);
-            }
-            catch (Exception ex)
-            {
-                errorString = "Unable to load Python file " + pluginFile + ":\n" + ex.ToString();
-                return false;
-            }
-
-            // Get the local variables for this plugin
-            try
-            {
-                if (!runtime.ConfigureSeries(out this.pluginSeriesDictionary))
-                {
-                    // Operation cancelled - no need to report error
-                    errorString = "";
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                errorString = "Unable to call ConfigureSeries in " + pluginFile + ":\n" + ex.ToString();
+                errorString = "Unable to call ConfigureSeries in " + plugin.pluginFileName + ":\n" + ex.ToString();
                 return false;
             }
 
             seriesTitle = pluginSeriesDictionary[spk.TITLE];
             if (seriesTitle == "")
             {
-                errorString = "ERROR: ConfigureSeries call in " + pluginFile + "\n" + "did not set the 'spk.TITLE' field";
+                errorString = "ERROR: ConfigureSeries call in " + plugin.pluginFileName + "\n" + "did not set the 'spk.TITLE' field";
                 return false;
             }
             return true;
         }
+    }
+
+    //
+    // PLUGIN class
+    //
+    // This class is used in three ways:
+    // 1 - At registration time, the "Register" method is used to associate a file with the plugin and
+    //     create the associated ScriptRuntime object. We need a different ScriptRuntime for each plugin
+    //     to account for the different library paths.
+    // 2 - During global configuration, the "ConfigureGlobals()" method updates the global variables associated 
+    //     with the plugin. They are not stored locally to the class, they're in the VideoTrackerData dictionary.
+    // 3 - An individual video series can call the GetScope() method and use this to call the "ConfigureLocals()"
+    //     "LoadSeriesAsynch()" and "Play()" methods in the plug-in file.
+    //
+    // ScriptRuntime objects can be shared among all threads that use a plug-in.
+    // ScopeRuntime objects are not thread-safe, so a new object is needed for each thread.
+    //
+    public class Plugin
+    {
+        private const string NEW = "**NEW**";
+        public string pluginName = NEW;
+        public string pluginFileName;
+
+        private dynamic scope = null;
+        private string pythonLib = "";
+
+        // A single plug-in file (and the associated ScriptRuntime) can be shared between multiple instances.
+        // Use a static dictionary indexed on the plug-in name to track that information.
+ 
+        private static Dictionary<string, PluginData> pluginDictionary = new Dictionary<string, PluginData>();
+
+        //private static Dictionary<string, string> pluginFileDictionary = new Dictionary<string, string>();
+        //private static Dictionary<string, ScriptRuntime> pluginRuntimeDictionary = new Dictionary<string, ScriptRuntime>();
+        //private static Dictionary<string, DateTime> pluginFilemodDictionary = new Dictionary<string, DateTime>();
+
+        // Creates an empty plug-in. This will be initialized later by the Register call.
+        public Plugin()
+        {
+            return;
+        }
+
+        // Gets a previously-registered plugin.
+        public Plugin(string pluginName, VideoTrackerData vtd)
+        {
+            this.pluginName = pluginName;
+            this.pluginFileName = vtd.globals[gdg.PLUGINS][pluginName];
+            this.pythonLib = vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH];
+        }
+
+        // Registers a new plug-in
+        public bool Register(string pluginFileName, VideoTrackerData vtd)
+        {
+            this.pluginFileName = pluginFileName;
+            pluginDictionary[pluginName] = new PluginData(pluginFileName, vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH]);
+
+            // Load the plug-in file and call the "Register" method.
+            try
+            {
+                LoadPlugin();
+            }
+            catch (IronPython.Runtime.Exceptions.ImportException ex)
+            {
+                MessageBox.Show("Import exception: This usually means that IronPython has not been " +
+                    "installed on your system (download it from http://ironpython.net), or that the " +
+                    "IronPython library path on this page is incorrect. The other possibility is that " +
+                    "this plug-in relies on a library module that is not installed on your system\n\n" 
+                    + ex.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
+                return false;
+            }
+
+            StringDictionary pluginRegisterDictionary = new StringDictionary();
+            try
+            {
+                scope.Register(pluginRegisterDictionary);
+            }
+            catch (Exception ex)
+            {
+                pluginDictionary.Remove(NEW);
+                MessageBox.Show("Error calling Register in " + pluginFileName + ":\n" + ex.ToString());
+                return false;
+            }
+
+            // Validate the output of the "Register" method and update the dictionaries.
+            if (pluginRegisterDictionary[gpk.NAME] == "" || pluginRegisterDictionary[gpk.ADD] == ""
+                || pluginRegisterDictionary[gpk.DESC] == "")
+            {
+                pluginDictionary.Remove(NEW);
+                MessageBox.Show("Invalid Register routine in " + pluginFileName +
+                        ":\nMust set values for 'name', 'add', and 'desc' arguments");
+                return false;
+            }
+
+            pluginName = pluginRegisterDictionary[gpk.NAME];
+
+            pluginDictionary[pluginName] = pluginDictionary[NEW];
+            pluginDictionary.Remove(NEW);
+
+            vtd.globals[gdg.PLUGINS][pluginName] = pluginFileName;
+            foreach (string key in pluginRegisterDictionary.Keys)
+            {
+                if (key != gpk.NAME)
+                {
+                    vtd.globals[pluginName][key] = pluginRegisterDictionary[key];
+                }
+            }
+
+            // If the FORCECONFIG option is set, then run the ConfigureGlobals method.
+            // The plug-in will still be considered successfully registered even if this 
+            // operation fails.
+            if (pluginRegisterDictionary[gpk.FORCECONFIG] != "")
+            {
+                string errorString;
+                if (!ConfigureGlobals(vtd, out errorString))
+                {
+                    if (errorString == "") { MessageBox.Show(errorString); }
+                }
+            }
+            return true;
+        }
+
+
+        // If the ScriptRuntime for this plug-in hasn't been created, or if the source file has
+        // changed, then create a new ScriptRuntime.
+        //
+        // If the ScriptRuntime has been changed or if the "scope" property for this instance
+        // isn't defined, then create a new scope.
+        //
+        public dynamic LoadPlugin()
+        {
+            if (!pluginDictionary.ContainsKey(pluginName)) {
+                pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
+            }
+            if (scope == null || pluginDictionary[pluginName].fileMod < File.GetLastWriteTime(pluginFileName)) {
+                this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
+            }
+            return this.scope;
+        }
+
+        public bool ConfigureGlobals(VideoTrackerData vtd, out string errorString)
+        {
+            StringDictionary pluginGlobalDictionary = vtd.globals[pluginName];
+
+            errorString = "";
+            // Initialize the Python runtime 
+            try
+            {
+                LoadPlugin();
+            }
+            catch (Exception ex)
+            {
+                errorString = "Unable to load Python file " + pluginFileName + ":\n" + ex.ToString();
+                return false;
+            }
+
+            // Get the global variables for this plugin
+            if (!scope.ContainsVariable("ConfigureGlobals"))
+            {
+                errorString = "Configuration not possible.\nNo ConfigureGlobals entry point in " + pluginFileName;
+                return false;
+            }
+            try
+            {
+                pluginGlobalDictionary = vtd.globals[pluginName];
+                if (!this.scope.ConfigureGlobals(out pluginGlobalDictionary))
+                {
+                    // Operation cancelled - no need to report error
+                    errorString = "";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                errorString = "Unable to call ConfigureGlobals in " + pluginFileName + ":\n" + ex.ToString();
+                return false;
+            }
+            vtd.globals[pluginName] = pluginGlobalDictionary;
+            return true;
+        }
+
+
+        private class PluginData
+        {
+            public string file;
+            public ScriptRuntime runtime;
+            public DateTime fileMod;
+            public PluginData(string file, string lib)
+            {
+                Dictionary<string, object> options = new Dictionary<string, object>();
+                options["Debug"] = true;
+                ScriptRuntime python = Python.CreateRuntime(options);
+
+                // Add the script directory to the path list.
+                ScriptEngine pythonEngine = python.GetEngine("Python");
+                ICollection<string> paths = pythonEngine.GetSearchPaths();
+                paths.Add(Path.GetDirectoryName(file));
+                if (lib != "")
+                {
+                    paths.Add(lib);
+                }
+                pythonEngine.SetSearchPaths(paths);
+
+                this.file = file;
+                this.fileMod = File.GetLastWriteTime(file);
+                this.runtime = python;
+            }
+        };
 
     }
 }

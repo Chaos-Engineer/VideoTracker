@@ -25,10 +25,10 @@ namespace VideoTracker
         // The first digit string is interpreted as the episode number and any
         // subsequent digit strings are ignored.
         private bool noSeasonNumber;            // Make this configurable
-        // If the file name contains one of the postSeasonStrings, then it is interpreted
+        // If the file name contains one of the specialStrings, then it is interpreted
         // as a post-season special and appears after the regular episodes. (For example,
         // EpisodeS01E02.avi comes before Episode-S01-Christmas-Special.avi.)
-        private List<string> postSeasonStrings; // Make this configurable.
+        private List<string> specialStrings; // Make this configurable.
 
         public List<string> directoryList;
 
@@ -46,8 +46,8 @@ namespace VideoTracker
         {
             this.allowThreeDigitEpisodes = true; 
             this.noSeasonNumber = false;
-            this.postSeasonStrings = new List<string>();
-            this.postSeasonStrings.Add("SPECIAL");
+            this.specialStrings = new List<string>();
+            this.specialStrings.Add("SPECIAL");
 
             this.directoryList = null;
         }
@@ -176,16 +176,16 @@ namespace VideoTracker
 
                         // End-of-season special. May have the same episode number as a regular
                         // season episode.
-                        v.postSeason = 0;
-                        foreach (string s in postSeasonStrings)
+                        v.special = 0;
+                        foreach (string s in specialStrings)
                         {
                             if (file.IndexOf(s, StringComparison.CurrentCultureIgnoreCase) >= 0)
                             {
-                                v.postSeason = 1;
+                                v.special = 1;
                                 if (v.episode == 0) { v.episode = 1; }
                             }
                         }
-                        v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.postSeason, v.episode, v.episodeTitle);
+                        v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.special, v.episode, v.episodeTitle);
 
                         videoFiles.Add(v.key, v);
                         // Note that we identify the current video using the internal file 

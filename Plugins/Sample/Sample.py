@@ -6,10 +6,17 @@
 # The second is given a name and URL provided by the user.
 # The user also has the ability to specify an alternate launcher. If no launcer
 # is specific then the default web browser will be used.
+
+#
+# Import WPF and some .NET classes. Since Python might not be installed on the
+# client system, 
+#
 import clr 
 clr.AddReference('IronPython.Wpf')
 import wpf
 from System.Windows import Application, Window, MessageBox
+from System.IO import Path
+from System.Diagnostics import Process
 from Microsoft.Win32 import OpenFileDialog
 
 #
@@ -51,6 +58,8 @@ from VideoTracker import VideoFile, gpk, spk
 # - gpk.NAME - The name of the plug-in. This must be unique.
 # - gpk.ADD  - The string to insert into the "Edit" menu so that the user can invoke the plug-in
 # - gpk.DESC - A text description of the plug-in.
+# - gkp.FORCECONFIG - If non-null, the ConfigureGlobals routine will be called immediately after 
+#   registrations.
 #
 # You may also assign additional keys if you want. The keyname can be any text string, for example:
 #    pluginRegisterDictionary["other"] = "Additional data is stored like this"
@@ -59,6 +68,7 @@ def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.NAME]  = "sample"
     pluginRegisterDictionary[gpk.ADD]   = "Add Sample series"
     pluginRegisterDictionary[gpk.DESC]  = "Sample plug-in to launch a user-specified URL"
+    #pluginRegisterDictionary[gpk.FORCECONFIG] = "true"
 
 #
 # OPTIONAL ROUTINE: ConfigureGlobals
@@ -111,18 +121,50 @@ def ConfigureSeries(pluginSeriesDictionary) :
     else :
        return False
 
- 
+#
+# REQUIRED ROUTINE: LoadSeries
+#
+# This routine generates a list of files in a series. 
+#
+# It takes two inputs, pluginGlobalDictionary and pluginSeriesDictionary. These are the
+# data dictionaries built by the previous ConfigureGlobals and ConfigureSeries calls.
+#
+# The output, videoFiles, is an object of type SortedList<VideoFile>
+#
+# SortedList is a standard C# data structure. To add a new element to the list, you must
+# provide both the value of a sort key and the object to be added.
+#
+# VideoFile is an class with the following definition:
+#
+#    public class VideoFile
+#    {
+#        public string episodeTitle;     // Episode title to display
+#        public string internalName;     // Internal reference to episode (e.g. filename or URL)
+#        public int season;              // Season number
+#        public int episode;             // Episode number
+#        public int special;          // Set to "1" if this is a post-season special
+#        public string key;              // Unique value, used to sort episodes
+#    }
+#
+# 
+# This sample routine create a series containing two programs. "Season 1 Episode 1" is
+# a link to Youtube. "Season 1 Episode 2" is the link specified by the user in the
+# ConfigureSeries call.
+#
 def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
-    v = VideoFile()
 
+    # Episode 1
+    v = VideoFile()
     v.episodeTitle = "Launch Youtube"
     v.internalName = "https://www.youtube.com"
     v.season = 1
     v.episode = 1
-    v.postSeason = 0
+    v.special = 0
     v.key = "001001"
     videoFiles.Add(v.key, v);
 
+    # Episode 2.
+    #
     # For this plug-in, there is only a single generated episode, populated 
     # from the values in the SeriesDictionary. Normally this routine would 
     # generate a list of episodes based on a web lookup or something similar.
@@ -131,16 +173,56 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     v.internalName = pluginSeriesDictionary["url"]
     v.season = 1
     v.episode = 2
-    v.postSeason = 0
+    v.special = 0
     v.key = "001002"
     videoFiles.Add(v.key, v)
 
-    return True
+    return "" # Indicate no error
+
+def Play(pluginGlobalDictionary, name) :
+    launcher = pluginGlobalDictionary["launcher"]
+    if launcher == "" :
+        return False
+    Process.Start(launcher + " " + name)
+    return True;
 
 
+
+#
+# WPF Form controlled by the ConfigureGlobals call.
+#
+# This allows the user to enter the path of an executable that will be used to
+# launch the video. No data validatation is done.
+#
+class SampleConfigureGlobals(Window):
+    def __init__(self):
+        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'SampleConfigureGlobals.xaml')
+
+    # User hit OK, return the text field to the caller.
+    def OKButton_Click(self, sender, e):
+        self.DialogResult = True
+        return
+
+    # Clear text field.
+    def ClearButton_Click(self, sender, e):
+        self.launcher.Text = ""
+
+    # Open a file browser dialog, and store the result in the text field.
+    def BrowseButton_Click(self, sender, e):
+        dialog = OpenFileDialog()
+        result = dialog.ShowDialog();
+        if result == True :
+            self.launcher.Text = dialog.FileName
+        return
+#
+# WPF Form controlled by the ConfigureSeries call.
+#
+# Allow the user to enter an episode name and a URL. Both values are required.
+#
+# 
 class SampleConfigureSeries(Window):
     def __init__(self):
-        wpf.LoadComponent(self, 'D:\MyProjects\VideoTracker\Plugins\SampleConfigureSeries.xaml')
+        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Sample.xaml')
     
     def OKButton_Click(self, sender, e):
         if self.NameBox.Text == "" :
@@ -152,20 +234,6 @@ class SampleConfigureSeries(Window):
         self.DialogResult = True
         return
 
-class SampleConfigureGlobals(Window):
-    def __init__(self):
-        wpf.LoadComponent(self, 'D:\MyProjects\VideoTracker\Plugins\SampleConfigureGlobals.xaml')
+
+
     
-    def OKButton_Click(self, sender, e):
-        self.DialogResult = True
-        return
-
-    def ClearButton_Click(self, sender, e):
-        self.launcher.Text = ""
-
-    def BrowseButton_Click(self, sender, e):
-        dialog = OpenFileDialog()
-        result = dialog.ShowDialog();
-        if result == True :
-            self.launcher.Text = dialog.FileName
-        return

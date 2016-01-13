@@ -181,8 +181,8 @@ namespace VideoTracker
                 v.internalName = asin;
                 v.episode = 1;
                 v.season = 1;
-                v.postSeason = 0;
-                v.key = String.Format("{0:D3}{1:D1}{2:D3}", v.season, v.postSeason, v.episode);
+                v.special = 0;
+                v.key = String.Format("{0:D3}{1:D1}{2:D3}", v.season, v.special, v.episode);
                 videoFiles.Add(v.key, v);
                 return (true);
             }
@@ -330,8 +330,8 @@ namespace VideoTracker
                         v.internalName = asin;
                         v.episode = episode;
                         v.season = season;
-                        v.postSeason = 0;
-                        v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.postSeason, v.episode, v.episodeTitle);
+                        v.special = 0;
+                        v.key = String.Format("{0:D3}{1:D1}{2:D3}{3}", v.season, v.special, v.episode, v.episodeTitle);
                         videoFiles.Add(v.key, v);
                     }
 
