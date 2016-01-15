@@ -160,7 +160,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     v.season = 1
     v.episode = 1
     v.special = 0
-    v.key = "001001"
+    v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
     videoFiles.Add(v.key, v);
 
     # Episode 2.
@@ -174,7 +174,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     v.season = 1
     v.episode = 2
     v.special = 0
-    v.key = "001002"
+    v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
     videoFiles.Add(v.key, v)
 
     return "" # Indicate no error

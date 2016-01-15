@@ -135,6 +135,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7E4F20F978FE4B9A95E2470C5D8B9C7E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_931FBBAC2B674598B968A8C2749B40D1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_95E7D420D461411FB93CA06CF4CBF8B4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -226,12 +238,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5FCC3AC3D47265D4008C344146508534"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_653113B10E7D4FAFAF662D8DD8C158FD"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -299,6 +305,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_090BE8A6D8AAC009FA9E410CA5FE7E20"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_5FCC3AC3D47265D4008C344146508534"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -673,6 +685,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7E4F20F978FE4B9A95E2470C5D8B9C7E"
+            {
+            "SourcePath" = "8:..\\Plugins\\Kiss-Anime\\Kiss-Anime.py"
+            "TargetName" = "8:Kiss-Anime.py"
+            "Tag" = "8:"
+            "Folder" = "8:_D15C978F68244DC3A5F3A34B1BF26F9B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_931FBBAC2B674598B968A8C2749B40D1"
+            {
+            "SourcePath" = "8:..\\Plugins\\Kiss-Anime\\Kiss-Anime.xaml"
+            "TargetName" = "8:Kiss-Anime.xaml"
+            "Tag" = "8:"
+            "Folder" = "8:_D15C978F68244DC3A5F3A34B1BF26F9B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_95E7D420D461411FB93CA06CF4CBF8B4"
             {
             "SourcePath" = "8:..\\Plugins\\Sample\\Sample.xaml"
@@ -966,6 +1018,17 @@
                                 {
                                 }
                             }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_D15C978F68244DC3A5F3A34B1BF26F9B"
+                            {
+                            "Name" = "8:Kiss-Anime"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_0F6917EC9666475F89C0784074DBA463"
+                                "Folders"
+                                {
+                                }
+                            }
                             "{9EF0B969-E518-4E46-987F-47570745A589}:_EC02BB94E9614CF2B1C8DF4880B89F49"
                             {
                             "Name" = "8:Template"
@@ -1019,15 +1082,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:VideoTracker"
-        "ProductCode" = "8:{3CFC85FC-3DE7-426B-AE95-1DFB1166A6BE}"
-        "PackageCode" = "8:{586C75E9-390A-4DF7-BD9D-4F106AC1C4D0}"
+        "ProductCode" = "8:{1286601F-3DCF-4126-8221-5E00E198F0D0}"
+        "PackageCode" = "8:{DAE68126-AAD4-40C6-85BE-6236B4884E9C}"
         "UpgradeCode" = "8:{E486F037-4B11-409F-A329-CD5363DB71E5}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.8"
+        "ProductVersion" = "8:1.0.9"
         "Manufacturer" = "8:Extraordinary Popular Delusions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

@@ -195,11 +195,8 @@ namespace VideoTracker
         // A single plug-in file (and the associated ScriptRuntime) can be shared between multiple instances.
         // Use a static dictionary indexed on the plug-in name to track that information.
  
+        private static readonly object pluginDictionaryLock = new object();
         private static Dictionary<string, PluginData> pluginDictionary = new Dictionary<string, PluginData>();
-
-        //private static Dictionary<string, string> pluginFileDictionary = new Dictionary<string, string>();
-        //private static Dictionary<string, ScriptRuntime> pluginRuntimeDictionary = new Dictionary<string, ScriptRuntime>();
-        //private static Dictionary<string, DateTime> pluginFilemodDictionary = new Dictionary<string, DateTime>();
 
         // Creates an empty plug-in. This will be initialized later by the Register call.
         public Plugin()
@@ -219,75 +216,78 @@ namespace VideoTracker
         public bool Register(string pluginFileName, VideoTrackerData vtd)
         {
             this.pluginFileName = pluginFileName;
-            pluginDictionary[pluginName] = new PluginData(pluginFileName, vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH]);
+            lock (pluginDictionaryLock)
+            {
+                pluginDictionary[pluginName] = new PluginData(pluginFileName, vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH]);
 
-            // Load the plug-in file and call the "Register" method.
-            try
-            {
-                LoadPlugin();
-            }
-            catch (IronPython.Runtime.Exceptions.ImportException ex)
-            {
-                MessageBox.Show("Import exception: This usually means that IronPython has not been " +
-                    "installed on your system (download it from http://ironpython.net), or that the " +
-                    "IronPython library path on this page is incorrect. The other possibility is that " +
-                    "this plug-in relies on a library module that is not installed on your system\n\n" 
-                    + ex.ToString());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
-                return false;
-            }
-
-            StringDictionary pluginRegisterDictionary = new StringDictionary();
-            try
-            {
-                scope.Register(pluginRegisterDictionary);
-            }
-            catch (Exception ex)
-            {
-                pluginDictionary.Remove(NEW);
-                MessageBox.Show("Error calling Register in " + pluginFileName + ":\n" + ex.ToString());
-                return false;
-            }
-
-            // Validate the output of the "Register" method and update the dictionaries.
-            if (pluginRegisterDictionary[gpk.NAME] == "" || pluginRegisterDictionary[gpk.ADD] == ""
-                || pluginRegisterDictionary[gpk.DESC] == "")
-            {
-                pluginDictionary.Remove(NEW);
-                MessageBox.Show("Invalid Register routine in " + pluginFileName +
-                        ":\nMust set values for 'name', 'add', and 'desc' arguments");
-                return false;
-            }
-
-            pluginName = pluginRegisterDictionary[gpk.NAME];
-
-            pluginDictionary[pluginName] = pluginDictionary[NEW];
-            pluginDictionary.Remove(NEW);
-
-            vtd.globals[gdg.PLUGINS][pluginName] = pluginFileName;
-            foreach (string key in pluginRegisterDictionary.Keys)
-            {
-                if (key != gpk.NAME)
+                // Load the plug-in file and call the "Register" method.
+                try
                 {
-                    vtd.globals[pluginName][key] = pluginRegisterDictionary[key];
+                    LoadPlugin();
                 }
-            }
-
-            // If the FORCECONFIG option is set, then run the ConfigureGlobals method.
-            // The plug-in will still be considered successfully registered even if this 
-            // operation fails.
-            if (pluginRegisterDictionary[gpk.FORCECONFIG] != "")
-            {
-                string errorString;
-                if (!ConfigureGlobals(vtd, out errorString))
+                catch (IronPython.Runtime.Exceptions.ImportException ex)
                 {
-                    if (errorString == "") { MessageBox.Show(errorString); }
+                    MessageBox.Show("Import exception: This usually means that IronPython has not been " +
+                        "installed on your system (download it from http://ironpython.net), or that the " +
+                        "IronPython library path on this page is incorrect. The other possibility is that " +
+                        "this plug-in relies on a library module that is not installed on your system\n\n"
+                        + ex.ToString());
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
+                    return false;
+                }
+
+                StringDictionary pluginRegisterDictionary = new StringDictionary();
+                try
+                {
+                    scope.Register(pluginRegisterDictionary);
+                }
+                catch (Exception ex)
+                {
+                    pluginDictionary.Remove(NEW);
+                    MessageBox.Show("Error calling Register in " + pluginFileName + ":\n" + ex.ToString());
+                    return false;
+                }
+
+                // Validate the output of the "Register" method and update the dictionaries.
+                if (pluginRegisterDictionary[gpk.NAME] == "" || pluginRegisterDictionary[gpk.ADD] == ""
+                    || pluginRegisterDictionary[gpk.DESC] == "")
+                {
+                    pluginDictionary.Remove(NEW);
+                    MessageBox.Show("Invalid Register routine in " + pluginFileName +
+                            ":\nMust set values for 'name', 'add', and 'desc' arguments");
+                    return false;
+                }
+
+                pluginName = pluginRegisterDictionary[gpk.NAME];
+
+                pluginDictionary[pluginName] = pluginDictionary[NEW];
+                pluginDictionary.Remove(NEW);
+
+                vtd.globals[gdg.PLUGINS][pluginName] = pluginFileName;
+                foreach (string key in pluginRegisterDictionary.Keys)
+                {
+                    if (key != gpk.NAME)
+                    {
+                        vtd.globals[pluginName][key] = pluginRegisterDictionary[key];
+                    }
+                }
+
+                // If the FORCECONFIG option is set, then run the ConfigureGlobals method.
+                // The plug-in will still be considered successfully registered even if this 
+                // operation fails.
+                if (pluginRegisterDictionary[gpk.FORCECONFIG] != "")
+                {
+                    string errorString;
+                    if (!ConfigureGlobals(vtd, out errorString))
+                    {
+                        if (errorString == "") { MessageBox.Show(errorString); }
+                    }
+                }
+                return true;
             }
-            return true;
         }
 
 
@@ -299,13 +299,18 @@ namespace VideoTracker
         //
         public dynamic LoadPlugin()
         {
-            if (!pluginDictionary.ContainsKey(pluginName)) {
-                pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
+            lock (pluginDictionaryLock)
+            {
+                if (!pluginDictionary.ContainsKey(pluginName))
+                {
+                    pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
+                }
+                if (scope == null || pluginDictionary[pluginName].fileMod < File.GetLastWriteTime(pluginFileName))
+                {
+                    this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
+                }
+                return this.scope;
             }
-            if (scope == null || pluginDictionary[pluginName].fileMod < File.GetLastWriteTime(pluginFileName)) {
-                this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
-            }
-            return this.scope;
         }
 
         public bool ConfigureGlobals(VideoTrackerData vtd, out string errorString)

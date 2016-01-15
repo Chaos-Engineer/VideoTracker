@@ -18,17 +18,19 @@ def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.NAME]  = "[NAME]"
     pluginRegisterDictionary[gpk.ADD]   = "Add [NAME] Series"
     pluginRegisterDictionary[gpk.DESC]  = "Description of [NAME]"
-    pluginRegisterDictionary[gpk.FORCECONFIG] = "true"
+    #pluginRegisterDictionary[gpk.FORCECONFIG] = "true"
 
 
-def ConfigureGlobals(pluginGlobalDictionary) :
-    form = SampleConfigureGlobals()
-    form.launcher.Text = pluginGlobalDictionary["launcher"]
-    if form.ShowDialog() :
-        pluginGlobalDictionary["launcher"] = form.launcher.Text
-        return True
-    else :
-        return False
+# ConfigureGlobals is optional
+
+#def ConfigureGlobals(pluginGlobalDictionary) :
+#    form = SampleConfigureGlobals()
+#    form.launcher.Text = pluginGlobalDictionary["launcher"]
+#    if form.ShowDialog() :
+#        pluginGlobalDictionary["launcher"] = form.launcher.Text
+#        return True
+#    else :
+#        return False
 
 def ConfigureSeries(pluginSeriesDictionary) :
     form = SampleConfigureSeries()
@@ -48,7 +50,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     v.season = 1
     v.episode = 1
     v.special = 0
-    v.key = "001001"
+    v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
     videoFiles.Add(v.key, v);
 
     return "" # Indicates no error
@@ -65,10 +67,10 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 #    return True;
 
 #
-# SampleConfigureGlobals is optional.
+# TemplateConfigureGlobals form is optional.
 #
 
-#class SampleConfigureGlobals(Window):
+#class TemplateConfigureGlobals(Window):
 #    def __init__(self):
 #        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + '<CONFIGURE GLOBALS>.xaml')
 #
@@ -84,7 +86,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 # Allow the user to enter an episode name and a URL. Both values are required.
 #
 # 
-class SampleConfigureSeries(Window):
+class TemplateConfigureSeries(Window):
     def __init__(self):
         wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Template.xaml')
     

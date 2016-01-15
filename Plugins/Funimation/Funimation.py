@@ -66,7 +66,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
             v.season = int(member["season_number"])
             v.episode = int(member["sequence"])
             v.special = 0
-            v.key = "%04d%04d%s" % (v.season, v.episode, v.episodeTitle)
+            v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
             # "sequence" or "number" here?
             print member["title"] + " S" + member["season_number"] + "E" + member["sequence"] + " " + member["url"]
             print series_url + member["url"] + "?watch=sub"

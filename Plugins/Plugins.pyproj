@@ -27,12 +27,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Funimation\Funimation.py" />
+    <Compile Include="Kiss-Anime\Kiss-Anime.py" />
     <Compile Include="Sample\Sample.py" />
     <Compile Include="Sample\SampleConfigureGlobals.py" />
     <Compile Include="Template\Template.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Funimation\Funimation.xaml" />
+    <Content Include="Kiss-Anime\Kiss-Anime.xaml" />
     <Content Include="Sample\SampleConfigureGlobals.xaml" />
     <Content Include="Sample\Sample.xaml">
       <SubType>Designer</SubType>
@@ -88,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Funimation\" />
+    <Folder Include="Kiss-Anime\" />
     <Folder Include="Lib\" />
     <Folder Include="Sample\" />
     <Folder Include="Template\" />
