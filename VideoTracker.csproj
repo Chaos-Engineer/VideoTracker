@@ -105,6 +105,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="AmazonVideoSeriesForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\VideoTrackerResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -119,10 +123,9 @@
     </Page>
     <Compile Include="AmazonSignedRequestHelper.cs" />
     <Compile Include="AmazonVideoSeries.cs" />
-    <Compile Include="AmazonVideoSeriesForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="AmazonVideoSeriesForm.xaml.cs">
+      <DependentUpon>AmazonVideoSeriesForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AmazonVideoSeriesForm.Designer.cs" />
     <Compile Include="VideoTracker.xaml.cs">
       <DependentUpon>VideoTracker.xaml</DependentUpon>
       <SubType>Code</SubType>

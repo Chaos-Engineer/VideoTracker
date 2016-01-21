@@ -30,12 +30,6 @@ namespace VideoTracker
         private long workerThreads; // Interlocked variables must be long
         private VideoTrackerData videoTrackerData;
 
-        private double currentHeight;      // Saved height of main window (used when resizing)
-        private double currentWidth;       // Saved width of main window (used when resizing)
-        private double panelWidth;            // Width of individual panel controls, excluding margin (used to change width)
-        private double actualPanelWidth;   // Width of individual panel controls, including margin
-        private double actualPanelHeight;  // Height of individual panel controls, including margin
-
         private int pluginsLoaded = 0;
 
         private OpenFileDialog openFileDialog;
@@ -150,10 +144,8 @@ namespace VideoTracker
 
         private void addAmazonVideoOnDemandMenuItem_Click(object sender, EventArgs e)
         {
-            using (AmazonVideoSeriesForm vsf = new AmazonVideoSeriesForm(videoTrackerData))
-            {
-               vsf.ShowDialog();
-            }
+            AmazonVideoSeriesForm vsf = new AmazonVideoSeriesForm(videoTrackerData);
+            vsf.ShowDialog();
         }
 
 
@@ -237,21 +229,16 @@ namespace VideoTracker
                 blankLabel.Visibility = Visibility.Collapsed;
             }
 
-            // Find the maximum initial width of the VideoPlayerPanel controls, and set
-            // the width of each panel to that maximum.
-            this.panelWidth = 0;
-            this.actualPanelWidth = 0;
-            this.actualPanelHeight = 0;
-
             // Find the maximum of the requiredWidths of the panels, and set each panel
             // to that width.
+            double panelWidth = 0;
             foreach (VideoPlayerPanel vp in mainPanel.Children)
             {  
-                this.panelWidth = Math.Max(this.panelWidth, vp.requiredSize.Width);
+                panelWidth = Math.Max(panelWidth, vp.requiredSize.Width);
             }
             foreach (VideoPlayerPanel vp in mainPanel.Children)
             {
-                vp.Width = vp.Margin.Left + this.panelWidth + vp.Margin.Right;
+                vp.Width = vp.Margin.Left + panelWidth + vp.Margin.Right;
             }
 
             // This "ConvertToInt" call assigns a default value of 1 if columns is currently undefined.
@@ -402,7 +389,6 @@ namespace VideoTracker
 
             MenuItem plugin = new MenuItem();
             plugin.Click += (sender, e) => this.PluginLoader(name);
-            ///plugin.Content = name; // Must be alphanumeric...
             plugin.Header = add;
             pluginsLoaded++;
             
@@ -412,11 +398,11 @@ namespace VideoTracker
                 index++;
                 if (item is Separator)
                 {
-                    if (pluginsLoaded == 1)
+                    if (pluginsLoaded == 1) // Add a new Separator bar after the first plug-in
                     {
                         editMenuItem.Items.Insert(index, new Separator());
                     }
-                    editMenuItem.Items.Insert(index, plugin); // 0 needs to be something else
+                    editMenuItem.Items.Insert(index, plugin);
                     break;
                 }
 

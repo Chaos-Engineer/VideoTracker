@@ -14,10 +14,11 @@ namespace VideoTracker
         public string internalName;     // Internal reference to episode (e.g. filename or URL)
         public int season;              // Season number
         public int episode;             // Episode number
-        public int special;          // Set to "1" if this is a post-season special
+        public int special;             // Set to "1" if this is a post-season special
         public string key;              // Unique value, used to sort episodes
     }
 
+    // Global Plugin Keys - Predefined keys for the pluginGlobalDictionary library
     public class gpk
     {
         // Group=PLUGINS
@@ -26,7 +27,7 @@ namespace VideoTracker
         public const string DESC = "desc";
         public const string FORCECONFIG = "forceconfig";
     }
-
+    // Series Plugin Keys - Predefined keys for the pluginSeriesDictionary library
     public class spk
     {
         public const string TITLE = "title";

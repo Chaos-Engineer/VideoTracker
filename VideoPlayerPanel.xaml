@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d">
-    <Grid Height="Auto" Width="Auto">
-        <Border BorderBrush="Black" BorderThickness="1,1,1,1" AllowDrop="True">
+    <Border BorderBrush="Black" BorderThickness="1">
             <StackPanel x:Name="flowLayoutPanel" AllowDrop="True" Background="Transparent"
                         MouseDown="flowLayoutPanel_MouseDown" DragEnter="flowLayoutPanel_DragEnter"
                         Drop="flowLayoutPanel_DragDrop" Orientation="Vertical">
@@ -29,6 +28,5 @@
                     <Button x:Name="editButton" Content="Edit" Click="editButton_Click"/>
                 </StackPanel>
             </StackPanel>
-        </Border>
-    </Grid>
+    </Border>
 </UserControl>

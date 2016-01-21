@@ -35,7 +35,7 @@
             </MenuItem>
         </Menu>
         <TextBlock x:Name="blankLabel" Padding="50" FontFamily="Copperplate Gothic Light" FontSize="12">Use the edit menu to insert a new series</TextBlock>
-        <UniformGrid Background="{StaticResource VideoTrackerBackground}" x:Name="mainPanel" Height="Auto" Width="Auto">
+        <UniformGrid x:Name="mainPanel" Background="{StaticResource VideoTrackerBackground}" Height="Auto" Width="Auto">
         </UniformGrid>
     </DockPanel>
 </Window>

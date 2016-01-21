@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace VideoTracker
 {
-    public partial class AmazonVideoSeriesForm : Form
+    public partial class AmazonVideoSeriesForm : Window
     {
         private AmazonVideoSeries amazonVideoSeries;
         private VideoTrackerData videoTrackerData;
@@ -31,16 +35,10 @@ namespace VideoTracker
             this.titleBox.Text = vs.seriesTitle;
             this.keywordBox.Text = vs.keywords;
         }
-        
-        private void AmazonVideoSeriesForm_FormClosing(object sender, FormClosingEventArgs e)
+
+        private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             string currentKey;
-            // User selected cancel, don't validate or save results.
-            if (this.DialogResult == DialogResult.Cancel)
-            {
-                e.Cancel = false;
-                return;
-            }
 
             // Check global variables
             if (String.IsNullOrWhiteSpace(videoTrackerData.globals[gdg.AMAZON][gdk.PUBLICKEY]) ||
@@ -52,7 +50,6 @@ namespace VideoTracker
                 SettingsForm s = new SettingsForm(videoTrackerData);
                 s.tabControl.SelectTab("amazonSettings");
                 s.ShowDialog();
-                e.Cancel = true;
                 return;
             }
 
@@ -61,7 +58,6 @@ namespace VideoTracker
             if (titleBox.Text.Equals(""))
             {
                 MessageBox.Show("Title must be specified");
-                e.Cancel = true;
                 return;
             }
             if (keywordBox.Text.Equals(""))
@@ -74,14 +70,16 @@ namespace VideoTracker
             {
                 amazonVideoSeries = new AmazonVideoSeries();
                 currentKey = null;
-            } else {
+            }
+            else
+            {
                 currentKey = amazonVideoSeries.currentVideo.key;
             }
-              
+
             amazonVideoSeries.InitializeFromForm(keywordBox.Text);
             amazonVideoSeries.LoadFiles(titleBox.Text, currentKey, videoTrackerData);
 
-            e.Cancel = false;
+            this.DialogResult = true;
         }
 
     }
