@@ -305,7 +305,8 @@ namespace VideoTracker
                 {
                     pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
                 }
-                if (scope == null || pluginDictionary[pluginName].fileMod < File.GetLastWriteTime(pluginFileName))
+                DateTime lastMod = File.GetLastWriteTime(pluginFileName);
+                if (scope == null || pluginDictionary[pluginName].fileMod < lastMod)
                 {
                     this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
                 }

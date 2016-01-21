@@ -30,29 +30,31 @@ def ConfigureSeries(pluginSeriesDictionary) :
 def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 
     #
-    # Grab the full series list and search for the title. Extract the canonical title
-    # and the series URL.
+    # Grab the full series list and search for the title. Extract the series URL
     # 
-    # <a class="bigChar" href="http://kiss-anime.tv/Anime/mirai-nikki">Mirai Nikki</a>
+    # Regex matches:
+    #    <a class="bigChar" href="http://kiss-anime.tv/Anime/mirai-nikki">Mirai Nikki</a>
+    #
     series = pluginSeriesDictionary[spk.TITLE]
     url = "http://kiss-anime.tv/full-anime-list"
     h = HtmlLoader(url);
     if (h.error != ""):
         return h.error
 
-    m = re.search('<a class="bigChar" href="(.*)">.*' + series + '.*</a>', h.html, flags=re.IGNORECASE)
+    m = re.search('<a class="bigChar" href="(\S*)">.*' + series + '.*</a>', h.html, flags=re.IGNORECASE)
     if m is None:
-        return "Series not found"
+        return "Series not found at " + url
     url = m.group(1)
     
     #
-    # Load the episode page and build the series list. Episode titles are not guaranteed to have a numeric field
-    # (as shown by the "redial-episode" below), but are guaranteed to be listed in reverse order - so build the
-    # list and then reverse it to get the episode numbers.
+    # Load the episode page and build the series list. The "href" is the internal name of the series, and the link
+    # text is the epsiode name. Episodes are not guaranteed to have a numeric field (as shown by the "redial-episode"
+    # below), but are always listed in reverse order - so we can build the list and then reverse it to get the 
+    # episode numbers.
     #
     # <a href="http://kiss-anime.tv/Anime-mirai-nikki-redial-episode" title="Watch anime Mirai Nikki Redial Episode online in high quality">
     #    Mirai Nikki Redial Episode</a>
-    #<a href="http://kiss-anime.tv/Anime-mirai-nikki-episode-26" title="Watch anime Mirai Nikki Episode 26 online in high quality">
+    # <a href="http://kiss-anime.tv/Anime-mirai-nikki-episode-26" title="Watch anime Mirai Nikki Episode 26 online in high quality">
     #    Mirai Nikki Episode 26</a>
     h = HtmlLoader(url);
     if (h.error != ""):
@@ -63,7 +65,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     for item in reversed(m):
         episode += 1
         v = VideoFile()
-        v.episodeTitle = item.split('/')[-1] # Last token of URL
+        v.episodeTitle = item.split('/')[-1]
         v.internalName = item
         v.season = 1
         v.episode = episode
@@ -87,7 +89,7 @@ def Play(pluginGlobalDictionary, name) :
     if (h.error != ""):
         return h.error
 
-    m = re.search('<a href="(http://kiss-anime.tv/download.php\?id=.*)"', h.html)
+    m = re.search('<a href="(http://kiss-anime.tv/download.php\?id=\S*)"', h.html)
     if m is None:
         return False
 

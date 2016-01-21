@@ -68,7 +68,7 @@ namespace VideoTracker
             }
             catch (WebException)
             {
-                MessageBox.Show("Failed to load " + this.URL);
+                errorString = "Failed to load " + this.URL;
                 return;
             }
             CQ dom = CQ.Create(html);

@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="VideoTracker.VideoPlayerPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d">
+    <Grid Height="Auto" Width="Auto">
+        <Border BorderBrush="Black" BorderThickness="1,1,1,1" AllowDrop="True">
+            <StackPanel x:Name="flowLayoutPanel" AllowDrop="True" Background="Transparent"
+                        MouseDown="flowLayoutPanel_MouseDown" DragEnter="flowLayoutPanel_DragEnter"
+                        Drop="flowLayoutPanel_DragDrop" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Label x:Name="seriesName" Content="Label"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox x:Name="videoSelector" Margin="2" DropDownClosed="videoSelector_DropDownClosed"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="Margin" Value="2" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button x:Name="backButton" Content="&lt;" Click="backButton_Click"/>
+                    <Button x:Name="playButton" Content="Play" Click="playButton_Click"/>
+                    <Button x:Name="playNextButton" Content="Play Next" Click="playNextButton_Click"/>
+                    <Button x:Name="nextButton" Content="&gt;" Click="nextButton_Click"/>
+                    <Button x:Name="deleteButton" Content="Delete" Click="deleteButton_Click"/>
+                    <Button x:Name="editButton" Content="Edit" Click="editButton_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

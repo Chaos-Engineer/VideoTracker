@@ -116,7 +116,6 @@ namespace VideoTracker
                 columns = 1;
             }
             videoTrackerData.globals[gdg.MAIN][gdk.COLUMNS] = columns.ToString();
-
             videoTrackerData.videoTrackerForm.ResizeMainPanel();
 
             // File series globals

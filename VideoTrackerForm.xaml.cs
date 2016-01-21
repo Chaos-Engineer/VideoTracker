@@ -1,22 +1,28 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
-//using System.Windows;
-using System.Windows.Forms;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
-using System.Text.RegularExpressions;
-using System.Text;
-using System.Drawing;
-using System.Configuration;
-using System.Threading;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Xml.Serialization;
+using System.Windows.Threading;
 
 namespace VideoTracker
 {
-    public partial class VideoTrackerForm : Form
+    public partial class VideoTrackerForm : Window
     {
         private string configFile;
         private bool configFileValid = false;
@@ -24,13 +30,16 @@ namespace VideoTracker
         private long workerThreads; // Interlocked variables must be long
         private VideoTrackerData videoTrackerData;
 
-        private int currentHeight;      // Saved height of main window (used when resizing)
-        private int currentWidth;       // Saved width of main window (used when resizing)
-        private int panelWidth;         // Width of individual panel controls, excluding margin (used to change width)
-        private int actualPanelWidth;   // Width of individual panel controls, including margin
-        private int actualPanelHeight;  // Height of individual panel controls, including margin
+        private double currentHeight;      // Saved height of main window (used when resizing)
+        private double currentWidth;       // Saved width of main window (used when resizing)
+        private double panelWidth;            // Width of individual panel controls, excluding margin (used to change width)
+        private double actualPanelWidth;   // Width of individual panel controls, including margin
+        private double actualPanelHeight;  // Height of individual panel controls, including margin
 
-        private bool pluginsLoaded = false;
+        private int pluginsLoaded = 0;
+
+        private OpenFileDialog openFileDialog;
+        private SaveFileDialog saveFileDialog;
 
         public VideoTrackerForm(string launchFile)
         {
@@ -38,16 +47,30 @@ namespace VideoTracker
             string file = "UNDEFINED";
             videoTrackerData = new VideoTrackerData(this);
 
+            // Initialize dialog boxes
+            openFileDialog = new OpenFileDialog();
+            this.openFileDialog.DefaultExt = "vtr";
+            this.openFileDialog.Filter = "VTR files|*.vtr|All files|*.*";
+
+            saveFileDialog = new SaveFileDialog();
+            this.saveFileDialog.DefaultExt = "vtr";
+            this.saveFileDialog.Filter = "VTR files|*.vtr|All files|*.*";
+
+            // Load the default file if a file wasn't specified on the command line.
             if (launchFile.Equals(""))
             {
                 file = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["DefaultFilePath"]);
-                Directory.CreateDirectory(Path.GetDirectoryName(file));
+                Directory.CreateDirectory(System.IO.Path.GetDirectoryName(file));
             }
             else
             {
                 file = launchFile;
             }
             this.configFile = file;
+
+
+            // Create the VTR file if it doesn't already exist and save the default global settings. Otherwise
+            // open the existing VTR file.
             if (!File.Exists(file))
             {
                 using (File.Create(file))
@@ -64,7 +87,7 @@ namespace VideoTracker
 
         private void loadMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == true)
             {
                 configFile = openFileDialog.FileName;
                 LoadData(configFile);
@@ -73,7 +96,7 @@ namespace VideoTracker
 
         private void saveAsMenuItem_Click(object sender, EventArgs e)
         {
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            if (saveFileDialog.ShowDialog() == true)
             {
                 configFile = saveFileDialog.FileName;
                 SaveData(configFile);
@@ -89,10 +112,10 @@ namespace VideoTracker
         private void autoSaveMenuItem_Click(object sender, EventArgs e)
         {
             // Toggle value.
-            videoTrackerData.globals.Set(gdg.MAIN, gdk.AUTOSAVE, 
+            videoTrackerData.globals.Set(gdg.MAIN, gdk.AUTOSAVE,
                 !videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE));
-            autoSaveMenuItem.Checked = videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE);
-            if (autoSaveMenuItem.Checked)
+            autoSaveMenuItem.IsChecked = videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE);
+            if (autoSaveMenuItem.IsChecked)
             {
                 MessageBox.Show("Autosave enabled");
             }
@@ -104,16 +127,13 @@ namespace VideoTracker
 
         private void exitMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Application.Current.Shutdown();
         }
 
         // Program is exiting - save current state before exiting.
-        private void VideoTrackerForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void VideoTrackerForm_FormClosing(object sender, CancelEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing || e.CloseReason == CloseReason.ApplicationExitCall)
-            {
-                CheckAutoSave();
-            }
+            CheckAutoSave();
         }
 
         //
@@ -132,7 +152,7 @@ namespace VideoTracker
         {
             using (AmazonVideoSeriesForm vsf = new AmazonVideoSeriesForm(videoTrackerData))
             {
-                vsf.ShowDialog();
+               vsf.ShowDialog();
             }
         }
 
@@ -143,7 +163,6 @@ namespace VideoTracker
             {
                 csf.ShowDialog();
             }
-
         }
 
         private void refreshMenuItem_Click(object sender, EventArgs e)
@@ -157,35 +176,7 @@ namespace VideoTracker
             {
                 sf.ShowDialog();
             }
-        }
-
-        // If the resize movement was mostly left-to-right, then assume that the number of
-        // columns should change, and if the resize movement was mostly up-and-down, then
-        // assume that the number of rows should change.
-        //
-        // Based on that information, calculate the number of columns desired and resize the
-        // display.
-        private void VideoTrackerForm_ResizeEnd(object sender, EventArgs e)
-        {
-            int columns;
-            int dWidth = Math.Abs(this.Width - this.currentWidth);
-            int dHeight = Math.Abs(this.Height - this.currentHeight);
-
-            if (dWidth >= dHeight)
-            {
-                // Change number of columns
-                columns = (int)Math.Round((float)this.mainPanel.ClientSize.Width / (float)this.actualPanelWidth);
-            }
-            else
-            {
-                // Change number of rows (and calculate corresponding number of rows.)
-                int rows = (int)Math.Round((float)this.mainPanel.ClientSize.Height / (float)this.actualPanelHeight);
-                if (rows == 0) rows = 1;
-                columns = ((this.numPanels - 1) / rows) + 1;
-            }
-            if (columns <= 0) columns = 1;
-            this.videoTrackerData.globals[gdg.MAIN][gdk.COLUMNS] = columns.ToString();
-            ResizeMainPanel();
+            CheckAutoSave();
         }
 
         public void AddTitle(VideoPlayerPanel panel, VideoSeries vs)
@@ -199,16 +190,16 @@ namespace VideoTracker
             }
 
             this.numPanels++;
-            this.mainPanel.Controls.Add(panel);
-            this.ResizeMainPanel();
-            this.CheckAutoSave();
+            this.mainPanel.Children.Add(panel);
+            //this.ResizeMainPanel();
+            //this.CheckAutoSave();
         }
 
         public void DeleteTitle(VideoPlayerPanel panel, VideoSeries vs)
         {
-            this.videoTrackerData.videoSeriesList.Remove(vs);
-            this.mainPanel.Controls.Remove(panel);
             this.numPanels--;
+            this.videoTrackerData.videoSeriesList.Remove(vs);
+            this.mainPanel.Children.Remove(panel);
             this.ResizeMainPanel();
             this.CheckAutoSave();
         }
@@ -221,9 +212,10 @@ namespace VideoTracker
             if (source < 0 || dest < 0) return;
             if (source >= this.numPanels || dest >= this.numPanels) return;
 
-            Control.ControlCollection cc = this.mainPanel.Controls;
-            Control c = cc[source];
-            cc.SetChildIndex(c, dest);
+            UIElementCollection cc = this.mainPanel.Children;
+            UIElement c = cc[source];
+            cc.RemoveAt(source);
+            cc.Insert(dest, c);
 
             List<VideoSeries> vsl = this.videoTrackerData.videoSeriesList;
             VideoSeries item = vsl[source];
@@ -233,63 +225,43 @@ namespace VideoTracker
             this.CheckAutoSave();
         }
 
-        // Function: Update the size of the main window. This is called when we add or remove a
-        // program, or change the number of columns in the display.
+
         public void ResizeMainPanel()
         {
-            this.SuspendLayout();
-
-            blankLabel.Visible = (this.numPanels == 0); // Display a caption if there are no panels.
+            if (this.numPanels == 0)
+            {
+                blankLabel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                blankLabel.Visibility = Visibility.Collapsed;
+            }
 
             // Find the maximum initial width of the VideoPlayerPanel controls, and set
             // the width of each panel to that maximum.
             this.panelWidth = 0;
             this.actualPanelWidth = 0;
             this.actualPanelHeight = 0;
-            foreach (VideoPlayerPanel vp in mainPanel.Controls)
-            {
-                if (vp.initialWidth > this.panelWidth)
-                {
-                    this.panelWidth = vp.initialWidth;
-                    this.actualPanelWidth = vp.Margin.Left + vp.initialWidth + vp.Margin.Right;
-                    this.actualPanelHeight = vp.Margin.Top + vp.DisplayRectangle.Height + vp.Margin.Bottom;
-                }
-            }
-            foreach (VideoPlayerPanel vp in mainPanel.Controls)
-            {
-                vp.SetWidth(this.panelWidth);
-            }
 
-            // Adjust the number of columns if it has changed.
+            // Find the maximum of the requiredWidths of the panels, and set each panel
+            // to that width.
+            foreach (VideoPlayerPanel vp in mainPanel.Children)
+            {  
+                this.panelWidth = Math.Max(this.panelWidth, vp.requiredSize.Width);
+            }
+            foreach (VideoPlayerPanel vp in mainPanel.Children)
+            {
+                vp.Width = vp.Margin.Left + this.panelWidth + vp.Margin.Right;
+            }
 
             // This "ConvertToInt" call assigns a default value of 1 if columns is currently undefined.
             int columns = videoTrackerData.globals.GetInt(gdg.MAIN, gdk.COLUMNS, 1);
-            if (this.mainPanel.ColumnCount != columns)
+            if (this.mainPanel.Columns != columns)
             {
-                this.mainPanel.ColumnCount = columns;
+                this.mainPanel.Columns = columns;
             }
-            // Update the main window with auto-sizing enabled.
-            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            this.AutoSize = true;
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
-            // Get the dimensions of the auto-sized window, set the fixed dimensions
-            // to those values, and then disable auto-sizing.
-            //
-            // Note: In order for the user to be able to change the size of the window,
-            // AutoSizeMode must be sent to GrowOnly. (This is a bug in Windows; the
-            // AutoSizeMode property should be ignored when AutoSize is set to false.)
-            this.SuspendLayout();
-            this.currentHeight = this.Height;
-            this.currentWidth = this.Width;
-            this.AutoSize = false;
-            this.AutoSizeMode = AutoSizeMode.GrowOnly;
-            this.Height = this.currentHeight;
-            this.Width = this.currentWidth;
-            this.ResumeLayout(false);
-            this.PerformLayout();
         }
+
 
         // Autosave the file if it's allowed:
         // - No "Add Series" threads can currently be running.
@@ -299,7 +271,7 @@ namespace VideoTracker
         public void CheckAutoSave()
         {
             // Note: workerThreads can be updated asynchronously.
-            if (Interlocked.Read(ref workerThreads) == 0 
+            if (Interlocked.Read(ref workerThreads) == 0
                 && videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE, "true") // Default to true
                 && configFileValid)
             {
@@ -330,19 +302,21 @@ namespace VideoTracker
                 return;
             }
             // File was successfully loaded; create panels and load videos.
-            mainPanel.Controls.Clear();
-            configFileValid = true;
+            mainPanel.Children.Clear();
             LoadAllSeries();
-            configFile = file;
+
+            // Initialize properties
+            this.configFile = file;
+            this.configFileValid = true;
+            autoSaveMenuItem.IsChecked = videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE);
 
             // Add plugins to Edit menu on the first run.
-            if (!pluginsLoaded)
+            if (pluginsLoaded == 0)
             {
                 foreach (string key in videoTrackerData.globals[gdg.PLUGINS].Keys)
                 {
                     InsertPluginMenuItem(key, videoTrackerData.globals[key][gpk.ADD]);
                 }
-                pluginsLoaded = true;
             }
 
         }
@@ -410,51 +384,64 @@ namespace VideoTracker
                 EnableFileOperations(true);
                 CheckAutoSave();
             }
+            ResizeMainPanel();
         }
 
         public void EnableFileOperations(bool flag)
         {
-            loadMenuItem.Enabled = flag;
-            saveMenuItem.Enabled = flag;
-            saveAsMenuItem.Enabled = flag;
-            autoSaveMenuItem.Enabled = flag;
+            loadMenuItem.IsEnabled = flag;
+            saveMenuItem.IsEnabled = flag;
+            saveAsMenuItem.IsEnabled = flag;
+            autoSaveMenuItem.IsEnabled = flag;
         }
 
         delegate void Procedure();
         public void InsertPluginMenuItem(string name, string add)
         {
 
-            MenuItem plugin = new MenuItem(name);
-            plugin.Click += (sender, e) => this.PluginLoader(name);
-            plugin.Name = name;
-            plugin.Text = add;
 
-            foreach (MenuItem item in editMenuItem.MenuItems) {
-                if (item.Text == "-") // This is the only way to identify a seperator bar.
+            MenuItem plugin = new MenuItem();
+            plugin.Click += (sender, e) => this.PluginLoader(name);
+            ///plugin.Content = name; // Must be alphanumeric...
+            plugin.Header = add;
+            pluginsLoaded++;
+            
+            int index = 0;
+            foreach (Control item in editMenuItem.Items)
+            {
+                index++;
+                if (item is Separator)
                 {
-                    editMenuItem.MenuItems.Add(item.Index, plugin);
+                    if (pluginsLoaded == 1)
+                    {
+                        editMenuItem.Items.Insert(index, new Separator());
+                    }
+                    editMenuItem.Items.Insert(index, plugin); // 0 needs to be something else
                     break;
                 }
+
             }
-
-
         }
         public void DeletePluginMenuItem(string name)
         {
-            MenuItem[] items = editMenuItem.MenuItems.Find(name, false);
-            editMenuItem.MenuItems.Remove(items[0]);
+            foreach (MenuItem item in editMenuItem.Items)
+            {
+                if (item.Name == name) editMenuItem.Items.Remove(item);
+                break;
+            }
         }
 
         // The PluginSeries constructor attaches the new object to videoTrackerData,
         // so it will remain in-scope after this routine exits.
-        public void PluginLoader(string name) 
+        public void PluginLoader(string name)
         {
             string file = videoTrackerData.globals[gdg.PLUGINS][name];
             PluginSeries ps = new PluginSeries(name, videoTrackerData);
             string errorString;
-            if (!ps.ConfigureSeries(videoTrackerData, out errorString)) {
-               if (errorString != "") MessageBox.Show(errorString);
-               return;
+            if (!ps.ConfigureSeries(videoTrackerData, out errorString))
+            {
+                if (errorString != "") MessageBox.Show(errorString);
+                return;
             }
             ps.LoadFiles(ps.pluginSeriesDictionary["title"], "", videoTrackerData);
         }
@@ -467,6 +454,7 @@ namespace VideoTracker
                 "Copyright (c) 2015 Extraordinary Popular Delusions",
                 "About VideoTracker");
         }
+
     }
 
     [Serializable]
@@ -574,22 +562,22 @@ namespace VideoTracker
                 writer.WriteEndElement();
             }
         }
-        
+
         // Helper methods for data conversion. These just call the corresponding
         // methods in StringDictionary.
-        public bool GetBool(string group, string key, string defval="false")
+        public bool GetBool(string group, string key, string defval = "false")
         {
             return (this[group].GetBool(key, defval));
         }
 
         public int GetInt(string group, string key, int defval = 0)
         {
-            return (this[group].GetInt(key, defval));;
+            return (this[group].GetInt(key, defval)); ;
         }
 
         public List<string> GetList(string group, string key, char delim = '|')
         {
-            return(this[group].GetList(key, delim));
+            return (this[group].GetList(key, delim));
         }
 
         public string[] GetArray(string group, string key, char delim = '|')
@@ -639,7 +627,7 @@ namespace VideoTracker
     // key is undefined. 
     //
     [Serializable, XmlRoot("StringDictionary")]
-    public class StringDictionary : SortedDictionary<string,string>, IXmlSerializable
+    public class StringDictionary : SortedDictionary<string, string>, IXmlSerializable
     {
         public System.Xml.Schema.XmlSchema GetSchema()
         {
@@ -664,21 +652,21 @@ namespace VideoTracker
         }
         public void WriteXml(System.Xml.XmlWriter writer)
         {
-                writer.WriteStartElement("stringdictionary");
-                foreach (string key in this.Keys)
-                {
-                    writer.WriteAttributeString(key, this[key]);
-                }
-                writer.WriteEndElement();
+            writer.WriteStartElement("stringdictionary");
+            foreach (string key in this.Keys)
+            {
+                writer.WriteAttributeString(key, this[key]);
+            }
+            writer.WriteEndElement();
         }
 
 
-        public bool GetBool(string key, string defval="false")
+        public bool GetBool(string key, string defval = "false")
         {
             if (this[key] == "")
             {
                 this[key] = defval;
-            }    
+            }
             return (this[key] == "true");
         }
 
@@ -749,7 +737,7 @@ namespace VideoTracker
             {
                 if (!base.ContainsKey(key))
                 {
-                    return("");
+                    return ("");
                 }
                 return (base[key]);
             }
