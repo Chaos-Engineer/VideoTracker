@@ -238,6 +238,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_20083CC1644334418356E9C4057D4E7E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_55FCBFBFA5D64FA69C7261B55889E28A"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -305,12 +311,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_ADEC7FEAAA2310A19A869808F5697388"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_20083CC1644334418356E9C4057D4E7E"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -1082,15 +1082,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:VideoTracker"
-        "ProductCode" = "8:{1286601F-3DCF-4126-8221-5E00E198F0D0}"
-        "PackageCode" = "8:{29DAB5AD-DA8A-4B7D-AE50-6D23312962C2}"
+        "ProductCode" = "8:{E4F2F1E5-36CE-4A04-8CF1-D3FB47A20AF8}"
+        "PackageCode" = "8:{B014F482-77EB-4052-B474-FD02DE4ECF0C}"
         "UpgradeCode" = "8:{E486F037-4B11-409F-A329-CD5363DB71E5}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.9"
+        "ProductVersion" = "8:1.0.10"
         "Manufacturer" = "8:Extraordinary Popular Delusions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
