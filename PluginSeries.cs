@@ -194,6 +194,9 @@ namespace VideoTracker
 
         // A single plug-in file (and the associated ScriptRuntime) can be shared between multiple instances.
         // Use a static dictionary indexed on the plug-in name to track that information.
+        //
+        // This section of code must be synched: If there are multiple series that use the same plugin,
+        // then there's can be a race condition on updates to pluginDictionary[pluginName].
  
         private static readonly object pluginDictionaryLock = new object();
         private static Dictionary<string, PluginData> pluginDictionary = new Dictionary<string, PluginData>();
@@ -215,9 +218,9 @@ namespace VideoTracker
         // Registers a new plug-in
         public bool Register(string pluginFileName, VideoTrackerData vtd)
         {
-            this.pluginFileName = pluginFileName;
             lock (pluginDictionaryLock)
             {
+                this.pluginFileName = pluginFileName;
                 pluginDictionary[pluginName] = new PluginData(pluginFileName, vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH]);
 
                 // Load the plug-in file and call the "Register" method.
@@ -230,7 +233,7 @@ namespace VideoTracker
                     MessageBox.Show("Import exception: This usually means that IronPython has not been " +
                         "installed on your system (download it from http://ironpython.net), or that the " +
                         "IronPython library path on this page is incorrect. The other possibility is that " +
-                        "this plug-in relies on a library module that is not installed on your system\n\n"
+                        "this plug-in relies on a Python library module that is not installed on your system\n\n"
                         + ex.ToString());
                 }
                 catch (Exception ex)
@@ -299,6 +302,7 @@ namespace VideoTracker
         //
         public dynamic LoadPlugin()
         {
+
             lock (pluginDictionaryLock)
             {
                 if (!pluginDictionary.ContainsKey(pluginName))

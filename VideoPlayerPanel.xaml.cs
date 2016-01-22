@@ -151,19 +151,24 @@ namespace VideoTracker
                  this.videoSelector.FontWeight,
                  this.videoSelector.FontStretch);
 
+            this.UpdatePanel();
+            this.VisibleControls(true);
+            this.UpdateLayout();
             if (videoSelectorControlWidth == 0)
             {
-                this.UpdatePanel();
-                this.VisibleControls(true);
-                this.UpdateLayout();
-                // Get the size of the ComboBox drop-down button.
+                // Get the size of the ComboBox drop-down button and the margins/padding/borders. This works,
+                // but try temporarily setting the videoSelector content to the longest string and 
+                // then getting the size of the box.
                 this.videoSelector.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                videoSelectorControlWidth = 
-                    videoSelector.Margin.Left + this.videoSelector.DesiredSize.Width + videoSelector.Margin.Right;
+                videoSelectorControlWidth =
+                    this.videoSelector.Margin.Left + 
+                    this.border.Margin.Left + this.border.BorderThickness.Left +
+                    this.videoSelector.DesiredSize.Width +
+                    this.videoSelector.Margin.Right + 
+                    this.border.Margin.Right + this.border.BorderThickness.Right;
             }
             // Loop through the list of titles and add them to the combox box, also getting the 
-            // length of the longest one. From experimentation, we need to round upwards and add 
-            // 1 to get the title to display correctly. This may need to be revisited later.
+            // length of the longest one. 
             foreach (VideoFile f in vs.videoFiles.Values)
             {
                 string filename = f.episodeTitle;

@@ -4,29 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d">
-    <Border BorderBrush="Black" BorderThickness="1" Margin="1" CornerRadius="5">
-            <StackPanel x:Name="flowLayoutPanel" AllowDrop="True" Background="Transparent"
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary 
+                  Source="Resources/VideoTrackerResourceDictionary.xaml">
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border x:Name="border">
+        <StackPanel x:Name="flowLayoutPanel" AllowDrop="True" Background="Transparent" Orientation="Vertical"
                         MouseDown="flowLayoutPanel_MouseDown" DragEnter="flowLayoutPanel_DragEnter"
-                        Drop="flowLayoutPanel_DragDrop" Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <Label x:Name="seriesName" Content="Label"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <ComboBox x:Name="videoSelector" Margin="2" DropDownClosed="videoSelector_DropDownClosed" SelectionChanged="videoSelector_SelectionChanged"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel.Resources>
-                        <Style TargetType="Button">
-                            <Setter Property="Margin" Value="2" />
-                        </Style>
-                    </StackPanel.Resources>
-                    <Button x:Name="backButton" Content="&lt;" Click="backButton_Click"/>
-                    <Button x:Name="playButton" Content="Play" Click="playButton_Click"/>
-                    <Button x:Name="playNextButton" Content="Play Next" Click="playNextButton_Click"/>
-                    <Button x:Name="nextButton" Content="&gt;" Click="nextButton_Click"/>
-                    <Button x:Name="deleteButton" Content="Delete" Click="deleteButton_Click"/>
-                    <Button x:Name="editButton" Content="Edit" Click="editButton_Click"/>
-                </StackPanel>
+                        Drop="flowLayoutPanel_DragDrop">
+            <StackPanel>
+                <Label x:Name="seriesName" Content="UNDEFINED"/>
             </StackPanel>
+            <StackPanel>
+                <ComboBox x:Name="videoSelector" DropDownClosed="videoSelector_DropDownClosed" SelectionChanged="videoSelector_SelectionChanged"/>
+            </StackPanel>
+            <StackPanel>
+                <Button x:Name="backButton" Content="&lt;" Click="backButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
+                <Button x:Name="playButton" Content="Play" Click="playButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
+                <Button x:Name="playNextButton" Content="Play Next" Click="playNextButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
+                <Button x:Name="nextButton"  Content="&gt;" Click="nextButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
+                <Button x:Name="deleteButton" Content="Delete" Click="deleteButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
+                <Button x:Name="editButton" Content="Edit" Click="editButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
+            </StackPanel>
+        </StackPanel>
     </Border>
 </UserControl>

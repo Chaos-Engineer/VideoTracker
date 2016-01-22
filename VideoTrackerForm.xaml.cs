@@ -86,7 +86,7 @@ namespace VideoTracker
             if (openFileDialog.ShowDialog() == true)
             {
                 configFile = openFileDialog.FileName;
-                LoadData(configFile);
+                LoadData(this.configFile);
             }
         }
 
@@ -162,6 +162,16 @@ namespace VideoTracker
         private void refreshMenuItem_Click(object sender, EventArgs e)
         {
             LoadAllSeries();
+        }
+
+        // WPF key bindings are a pain to set up. Handle hot keys through the KeyDown event
+        // instead.
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F5) {
+                LoadAllSeries();
+                return;
+            }
         }
 
         private void settingsMenuItem_Click(object sender, EventArgs e)
@@ -384,7 +394,6 @@ namespace VideoTracker
             autoSaveMenuItem.IsEnabled = flag;
         }
 
-        delegate void Procedure();
         public void InsertPluginMenuItem(string name, string add)
         {
 
@@ -442,7 +451,6 @@ namespace VideoTracker
                 "Copyright (c) 2015 Extraordinary Popular Delusions",
                 "About VideoTracker");
         }
-
     }
 
     [Serializable]
