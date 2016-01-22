@@ -61,21 +61,23 @@ namespace VideoTracker
                 file = launchFile;
             }
             this.configFile = file;
+        }
 
-
+        public new void Show() {
             // Create the VTR file if it doesn't already exist and save the default global settings. Otherwise
             // open the existing VTR file.
-            if (!File.Exists(file))
+            base.Show();
+            if (!File.Exists(this.configFile))
             {
-                using (File.Create(file))
+                using (File.Create(this.configFile))
                 {
                     // Null body - to allow handle to get disposed.
                 }
-                SaveData(file);
+                SaveData(this.configFile);
             }
             else
             {
-                LoadData(file);
+                LoadData(this.configFile);
             }
         }
 

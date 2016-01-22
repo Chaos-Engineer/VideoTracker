@@ -140,6 +140,7 @@ namespace VideoTracker
             this.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
             this.requiredSize.Width = this.ActualWidth;
             this.Width = this.ActualWidth;  // Set width to actual value.
+            videoTrackerForm.ResizeMainPanel();
         }
 
         public void EndFileLoad(VideoSeries vs)
