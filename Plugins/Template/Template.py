@@ -15,7 +15,7 @@ import VideoTracker
 from VideoTracker import VideoFile, gpk, spk
 
 def Register(pluginRegisterDictionary) :
-    pluginRegisterDictionary[gpk.NAME]  = "[NAME]"
+    pluginRegisterDictionary[gpk.NAME]  = "NAME"
     pluginRegisterDictionary[gpk.ADD]   = "Add [NAME] Series"
     pluginRegisterDictionary[gpk.DESC]  = "Description of [NAME]"
     #pluginRegisterDictionary[gpk.FORCECONFIG] = "true"
@@ -23,8 +23,9 @@ def Register(pluginRegisterDictionary) :
 
 # ConfigureGlobals is optional
 
-#def ConfigureGlobals(pluginGlobalDictionary) :
+#def ConfigureGlobals(pluginGlobalDictionary, parent) :
 #    form = SampleConfigureGlobals()
+#    form.Owner = parent
 #    form.launcher.Text = pluginGlobalDictionary["launcher"]
 #    if form.ShowDialog() :
 #        pluginGlobalDictionary["launcher"] = form.launcher.Text
@@ -32,8 +33,9 @@ def Register(pluginRegisterDictionary) :
 #    else :
 #        return False
 
-def ConfigureSeries(pluginSeriesDictionary) :
-    form = SampleConfigureSeries()
+def ConfigureSeries(parent, pluginSeriesDictionary) :
+    form = TemplateConfigureSeries()
+    form.Owner = parent
     form.NameBox.Text = pluginSeriesDictionary[spk.TITLE]
     if form.ShowDialog() :
        pluginSeriesDictionary[spk.TITLE] = form.NameBox.Text

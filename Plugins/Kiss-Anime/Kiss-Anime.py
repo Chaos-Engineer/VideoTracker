@@ -17,8 +17,9 @@ def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.ADD]   = "Add Kiss-Anime Series"
     pluginRegisterDictionary[gpk.DESC]  = "Find programs on http://kiss-anime.tv"
 
-def ConfigureSeries(pluginSeriesDictionary) :
+def ConfigureSeries(parent, pluginSeriesDictionary) :
     form = SampleConfigureSeries()
+    form.Owner = parent
     form.NameBox.Text = pluginSeriesDictionary[spk.TITLE]
     if form.ShowDialog() :
        pluginSeriesDictionary[spk.TITLE] = form.NameBox.Text

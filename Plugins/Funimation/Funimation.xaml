@@ -1,11 +1,30 @@
 ﻿<Window
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-       Height="106.376" Width="313.18" Title="Add Funimation Series">
-    <Grid Margin="0,0,0,0">
-        <Label Content="Title:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="NameBox" HorizontalAlignment="Left" Height="23" Margin="55,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" RenderTransformOrigin="0.437,0.313"/>
-        <Button x:Name="OKButton" Content="OK" HorizontalAlignment="Left" Margin="55,46,0,0" VerticalAlignment="Top" Width="75" Click="OKButton_Click" IsDefault="True"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="220,52,0,0" VerticalAlignment="Top" Width="75" IsCancel="True"/>
-    </Grid>
+       Title="Add Funimation Series" SizeToContent="WidthAndHeight"
+       ShowInTaskbar="False" Topmost="True" ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/VideoTrackerResourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel Style="{StaticResource ResourceKey=WindowStackPanel}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Series Name:"/>
+            <TextBox x:Name="NameBox" Grid.Row="0" Grid.Column="1"/>
+        </Grid>
+        <StackPanel Style="{StaticResource ResourceKey=RightButtonsStackPanel}">
+            <Button Content="OK" Click="OKButton_Click" IsDefault="True" />
+            <Button Content="Cancel" IsCancel="True"/>
+        </StackPanel>
+    </StackPanel>
 </Window> 

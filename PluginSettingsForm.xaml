@@ -1,0 +1,39 @@
+﻿<Window x:Class="VideoTracker.PluginSettingsForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Register Plug-Ins" SizeToContent="WidthAndHeight"
+        ShowInTaskbar="False" ResizeMode="CanMinimize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary 
+                  Source="Resources/VideoTrackerResourceDictionary.xaml">
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel Style="{StaticResource WindowStackPanel}">
+        <StackPanel Style="{StaticResource RightButtonsStackPanel}">
+            <Label>Python Library Directory:</Label>
+            <TextBox x:Name="pythonDirTextBox"/>
+            <Button Content="Browse" Click="pythonDirectoryButtonClick"/>
+        </StackPanel>
+        <Grid x:Name="pluginPanel">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+        </Grid>
+        <StackPanel Style="{StaticResource CentralButtonsStackPanel}">
+            <Button Content="Register New Plug-In" Click="registerButton_Click"/>
+        </StackPanel>
+        <StackPanel Style="{StaticResource RightButtonsStackPanel}">
+            <Button Content="OK" Click="okButtonClick"/>
+        </StackPanel >
+    </StackPanel>
+</Window>

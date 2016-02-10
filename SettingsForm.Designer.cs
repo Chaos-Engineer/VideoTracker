@@ -52,25 +52,15 @@
             this.publicKeyTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.secretKeyTextBox = new System.Windows.Forms.TextBox();
-            this.pluginSettings = new System.Windows.Forms.TabPage();
-            this.pluginParentPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.label13 = new System.Windows.Forms.Label();
-            this.pythonDirTextBox = new System.Windows.Forms.TextBox();
-            this.pythonDirButton = new System.Windows.Forms.Button();
-            this.pluginPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.registerButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.applyButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.openDefaultDirectoryDialog = new Ookii.Dialogs.VistaFolderBrowserDialog();
             this.openPythonDirectoryDialog = new Ookii.Dialogs.VistaFolderBrowserDialog();
-            this.openPluginFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.tabControl.SuspendLayout();
             this.generalSettings.SuspendLayout();
             this.fileSettings.SuspendLayout();
             this.amazonSettings.SuspendLayout();
-            this.pluginSettings.SuspendLayout();
-            this.pluginParentPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -79,7 +69,6 @@
             this.tabControl.Controls.Add(this.generalSettings);
             this.tabControl.Controls.Add(this.fileSettings);
             this.tabControl.Controls.Add(this.amazonSettings);
-            this.tabControl.Controls.Add(this.pluginSettings);
             this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl.ItemSize = new System.Drawing.Size(25, 75);
             this.tabControl.Location = new System.Drawing.Point(1, 2);
@@ -323,87 +312,7 @@
             this.secretKeyTextBox.MaxLength = 40;
             this.secretKeyTextBox.Name = "secretKeyTextBox";
             this.secretKeyTextBox.Size = new System.Drawing.Size(292, 20);
-            this.secretKeyTextBox.TabIndex = 12;
-            // 
-            // pluginSettings
-            // 
-            this.pluginSettings.Controls.Add(this.pluginParentPanel);
-            this.pluginSettings.Location = new System.Drawing.Point(79, 4);
-            this.pluginSettings.Name = "pluginSettings";
-            this.pluginSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.pluginSettings.Size = new System.Drawing.Size(575, 145);
-            this.pluginSettings.TabIndex = 3;
-            this.pluginSettings.Text = "Plugins";
-            this.pluginSettings.UseVisualStyleBackColor = true;
-            // 
-            // pluginParentPanel
-            // 
-            this.pluginParentPanel.AutoScroll = true;
-            this.pluginParentPanel.Controls.Add(this.label13);
-            this.pluginParentPanel.Controls.Add(this.pythonDirTextBox);
-            this.pluginParentPanel.Controls.Add(this.pythonDirButton);
-            this.pluginParentPanel.Controls.Add(this.pluginPanel);
-            this.pluginParentPanel.Controls.Add(this.registerButton);
-            this.pluginParentPanel.Location = new System.Drawing.Point(7, 6);
-            this.pluginParentPanel.Name = "pluginParentPanel";
-            this.pluginParentPanel.Size = new System.Drawing.Size(562, 133);
-            this.pluginParentPanel.TabIndex = 3;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(3, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(122, 13);
-            this.label13.TabIndex = 5;
-            this.label13.Text = "Python Library Directory:";
-            // 
-            // pythonDirTextBox
-            // 
-            this.pythonDirTextBox.Location = new System.Drawing.Point(131, 3);
-            this.pythonDirTextBox.Name = "pythonDirTextBox";
-            this.pythonDirTextBox.Size = new System.Drawing.Size(343, 20);
-            this.pythonDirTextBox.TabIndex = 4;
-            // 
-            // pythonDirButton
-            // 
-            this.pythonDirButton.Location = new System.Drawing.Point(480, 3);
-            this.pythonDirButton.Name = "pythonDirButton";
-            this.pythonDirButton.Size = new System.Drawing.Size(79, 20);
-            this.pythonDirButton.TabIndex = 4;
-            this.pythonDirButton.Text = "Browse";
-            this.pythonDirButton.UseVisualStyleBackColor = true;
-            this.pythonDirButton.Click += new System.EventHandler(this.pythonDirectoryButtonClick);
-            // 
-            // pluginPanel
-            // 
-            this.pluginPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pluginPanel.AutoSize = true;
-            this.pluginPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.pluginPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.pluginPanel.ColumnCount = 4;
-            this.pluginPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.pluginPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.pluginPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.pluginPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.pluginPanel.Location = new System.Drawing.Point(3, 39);
-            this.pluginPanel.Name = "pluginPanel";
-            this.pluginPanel.RowCount = 1;
-            this.pluginPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.pluginPanel.Size = new System.Drawing.Size(5, 2);
-            this.pluginPanel.TabIndex = 3;
-            // 
-            // registerButton
-            // 
-            this.registerButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.registerButton.AutoSize = true;
-            this.registerButton.Location = new System.Drawing.Point(14, 29);
-            this.registerButton.Name = "registerButton";
-            this.registerButton.Size = new System.Drawing.Size(147, 23);
-            this.registerButton.TabIndex = 1;
-            this.registerButton.Text = "Register New Plugin";
-            this.registerButton.UseVisualStyleBackColor = true;
-            this.registerButton.Click += new System.EventHandler(this.registerButton_Click);
+            this.secretKeyTextBox.TabIndex = 12;    
             // 
             // cancelButton
             // 
@@ -439,11 +348,6 @@
             // 
             this.openDefaultDirectoryDialog.Description = "Select default directory";
             // 
-            // openPluginFileDialog
-            // 
-            this.openPluginFileDialog.FileName = "openPluginFileDialog";
-            this.openPluginFileDialog.Filter = "Python files|*.py|All files|*.*";
-            // 
             // SettingsForm
             // 
             this.AcceptButton = this.okButton;
@@ -470,9 +374,6 @@
             this.fileSettings.PerformLayout();
             this.amazonSettings.ResumeLayout(false);
             this.amazonSettings.PerformLayout();
-            this.pluginSettings.ResumeLayout(false);
-            this.pluginParentPanel.ResumeLayout(false);
-            this.pluginParentPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -508,13 +409,5 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TabPage pluginSettings;
-        private System.Windows.Forms.Button registerButton;
-        private System.Windows.Forms.OpenFileDialog openPluginFileDialog;
-        private System.Windows.Forms.TableLayoutPanel pluginPanel;
-        private System.Windows.Forms.TextBox pythonDirTextBox;
-        private System.Windows.Forms.Button pythonDirButton;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.FlowLayoutPanel pluginParentPanel;
     }
 }

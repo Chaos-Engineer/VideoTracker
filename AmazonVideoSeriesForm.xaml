@@ -1,20 +1,19 @@
 ﻿<Window x:Class="VideoTracker.AmazonVideoSeriesForm"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Select Amazon Video On-Demand Series" SizeToContent="WidthAndHeight">
+        Title="Select Amazon Video On-Demand Series" SizeToContent="WidthAndHeight"
+        ShowInTaskbar="False" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary 
-                  Source="Resources/VideoTrackerResourceDictionary.xaml">
-                </ResourceDictionary>
+                <ResourceDictionary
+                  Source="Resources/VideoTrackerResourceDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <StackPanel>
+    <StackPanel Style="{StaticResource WindowStackPanel}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
@@ -26,17 +25,10 @@
             <TextBox x:Name="titleBox" Grid.Row="0" Grid.Column="1"/>
             <Label Grid.Row="1" Grid.Column="0" Content="Keywords or Product URL:"/>
             <TextBox x:Name="keywordBox" Grid.Row="1" Grid.Column="1"/>
-        <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Button Content="OK" Style="{StaticResource ConfigureButton}" Click="OKButton_Click" Grid.Column="0" IsDefault="True" />
-                <Button Style="{StaticResource ConfigureButton}" Content="Cancel" IsCancel="True" Grid.Column="1"/>
         </Grid>
-        </Grid>
+        <StackPanel Style="{StaticResource RightButtonsStackPanel}">
+                <Button Content="OK" Click="OKButton_Click" IsDefault="True" />
+                <Button Content="Cancel" IsCancel="True"/>
+        </StackPanel>
     </StackPanel>
 </Window>

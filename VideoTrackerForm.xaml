@@ -29,6 +29,7 @@
                 <Separator/>
                 <MenuItem Header="Refresh" Click="refreshMenuItem_Click" InputGestureText="F5"/>
                 <MenuItem Header="Settings" Click="settingsMenuItem_Click"/>
+                <MenuItem Header="Plugins" Click="pluginsMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="About" Click="aboutMenuItem_Click"/>
@@ -36,6 +37,5 @@
         </Menu>
         <TextBlock x:Name="blankLabel" Padding="50" FontFamily="Copperplate Gothic Light" FontSize="12">Use the edit menu to insert a new series</TextBlock>
         <UniformGrid x:Name="mainPanel"/>
-
     </DockPanel>
 </Window>

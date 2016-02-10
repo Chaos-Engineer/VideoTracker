@@ -16,7 +16,7 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VideoTrackerInstaller", "Vi
 		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A} = {5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}
 	EndProjectSection
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Plugins", "Plugins\Plugins.pyproj", "{A63D5C89-0C79-43FE-B745-64468870E1FA}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Plugins", "Plugins\Plugins.pyproj", "{1F1D6332-9264-4C8A-B320-3B923797466A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,8 +36,8 @@ Global
 		{4A682808-7335-40B2-BB49-63FD97580429}.Debug|Any CPU.Build.0 = Debug
 		{4A682808-7335-40B2-BB49-63FD97580429}.Release|Any CPU.ActiveCfg = Release
 		{4A682808-7335-40B2-BB49-63FD97580429}.Release|Any CPU.Build.0 = Release
-		{A63D5C89-0C79-43FE-B745-64468870E1FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A63D5C89-0C79-43FE-B745-64468870E1FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F1D6332-9264-4C8A-B320-3B923797466A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F1D6332-9264-4C8A-B320-3B923797466A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

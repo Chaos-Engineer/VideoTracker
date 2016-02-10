@@ -15,14 +15,22 @@ namespace VideoTracker
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            string launchFile = "";
-            if (e.Args.Count() > 0)
+            try
             {
-                launchFile = e.Args[0];
+                string launchFile = "";
+                if (e.Args.Count() > 0)
+                {
+                    launchFile = e.Args[0];
+                }
+                VideoTrackerForm videoTrackerForm = new VideoTrackerForm(launchFile);
+                videoTrackerForm.Show();
             }
-            VideoTrackerForm videoTrackerForm = new VideoTrackerForm(launchFile);
-            videoTrackerForm.Show();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: Unhandled exception\n" + ex.ToString());
+            }
         }
+
 
     }
 }

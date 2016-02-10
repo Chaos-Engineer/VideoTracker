@@ -13,7 +13,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border x:Name="border">
+    <Border x:Name="border" Style="{StaticResource VideoPlayerPanelBorder}">
         <StackPanel x:Name="flowLayoutPanel" AllowDrop="True" Background="Transparent" Orientation="Vertical"
                         MouseDown="flowLayoutPanel_MouseDown" DragEnter="flowLayoutPanel_DragEnter"
                         Drop="flowLayoutPanel_DragDrop">
@@ -23,7 +23,7 @@
             <StackPanel>
                 <ComboBox x:Name="videoSelector" DropDownClosed="videoSelector_DropDownClosed" SelectionChanged="videoSelector_SelectionChanged"/>
             </StackPanel>
-            <StackPanel>
+            <StackPanel Style="{StaticResource LeftButtonStackPanel}">
                 <Button x:Name="backButton" Content="&lt;" Click="backButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
                 <Button x:Name="playButton" Content="Play" Click="playButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
                 <Button x:Name="playNextButton" Content="Play Next" Click="playNextButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />

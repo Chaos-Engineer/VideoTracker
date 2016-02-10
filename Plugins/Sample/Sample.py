@@ -65,7 +65,7 @@ from VideoTracker import VideoFile, gpk, spk
 #    pluginRegisterDictionary["other"] = "Additional data is stored like this"
 #
 def Register(pluginRegisterDictionary) :
-    pluginRegisterDictionary[gpk.NAME]  = "sample"
+    pluginRegisterDictionary[gpk.NAME]  = "Sample"
     pluginRegisterDictionary[gpk.ADD]   = "Add Sample series"
     pluginRegisterDictionary[gpk.DESC]  = "Sample plug-in to launch a user-specified URL"
     #pluginRegisterDictionary[gpk.FORCECONFIG] = "true"
@@ -83,8 +83,11 @@ def Register(pluginRegisterDictionary) :
 # In this example, there's a single global called "launcher", which will be used to allow
 # the user to override the default file/URL handler when playing the video.
 #
-def ConfigureGlobals(pluginGlobalDictionary) :
+# This routine must contain a "form.Owner = parent" line to keep us from going into a state
+# where the main program is visible, but this dialog box is hidden behind some other Window
+def ConfigureGlobals(parent, pluginGlobalDictionary) :
     form = SampleConfigureGlobals()
+    form.Owner = parent
     form.launcher.Text = pluginGlobalDictionary["launcher"]
     if form.ShowDialog() :
         pluginGlobalDictionary["launcher"] = form.launcher.Text
@@ -107,10 +110,14 @@ def ConfigureGlobals(pluginGlobalDictionary) :
 # matches it, it will be set to the current video. This is optional; if it is not set 
 # then the current video will be the last video played, or the first video of a new series.
 #
+# This routine must contain a "form.Owner = parent" line to keep us from going into a state
+# where the main program is visible, but this dialog box is hidden behind some other Window
+#
 # In this example, we also prompt the user for a URL associated with the title.
 
-def ConfigureSeries(pluginSeriesDictionary) :
+def ConfigureSeries(parent, pluginSeriesDictionary) :
     form = SampleConfigureSeries()
+    form.Owner = parent
     form.NameBox.Text = pluginSeriesDictionary[spk.TITLE]
     form.URLBox.Text =  pluginSeriesDictionary["url"]
     if form.ShowDialog() :

@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
 using System.Xml.Serialization;
 
 namespace VideoTracker
@@ -20,6 +20,7 @@ namespace VideoTracker
         public StringDictionary pluginSeriesDictionary = new StringDictionary();
         private StringDictionary pluginGlobalDictionary;
 
+        private Window parentWindow;        // Used by plugins to set their forms' "Owner" field.
         private dynamic scope = null;
         private Plugin plugin = null;
 
@@ -33,6 +34,7 @@ namespace VideoTracker
             this.pluginName = pluginName;
             this.pluginGlobalDictionary = vtd.globals[pluginName];
             this.plugin = new Plugin(pluginName, vtd);
+            this.parentWindow = vtd.videoTrackerForm;
         }
 
         public override void EditForm(VideoTrackerData vtd)
@@ -145,7 +147,7 @@ namespace VideoTracker
             // Get the local variables for this plugin
             try
             {
-                if (!scope.ConfigureSeries(out this.pluginSeriesDictionary))
+                if (!scope.ConfigureSeries(parentWindow, out this.pluginSeriesDictionary))
                 {
                     // Operation cancelled - no need to report error
                     errorString = "";
@@ -189,6 +191,7 @@ namespace VideoTracker
         public string pluginName = NEW;
         public string pluginFileName;
 
+        private Window parentWindow;
         private dynamic scope = null;
         private string pythonLib = "";
 
@@ -211,6 +214,7 @@ namespace VideoTracker
         public Plugin(string pluginName, VideoTrackerData vtd)
         {
             this.pluginName = pluginName;
+            this.parentWindow = vtd.videoTrackerForm;
             this.pluginFileName = vtd.globals[gdg.PLUGINS][pluginName];
             this.pythonLib = vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH];
         }
@@ -343,7 +347,7 @@ namespace VideoTracker
             try
             {
                 pluginGlobalDictionary = vtd.globals[pluginName];
-                if (!this.scope.ConfigureGlobals(out pluginGlobalDictionary))
+                if (!this.scope.ConfigureGlobals(parentWindow, out pluginGlobalDictionary))
                 {
                     // Operation cancelled - no need to report error
                     errorString = "";

@@ -18,8 +18,9 @@ def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.DESC]  = "Load series from Funimation website"
     pluginRegisterDictionary[gpk.FORCECONFIG] = "false"
 
-def ConfigureSeries(pluginSeriesDictionary) :
-    form = SampleConfigureSeries()
+def ConfigureSeries(parent, pluginSeriesDictionary) :
+    form = ConfigureFunimationSeries()
+    form.Owner = parent
     form.NameBox.Text = pluginSeriesDictionary[spk.TITLE]
     if form.ShowDialog() :
        pluginSeriesDictionary[spk.TITLE] = form.NameBox.Text
@@ -104,10 +105,10 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 # Allow the user to enter an episode name and a URL. Both values are required.
 #
 # 
-class SampleConfigureSeries(Window):
+class ConfigureFunimationSeries(Window):
     def __init__(self):
         wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Funimation.xaml')
-    
+
     def OKButton_Click(self, sender, e):
         if self.NameBox.Text == "" :
             MessageBox.Show("Series name must be specified")

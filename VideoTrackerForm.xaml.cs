@@ -147,6 +147,7 @@ namespace VideoTracker
         private void addAmazonVideoOnDemandMenuItem_Click(object sender, EventArgs e)
         {
             AmazonVideoSeriesForm vsf = new AmazonVideoSeriesForm(videoTrackerData);
+            vsf.Owner = this;
             vsf.ShowDialog();
         }
 
@@ -164,10 +165,19 @@ namespace VideoTracker
             LoadAllSeries();
         }
 
+        private void pluginsMenuItem_Click(object sender, EventArgs e)
+        {
+            PluginSettingsForm psf = new PluginSettingsForm(videoTrackerData);
+            psf.Owner = this;
+            psf.ShowDialog();
+        }
+
+
         // WPF key bindings are a pain to set up. Handle hot keys through the KeyDown event
         // instead.
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            // F5 = Refresh
             if (e.Key == Key.F5) {
                 LoadAllSeries();
                 return;
@@ -183,6 +193,15 @@ namespace VideoTracker
             CheckAutoSave();
         }
 
+        private void aboutMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("VideoTracker\n" +
+                "Build V" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\n" +
+                "Copyright (c) 2015 Extraordinary Popular Delusions",
+                "About VideoTracker");
+        }
+
+
         public void AddTitle(VideoPlayerPanel panel, VideoSeries vs)
         {
             // AddTitle can be called from "Add new program" or from "File Load". If it's
@@ -195,8 +214,6 @@ namespace VideoTracker
 
             this.numPanels++;
             this.mainPanel.Children.Add(panel);
-            //this.ResizeMainPanel();
-            //this.CheckAutoSave();
         }
 
         public void DeleteTitle(VideoPlayerPanel panel, VideoSeries vs)
@@ -419,12 +436,15 @@ namespace VideoTracker
 
             }
         }
-        public void DeletePluginMenuItem(string name)
+        public void DeletePluginMenuItem(string add)
         {
-            foreach (MenuItem item in editMenuItem.Items)
+            foreach (Control item in editMenuItem.Items)
             {
-                if (item.Name == name) editMenuItem.Items.Remove(item);
-                break;
+                if (item is MenuItem && ((MenuItem) item).Header.ToString() == add)
+                {
+                    editMenuItem.Items.Remove(item);
+                    break;
+                }
             }
         }
 
@@ -441,15 +461,6 @@ namespace VideoTracker
                 return;
             }
             ps.LoadFiles(ps.pluginSeriesDictionary["title"], "", videoTrackerData);
-        }
-
-
-        private void aboutMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("VideoTracker\n" +
-                "Build V" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\n" +
-                "Copyright (c) 2015 Extraordinary Popular Delusions",
-                "About VideoTracker");
         }
     }
 
