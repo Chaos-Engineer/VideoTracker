@@ -154,10 +154,9 @@ namespace VideoTracker
 
         private void addCrunchyRollVideoMenuItem_Click(object sender, EventArgs e)
         {
-            using (CrunchyRollVideoSeriesForm csf = new CrunchyRollVideoSeriesForm(videoTrackerData))
-            {
-                csf.ShowDialog();
-            }
+            CrunchyRollVideoSeriesForm csf = new CrunchyRollVideoSeriesForm(videoTrackerData);
+            csf.Owner = this;
+            csf.ShowDialog();
         }
 
         private void refreshMenuItem_Click(object sender, EventArgs e)

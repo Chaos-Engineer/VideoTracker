@@ -89,6 +89,7 @@
       <HintPath>packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationFramework.Classic" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -120,6 +121,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CrunchyRollVideoSeriesForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PluginSettingsForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -141,6 +146,9 @@
     <Compile Include="AmazonVideoSeriesForm.xaml.cs">
       <DependentUpon>AmazonVideoSeriesForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CrunchyRollVideoSeriesForm.xaml.cs">
+      <DependentUpon>CrunchyRollVideoSeriesForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PluginSettingsForm.xaml.cs">
       <DependentUpon>PluginSettingsForm.xaml</DependentUpon>
     </Compile>
@@ -149,10 +157,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CrunchyRollVideoSeries.cs" />
-    <Compile Include="CrunchyRollVideoSeriesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CrunchyRollVideoSeriesForm.Designer.cs" />
     <Compile Include="FileVideoSeries.cs" />
     <Compile Include="FileVideoSeriesForm.cs">
       <SubType>Form</SubType>

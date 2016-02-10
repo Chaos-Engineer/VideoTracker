@@ -20,9 +20,7 @@
             <StackPanel>
                 <Label x:Name="seriesName" Content="UNDEFINED"/>
             </StackPanel>
-            <StackPanel>
-                <ComboBox x:Name="videoSelector" DropDownClosed="videoSelector_DropDownClosed" SelectionChanged="videoSelector_SelectionChanged"/>
-            </StackPanel>
+            <ComboBox x:Name="videoSelector" DropDownClosed="videoSelector_DropDownClosed"/>
             <StackPanel Style="{StaticResource LeftButtonStackPanel}">
                 <Button x:Name="backButton" Content="&lt;" Click="backButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
                 <Button x:Name="playButton" Content="Play" Click="playButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />

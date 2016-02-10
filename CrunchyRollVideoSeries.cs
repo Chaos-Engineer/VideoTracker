@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using CsQuery;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using System.Net;
 using System.Web;
+using System.Windows;
 // Plays videos from the CrunchyRoll website, using screen-scraping to determine the URLs associated
 // with a series.
 
