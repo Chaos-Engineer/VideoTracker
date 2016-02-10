@@ -8,6 +8,8 @@
     <Thickness x:Key="VideoPlayerPanelButtonPadding" Left="2" Right="2" Top="2" Bottom="2"/>
     <system:Double x:Key="DefaultTextLength">400</system:Double>
     <system:Double x:Key="DefaultTextInputLength">300</system:Double>
+    <system:Double x:Key="DefaultDirectoryBoxHeight">120</system:Double>
+    <system:Double x:Key="SpacerWidth">3</system:Double>
     <Style TargetType="Menu">
         <Setter Property="Background" Value="{StaticResource ResourceKey=DefaultBackground}"/>
     </Style>
@@ -48,6 +50,7 @@
     <Style TargetType="StackPanel">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Orientation" Value="Vertical"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <!-- Stack panel for an entire window. Sets the background color -->
     <Style x:Key="WindowStackPanel" TargetType="StackPanel">
@@ -70,9 +73,17 @@
     <Style TargetType="ComboBox">
         <Setter Property="Margin" Value="{StaticResource ResourceKey=DefaultMargin}"/>
     </Style>
+    <Style x:Key="SpacerLabel" TargetType="Label">
+        <Setter Property="Width" Value="{StaticResource ResourceKey=SpacerWidth}"/>
+    </Style>
     <Style TargetType="TextBox">
         <Setter Property="Margin" Value="{StaticResource ResourceKey=DefaultMargin}"/>
         <Setter Property="MaxWidth" Value="{StaticResource ResourceKey=DefaultTextInputLength}"/>
         <Setter Property="MinWidth" Value="{StaticResource ResourceKey=DefaultTextInputLength}"/>
+    </Style>
+    <Style x:Key="DirectoryListBox" TargetType="ListBox">
+        <Setter Property="Margin" Value="{StaticResource ResourceKey=DefaultMargin}"/>
+        <Setter Property="Width" Value="{StaticResource ResourceKey=DefaultTextInputLength}"/>
+        <Setter Property="Height" Value="{StaticResource ResourceKey=DefaultDirectoryBoxHeight}"/>
     </Style>
 </ResourceDictionary>

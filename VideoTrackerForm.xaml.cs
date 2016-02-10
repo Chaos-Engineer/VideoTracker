@@ -138,10 +138,9 @@ namespace VideoTracker
         //
         private void addVideoFileMenuItem_Click(object sender, EventArgs e)
         {
-            using (FileVideoSeriesForm vsf = new FileVideoSeriesForm(videoTrackerData))
-            {
-                vsf.ShowDialog();
-            }
+            FileVideoSeriesForm vsf = new FileVideoSeriesForm(videoTrackerData);
+            vsf.Owner = this;
+            vsf.ShowDialog();
         }
 
         private void addAmazonVideoOnDemandMenuItem_Click(object sender, EventArgs e)

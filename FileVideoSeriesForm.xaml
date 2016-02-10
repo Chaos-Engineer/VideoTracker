@@ -1,0 +1,51 @@
+﻿<Window x:Class="VideoTracker.FileVideoSeriesForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Select Video Files" SizeToContent="WidthAndHeight"
+        ShowInTaskbar="False" ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                  Source="Resources/VideoTrackerResourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel Style="{StaticResource WindowStackPanel}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Title:"/>
+            <TextBox x:Name="titleBox" Grid.Row="0" Grid.Column="1"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Current File:"/>
+            <TextBox x:Name="fileNameBox" Grid.Row="1" Grid.Column="1"
+                     PreviewDragEnter="fileNameBox_DragEnter" PreviewDragOver="fileNameBox_DragEnter"
+                     Drop="fileNameBox_DragDrop" AllowDrop="True"/>
+            <StackPanel Grid.Row="1" Grid.Column="2">
+                <Button Content="Browse" Click="browseButton_Click"/>
+            </StackPanel>
+            <Label Grid.Row="2" Grid.Column="0" Content="Search Directories:"/>
+            <ListBox x:Name="directoryListBox" Style="{StaticResource DirectoryListBox}"
+                     Grid.Row="2" Grid.Column="1" 
+                     DragEnter="directoryListBox_DragEnter" Drop="directoryListBox_DragDrop"
+                     AllowDrop="True"/>
+            <StackPanel Grid.Row="2" Grid.Column="2">
+                <Button Content="Add Directory" Click="addDirectoryButton_Click"/>
+                <Button Content="Remove Directory" Click="removeDirectoryButton_Click"/>
+                <Button Content="Find in default dirs" Click="findDefaultDirButton_Click"/>
+            </StackPanel>
+        </Grid>
+        <StackPanel Style="{StaticResource RightButtonsStackPanel}">
+            <Button Content="OK" Click="OKButton_Click" IsDefault="True" />
+            <Button Content="Cancel" IsCancel="True"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

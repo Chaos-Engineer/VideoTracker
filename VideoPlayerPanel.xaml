@@ -22,6 +22,7 @@
             </StackPanel>
             <ComboBox x:Name="videoSelector" DropDownClosed="videoSelector_DropDownClosed"/>
             <StackPanel Style="{StaticResource LeftButtonStackPanel}">
+                <Label Style="{StaticResource SpacerLabel}"/>
                 <Button x:Name="backButton" Content="&lt;" Click="backButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
                 <Button x:Name="playButton" Content="Play" Click="playButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
                 <Button x:Name="playNextButton" Content="Play Next" Click="playNextButton_Click" Style="{StaticResource VideoPlayerPanelButton}" />
