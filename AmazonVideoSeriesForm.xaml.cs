@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace VideoTracker
@@ -24,6 +26,7 @@ namespace VideoTracker
         {
             InitializeComponent();
             this.videoTrackerData = vtd;
+            this.Owner = vtd.videoTrackerForm;
         }
 
         // Two-argument constructor to edit an existing series.
@@ -32,6 +35,7 @@ namespace VideoTracker
             InitializeComponent();
             this.amazonVideoSeries = vs;
             this.videoTrackerData = vtd;
+            this.Owner = vtd.videoTrackerForm;
             this.titleBox.Text = vs.seriesTitle;
             this.keywordBox.Text = vs.keywords;
         }
@@ -45,10 +49,12 @@ namespace VideoTracker
                   String.IsNullOrWhiteSpace(videoTrackerData.globals[gdg.AMAZON][gdk.SECRETKEY]) ||
                   String.IsNullOrWhiteSpace(videoTrackerData.globals[gdg.AMAZON][gdk.AFFILIATEID]))
             {
-                MessageBox.Show("Amazon Affiliate ID parameters must be set before loading " +
+                App.ErrorBox("Amazon Affiliate ID parameters must be set before loading " +
                     "Amazon On-Demand Video programs");
                 SettingsForm s = new SettingsForm(videoTrackerData);
-                s.tabControl.SelectTab("amazonSettings");
+                foreach (TabItem t in s.tabControl.Items) {
+                    if (t.Name.Equals("amazon")) s.tabControl.SelectedItem = t;
+                }
                 s.ShowDialog();
                 return;
             }
@@ -57,7 +63,7 @@ namespace VideoTracker
             // Check input for validity
             if (titleBox.Text.Equals(""))
             {
-                MessageBox.Show("Title must be specified");
+                App.ErrorBox("Title must be specified");
                 return;
             }
             if (keywordBox.Text.Equals(""))
@@ -81,6 +87,5 @@ namespace VideoTracker
 
             this.DialogResult = true;
         }
-
     }
 }

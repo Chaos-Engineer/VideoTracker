@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Xml.Serialization;
 
 namespace VideoTracker
@@ -42,7 +43,7 @@ namespace VideoTracker
             string errorString;
             if (!this.ConfigureSeries(vtd, out errorString))
             {
-                if (errorString != "") MessageBox.Show(errorString);
+                if (errorString != "") App.ErrorBox(errorString);
                 return;
             }
             // We always want an alert if there's an error here, so reset the timer. 
@@ -64,7 +65,7 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Unable to call Play() in " + plugin.pluginFileName + ":\n" + ex.ToString());
+                App.ErrorBox("Unable to call Play() in " + plugin.pluginFileName + ":\n" + ex.ToString());
             }
         }
 
@@ -99,7 +100,8 @@ namespace VideoTracker
             {
                 string errorString = scope.LoadSeries(this.pluginGlobalDictionary, this.pluginSeriesDictionary,
                         out this.videoFiles);
-                if (errorString != "") {
+                if (errorString != "")
+                {
                     this.videoFiles.Clear();
                     return;
                 }
@@ -128,7 +130,7 @@ namespace VideoTracker
             return;
         }
 
-     
+
         public bool ConfigureSeries(VideoTrackerData vtd, out string errorString)
         {
             //Plugin plugin = new Plugin(pluginName, vtd);
@@ -200,7 +202,7 @@ namespace VideoTracker
         //
         // This section of code must be synched: If there are multiple series that use the same plugin,
         // then there's can be a race condition on updates to pluginDictionary[pluginName].
- 
+
         private static readonly object pluginDictionaryLock = new object();
         private static Dictionary<string, PluginData> pluginDictionary = new Dictionary<string, PluginData>();
 
@@ -225,7 +227,7 @@ namespace VideoTracker
             lock (pluginDictionaryLock)
             {
                 this.pluginFileName = pluginFileName;
-                pluginDictionary[pluginName] = new PluginData(pluginFileName, vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH]);
+                pluginDictionary[NEW] = new PluginData(pluginFileName, vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH]);
 
                 // Load the plug-in file and call the "Register" method.
                 try
@@ -234,7 +236,7 @@ namespace VideoTracker
                 }
                 catch (IronPython.Runtime.Exceptions.ImportException ex)
                 {
-                    MessageBox.Show("Import exception: This usually means that IronPython has not been " +
+                    App.ErrorBox("Import exception: This usually means that IronPython has not been " +
                         "installed on your system (download it from http://ironpython.net), or that the " +
                         "IronPython library path on this page is incorrect. The other possibility is that " +
                         "this plug-in relies on a Python library module that is not installed on your system\n\n"
@@ -242,7 +244,7 @@ namespace VideoTracker
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
+                    App.ErrorBox("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
                     return false;
                 }
 
@@ -254,7 +256,7 @@ namespace VideoTracker
                 catch (Exception ex)
                 {
                     pluginDictionary.Remove(NEW);
-                    MessageBox.Show("Error calling Register in " + pluginFileName + ":\n" + ex.ToString());
+                    App.ErrorBox("Error calling Register in " + pluginFileName + ":\n" + ex.ToString());
                     return false;
                 }
 
@@ -263,12 +265,19 @@ namespace VideoTracker
                     || pluginRegisterDictionary[gpk.DESC] == "")
                 {
                     pluginDictionary.Remove(NEW);
-                    MessageBox.Show("Invalid Register routine in " + pluginFileName +
+                    App.ErrorBox("Invalid Register routine in " + pluginFileName +
                             ":\nMust set values for 'name', 'add', and 'desc' arguments");
                     return false;
                 }
 
                 pluginName = pluginRegisterDictionary[gpk.NAME];
+
+                if (vtd.globals.ContainsKey(pluginName)) {
+                    App.ErrorBox(pluginName + " is already registered.");
+                    pluginDictionary.Remove(NEW);
+                    return false;
+                }
+
 
                 pluginDictionary[pluginName] = pluginDictionary[NEW];
                 pluginDictionary.Remove(NEW);
@@ -290,7 +299,7 @@ namespace VideoTracker
                     string errorString;
                     if (!ConfigureGlobals(vtd, out errorString))
                     {
-                        if (errorString == "") { MessageBox.Show(errorString); }
+                        if (errorString == "") { App.ErrorBox(errorString); }
                     }
                 }
                 return true;
@@ -306,19 +315,22 @@ namespace VideoTracker
         //
         public dynamic LoadPlugin()
         {
-
-            lock (pluginDictionaryLock)
+            using (new WaitCursor())
             {
-                if (!pluginDictionary.ContainsKey(pluginName))
+                lock (pluginDictionaryLock)
                 {
-                    pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
+
+                    if (!pluginDictionary.ContainsKey(pluginName))
+                    {
+                        pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
+                    }
+                    DateTime lastMod = File.GetLastWriteTime(pluginFileName);
+                    if (scope == null || pluginDictionary[pluginName].fileMod < lastMod)
+                    {
+                        this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
+                    }
+                    return this.scope;
                 }
-                DateTime lastMod = File.GetLastWriteTime(pluginFileName);
-                if (scope == null || pluginDictionary[pluginName].fileMod < lastMod)
-                {
-                    this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
-                }
-                return this.scope;
             }
         }
 

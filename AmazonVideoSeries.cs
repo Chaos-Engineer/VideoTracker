@@ -8,7 +8,6 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
 
 /**********************************************************************************************
@@ -389,7 +388,7 @@ namespace VideoTracker
                 }
                 catch (System.Net.WebException)
                 {
-                    //MessageBox.Show("WebException. Retrying in 5 seconds");
+                    //App.ErrorBox("WebException. Retrying in 5 seconds");
                     System.Threading.Thread.Sleep(5000);
                 }
                 catch (Exception ex)

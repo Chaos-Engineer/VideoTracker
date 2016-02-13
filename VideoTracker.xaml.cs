@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Navigation;
 
 namespace VideoTracker
 {
@@ -13,6 +15,9 @@ namespace VideoTracker
     /// </summary>
     public partial class App : Application
     {
+     
+        static public object writeInProgress = new Object();
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             try
@@ -27,10 +32,23 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: Unhandled exception\n" + ex.ToString());
+                App.ErrorBox("Error: Unhandled exception\n" + ex.ToString());
             }
         }
 
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            // Don't exit while we're writing to the data file.
+            lock (App.writeInProgress)
+            {
+                return;
+            }
+        }
 
+        // Global method for error logging.
+        public static void ErrorBox(string message)
+        {
+            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        }
     }
 }

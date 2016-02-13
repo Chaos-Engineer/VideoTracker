@@ -25,6 +25,7 @@ namespace VideoTracker
         public CrunchyRollVideoSeriesForm(VideoTrackerData vtd)
         {
             this.videoTrackerData = vtd;
+            this.Owner = vtd.videoTrackerForm;
             InitializeComponent();
         }
 
@@ -33,6 +34,7 @@ namespace VideoTracker
             InitializeComponent();
             this.crunchyRollVideoSeries = cs;
             this.videoTrackerData = vtd;
+            this.Owner = vtd.videoTrackerForm;
             this.titleBox.Text = cs.seriesTitle;
             this.URLBox.Text = cs.URL;
         }
@@ -42,7 +44,7 @@ namespace VideoTracker
             // Check input for validity
             if (titleBox.Text.Equals(""))
             {
-                MessageBox.Show("Title must be set");
+                App.ErrorBox("Title must be set");
                 return;
             }
 

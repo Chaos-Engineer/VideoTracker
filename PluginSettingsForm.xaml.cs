@@ -2,6 +2,8 @@
 using Ookii.Dialogs.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace VideoTracker
@@ -29,16 +32,45 @@ namespace VideoTracker
         private OpenFileDialog openPluginFileDialog;
         private VistaFolderBrowserDialog openPythonDirectoryDialog;
 
+        private const string LIB1 = @"C:\Program Files\IronPython 2.7\Lib";
+        private const string LIB2 = @"C:\Program Files (x86)\IronPython 2.7\Lib";
 
         public PluginSettingsForm(VideoTrackerData vtd)
         {
             InitializeComponent();
             this.videoTrackerData = vtd;
             this.videoTrackerForm = vtd.videoTrackerForm;
+            this.Owner = vtd.videoTrackerForm;
             this.openPluginFileDialog = new OpenFileDialog();
+            this.openPluginFileDialog.InitialDirectory = Environment.CurrentDirectory + @"\Plugins";
             this.openPluginFileDialog.DefaultExt = "py";
             this.openPluginFileDialog.Filter = "Python files|*.py|All files|*.*";
+
+            this.openPythonDirectoryDialog = new VistaFolderBrowserDialog();
+            openPythonDirectoryDialog.SelectedPath = @"C:\";
+
+            CheckLibValidity();
             BuildPluginTable();
+        }
+
+        private void CheckLibValidity()
+        {
+            this.pythonPluginHelp.Visibility = Visibility.Collapsed;
+            if (this.pythonDirTextBox.Text == "" || !Directory.Exists(this.pythonDirTextBox.Text))
+            {
+                if (Directory.Exists(LIB1))
+                {
+                    this.pythonDirTextBox.Text = LIB1;
+                }
+                else if (Directory.Exists(LIB2))
+                {
+                    this.pythonDirTextBox.Text = LIB2;
+                }
+                else
+                {
+                    this.pythonPluginHelp.Visibility = Visibility.Visible;
+                }
+            }
         }
 
         private void BuildPluginTable()
@@ -66,26 +98,25 @@ namespace VideoTracker
             CustomLabel fileLabel = new CustomLabel(pluginDesc, index, 1);
             pluginPanel.Children.Add(keyLabel);
             pluginPanel.Children.Add(fileLabel);
-            BorderedButton configButton = new BorderedButton(this, pluginName, pluginAdd, CONFIGURE, index, 2);
-            BorderedButton deleteButton = new BorderedButton(this, pluginName, pluginAdd, UNREGISTER, index, 3);
+            CustomButton configButton = new CustomButton(this, pluginName, pluginAdd, CONFIGURE, index, 2);
+            CustomButton deleteButton = new CustomButton(this, pluginName, pluginAdd, UNREGISTER, index, 3);
             pluginPanel.Children.Add(configButton);
             pluginPanel.Children.Add(deleteButton);
         }
 
         private void okButtonClick(object sender, EventArgs e)
         {
+            videoTrackerData.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH] = pythonDirTextBox.Text;
             this.DialogResult = true;
         }
 
 
         private void registerButton_Click(object sender, EventArgs e)
         {
-
-            OpenFileDialog fd = openPluginFileDialog;
-            if (fd.ShowDialog() != true) return;
+            if (openPluginFileDialog.ShowDialog() != true) return;
 
             Plugin plugin = new Plugin();
-            if (plugin.Register(fd.FileName, videoTrackerData))
+            if (plugin.Register(openPluginFileDialog.FileName, videoTrackerData))
             {
                 string pluginName = plugin.pluginName;
                 string pluginAdd = videoTrackerData.globals[pluginName][gpk.ADD];
@@ -110,28 +141,38 @@ namespace VideoTracker
                 {
                     videoTrackerData.globals.Remove(pluginName);
                 }
-                pluginPanel.RowDefinitions[rowNum].Height = new GridLength(0); // Deleting row is difficult - just hide it.
+                pluginPanel.RowDefinitions[rowNum].Height = new GridLength(0); // Deleting rows is difficult - just hide it.
 
             }
             if ((string) cb.operation == CONFIGURE) {
                 string errorString;
                 Plugin plugin = new Plugin(pluginName, videoTrackerData);
                 plugin.ConfigureGlobals(videoTrackerData, out errorString);
-                if (errorString != "") MessageBox.Show(errorString);
+                if (errorString != "") App.ErrorBox(errorString);
             }
         }
 
         private void pythonDirectoryButtonClick(object sender, EventArgs e)
         {
-            openPythonDirectoryDialog = new VistaFolderBrowserDialog();
             if (openPythonDirectoryDialog.ShowDialog() == true)
             {
                 pythonDirTextBox.Text = openPythonDirectoryDialog.SelectedPath;
+                videoTrackerData.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH] = pythonDirTextBox.Text;
+                CheckLibValidity();
             }
         }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(e.Uri.AbsoluteUri);
+        }
+
     }
 
-    // Utility class to create a label, with AutoSize set to true and with the text passed into the constructor.
+    // Utility class to create a bordered label, with AutoSize set to true and with the text 
+    // passed into the constructor. In order to keep the border thickness constant, we only
+    // set the top/left border in the first row/column.
+  
     public class CustomLabel : Label
     {
         public CustomLabel(string text, int row, int column)
@@ -158,20 +199,8 @@ namespace VideoTracker
         }
     }
 
-    public class BorderedButton : Border
-    {
-        private CustomButton button;
-
-        public BorderedButton(PluginSettingsForm pluginSettingsForm, string pluginName, string pluginAdd, string operation, int row, int column)
-        {
-            button = new CustomButton(pluginSettingsForm, pluginName, pluginAdd, operation, row, column);
-            this.Child = button;
-            this.Padding = new Thickness(5);
-            Grid.SetRow(this, row);
-            Grid.SetColumn(this, column);
-        }
-    }
-
+    // Utility class to create a custom button and place it in the grid. Information about
+    // the button's function is coded into the public properties for use by customButton_Click
     public class CustomButton : Button
     {
         public int rowNum;
@@ -188,6 +217,12 @@ namespace VideoTracker
             this.pluginName = pluginName;
             this.pluginAdd = pluginAdd;
             this.rowNum = row;
+
+            this.Padding = new Thickness(10, 2, 10, 2);
+            this.Margin = new Thickness(2);
+
+            Grid.SetRow(this, row);
+            Grid.SetColumn(this, column);
         }
     }
 }

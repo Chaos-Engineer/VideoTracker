@@ -13,6 +13,10 @@
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel Style="{StaticResource WindowStackPanel}">
+        <TextBlock x:Name="pythonPluginHelp">Note: In order for plug-ins to work, you must download IronPython from
+            <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="http://ironpython.net/download/">http://ironpython.net/download/</Hyperlink>
+            and set the library directory (e.g. C:\Program Files\IronPython 2.7\Lib) in the box below.
+        </TextBlock>
         <StackPanel Style="{StaticResource RightButtonsStackPanel}">
             <Label>Python Library Directory:</Label>
             <TextBox x:Name="pythonDirTextBox"/>

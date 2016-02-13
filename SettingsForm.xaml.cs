@@ -1,30 +1,39 @@
-﻿using System;
+﻿using Ookii.Dialogs.Wpf;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.IO;
-using Ookii.Dialogs;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace VideoTracker
 {
-    public partial class SettingsForm : Form
+    public partial class SettingsForm : Window
     {
-
-        private bool settingsValid;
         private VideoTrackerData videoTrackerData;
         private VideoTrackerForm videoTrackerForm;
+        private VistaFolderBrowserDialog openDefaultDirectoryDialog;
+
 
         public SettingsForm(VideoTrackerData vtd)
         {
             InitializeComponent();
             this.videoTrackerData = vtd;
             this.videoTrackerForm = vtd.videoTrackerForm;
+            this.Owner = vtd.videoTrackerForm;
+
+            this.openDefaultDirectoryDialog = new VistaFolderBrowserDialog();
+            this.openDefaultDirectoryDialog.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             // Global settings
 
@@ -34,7 +43,10 @@ namespace VideoTracker
             // File series settings
             if (vtd.globals[gdg.FILE][gdk.DEFDIRLIST] != null && vtd.globals.GetArray(gdg.FILE, gdk.DEFDIRLIST).Length > 0)
             {
-                defaultDirectoryListBox.Items.AddRange(vtd.globals.GetArray(gdg.FILE, gdk.DEFDIRLIST).ToArray<string>());
+                foreach (string dir in vtd.globals.GetArray(gdg.FILE, gdk.DEFDIRLIST))
+                {
+                    defaultDirectoryListBox.Items.Add(dir);
+                }
             }
 
             // Amazon series settings
@@ -43,56 +55,15 @@ namespace VideoTracker
             affiliateIdTextBox.Text = vtd.globals[gdg.AMAZON][gdk.AFFILIATEID];
         }
 
-        //
-        // The Windows library draws text vertically down left-aligned tabs. This routine
-        // allows text to be drawn horizontally instead. (If the tab width is too 
-        // narrow, increase the TabControl object's *height* attribute.)
-        //
-        private void tabControl_DrawItem(Object sender, System.Windows.Forms.DrawItemEventArgs e)
+
+        private void OKButton_Click(object sender, EventArgs e)
         {
-            Graphics g = e.Graphics;
-            Brush brush;
-            Font font;
-
-            TabPage tabPage = tabControl.TabPages[e.Index];
-            Rectangle tabBounds = tabControl.GetTabRect(e.Index);
-
-            brush = new SolidBrush(Color.Black);
-            if (e.State == DrawItemState.Selected)
-            {
-                font = new Font(this.Font, FontStyle.Bold);
-            }
-            else
-            {
-                font = this.Font;
-            }
-
-            StringFormat stringFlags = new StringFormat();
-            stringFlags.Alignment = StringAlignment.Center;
-            stringFlags.LineAlignment = StringAlignment.Center;
-            g.DrawString(tabPage.Text, font, brush, tabBounds, new StringFormat(stringFlags));
-        }
-
-        private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // User selected cancel, don't validate or save results.
-            if (this.DialogResult == DialogResult.Cancel)
-            {
-                e.Cancel = false;
-                return;
-            }
-
             // Apply changes. If there were validation failures, then prevent the 
             // form from closing.
-            ApplyChanges();
-            settingsValid = true;
+            bool settingsValid = ApplyChanges();
             if (settingsValid)
             {
-                e.Cancel = false;
-            }
-            else
-            {
-                e.Cancel = true;
+                this.DialogResult = true;
             }
             return;
         }
@@ -102,7 +73,7 @@ namespace VideoTracker
             ApplyChanges();
         }
 
-        private void ApplyChanges()
+        private bool ApplyChanges()
         {
             // Program-wide globals
             int columns;
@@ -121,13 +92,7 @@ namespace VideoTracker
             videoTrackerData.globals.Set(gdg.AMAZON, gdk.SECRETKEY, secretKeyTextBox.Text);
             videoTrackerData.globals.Set(gdg.AMAZON, gdk.AFFILIATEID, affiliateIdTextBox.Text);
 
-            this.settingsValid = true;
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            LinkLabel l = sender as LinkLabel;
-            Process.Start(l.Text);
+            return true;
         }
 
         private void defaultDirectoryListBox_DragDrop(object sender, DragEventArgs e)
@@ -141,16 +106,15 @@ namespace VideoTracker
 
         private void defaultDirectoryListBox_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effects = DragDropEffects.Copy;
         }
 
 
         private void addDefaultDirectoryButton_Click(object sender, EventArgs e)
         {
-            VistaFolderBrowserDialog dd = openDefaultDirectoryDialog;
-            if (dd.ShowDialog() == DialogResult.OK)
+            if (openDefaultDirectoryDialog.ShowDialog() == true)
             {
-                AddDirectoryToListBox(dd.SelectedPath);
+                AddDirectoryToListBox(openDefaultDirectoryDialog.SelectedPath);
             }
         }
 
@@ -163,13 +127,18 @@ namespace VideoTracker
         {
             if (!Directory.Exists(directory))
             {
-                MessageBox.Show(directory + " does not exist.");
+                App.ErrorBox(directory + " does not exist.");
                 return;
             }
             if (!defaultDirectoryListBox.Items.Contains(directory))
             {
                 defaultDirectoryListBox.Items.Add(directory);
             }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(e.Uri.AbsoluteUri);
         }
     }
 }

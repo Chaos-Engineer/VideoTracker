@@ -113,11 +113,11 @@ namespace VideoTracker
             autoSaveMenuItem.IsChecked = videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE);
             if (autoSaveMenuItem.IsChecked)
             {
-                MessageBox.Show("Autosave enabled");
+                App.ErrorBox("Autosave enabled");
             }
             else
             {
-                MessageBox.Show("Autosave disabled");
+                App.ErrorBox("Autosave disabled");
             }
         }
 
@@ -139,22 +139,19 @@ namespace VideoTracker
         private void addVideoFileMenuItem_Click(object sender, EventArgs e)
         {
             FileVideoSeriesForm vsf = new FileVideoSeriesForm(videoTrackerData);
-            vsf.Owner = this;
             vsf.ShowDialog();
         }
 
         private void addAmazonVideoOnDemandMenuItem_Click(object sender, EventArgs e)
         {
-            AmazonVideoSeriesForm vsf = new AmazonVideoSeriesForm(videoTrackerData);
-            vsf.Owner = this;
-            vsf.ShowDialog();
+            AmazonVideoSeriesForm asf = new AmazonVideoSeriesForm(videoTrackerData);
+            asf.ShowDialog();
         }
 
 
         private void addCrunchyRollVideoMenuItem_Click(object sender, EventArgs e)
         {
             CrunchyRollVideoSeriesForm csf = new CrunchyRollVideoSeriesForm(videoTrackerData);
-            csf.Owner = this;
             csf.ShowDialog();
         }
 
@@ -166,7 +163,6 @@ namespace VideoTracker
         private void pluginsMenuItem_Click(object sender, EventArgs e)
         {
             PluginSettingsForm psf = new PluginSettingsForm(videoTrackerData);
-            psf.Owner = this;
             psf.ShowDialog();
         }
 
@@ -184,10 +180,8 @@ namespace VideoTracker
 
         private void settingsMenuItem_Click(object sender, EventArgs e)
         {
-            using (SettingsForm sf = new SettingsForm(videoTrackerData))
-            {
-                sf.ShowDialog();
-            }
+            SettingsForm sf = new SettingsForm(videoTrackerData);
+            sf.ShowDialog();
             CheckAutoSave();
         }
 
@@ -309,7 +303,7 @@ namespace VideoTracker
             }
             catch (Exception e)
             {
-                MessageBox.Show("Failed to load " + file + "\n" + e.ToString() +
+                App.ErrorBox("Failed to load " + file + "\n" + e.ToString() +
                     "\n\nAuto-save will not be performed until configuration is saved manually");
                 EnableFileOperations(true);
                 configFileValid = false;
@@ -355,7 +349,7 @@ namespace VideoTracker
                 {
                     vs.currentVideo = new VideoFile();
                     vs.currentVideo.key = vs.currentVideo.episodeTitle = "NO FILE FOUND";
-                    MessageBox.Show("Invalid data for title " + vs.seriesTitle + ". " +
+                    App.ErrorBox("Invalid data for title " + vs.seriesTitle + ". " +
                         "\n\nAuto-save will not be performed until configuration is saved manually");
                     configFileValid = false;
                 }
@@ -366,23 +360,26 @@ namespace VideoTracker
 
         private void SaveData(string file)
         {
-            try
+            lock (App.writeInProgress)
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
-                using (Stream stream = new FileStream(file + ".tmp", FileMode.Create,
-                    FileAccess.Write,
-                    FileShare.Read))
+                try
                 {
-                    serializer.Serialize(stream, videoTrackerData);
+                    XmlSerializer serializer = new XmlSerializer(typeof(VideoTrackerData));
+                    using (Stream stream = new FileStream(file + ".tmp", FileMode.Create,
+                        FileAccess.Write,
+                        FileShare.Read))
+                    {
+                        serializer.Serialize(stream, videoTrackerData);
+                    }
+                    File.Copy(file + ".tmp", file, true);
                 }
-                File.Copy(file + ".tmp", file, true);
+                catch (Exception ex)
+                {
+                    App.ErrorBox("Can't save " + file + ".\n" + ex.ToString());
+                    return;
+                }
+                configFileValid = true;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Can't save " + file + ".\n" + ex.ToString());
-                return;
-            }
-            configFileValid = true;
         }
 
         public void RegisterWorkerThread()
@@ -419,17 +416,29 @@ namespace VideoTracker
             pluginsLoaded++;
             
             int index = 0;
+            int separatorCount = 0;
+
+            // Insert new plug-ins at the end of the list, just before the second seperator bar.
+            // If this is the first plug-in, then there is only one seperator bar - insert the
+            // plug-in and follow it with a second separator.
             foreach (Control item in editMenuItem.Items)
             {
                 index++;
                 if (item is Separator)
                 {
+                    separatorCount++;
                     if (pluginsLoaded == 1) // Add a new Separator bar after the first plug-in
                     {
-                        editMenuItem.Items.Insert(index, new Separator());
+                        editMenuItem.Items.Insert(index, plugin);
+                        editMenuItem.Items.Insert(index+1, new Separator());
+                        break;
                     }
-                    editMenuItem.Items.Insert(index, plugin);
-                    break;
+                    if (separatorCount == 2)
+                    {
+                        editMenuItem.Items.Insert(index - 1, plugin);
+                        break;
+                    }
+
                 }
 
             }
@@ -455,7 +464,7 @@ namespace VideoTracker
             string errorString;
             if (!ps.ConfigureSeries(videoTrackerData, out errorString))
             {
-                if (errorString != "") MessageBox.Show(errorString);
+                if (errorString != "") App.ErrorBox(errorString);
                 return;
             }
             ps.LoadFiles(ps.pluginSeriesDictionary["title"], "", videoTrackerData);
@@ -732,7 +741,7 @@ namespace VideoTracker
             }
             else
             {
-                MessageBox.Show("VideoTrackerData.Set(): Unknown type " + value.GetType().ToString());
+                App.ErrorBox("VideoTrackerData.Set(): Unknown type " + value.GetType().ToString());
             }
         }
 
@@ -757,4 +766,33 @@ namespace VideoTracker
             if (this.ContainsKey(key)) base.Remove(key);
         }
     }
+
+
+    // Utility class to display a wait cursor for long-running operations. This is
+    // designed to be done in a "using" block so that the original cursor will be 
+    // restored when the object goes out-of-scope.
+    //
+    // Usage:
+    //
+    // using (new WaitCursor()) {
+    //     long running operation
+    // }
+    public class WaitCursor : IDisposable
+    {
+        private Cursor previousCursor;
+
+        public WaitCursor()
+        {
+            previousCursor = Mouse.OverrideCursor;
+
+            Mouse.OverrideCursor = Cursors.Wait;
+        }
+
+        public void Dispose()
+        {
+            Mouse.OverrideCursor = previousCursor;
+        }
+
+    }
+
 }
