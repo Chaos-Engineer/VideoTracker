@@ -19,7 +19,7 @@
         </TextBlock>
         <StackPanel Style="{StaticResource RightButtonsStackPanel}">
             <Label>Python Library Directory:</Label>
-            <TextBox x:Name="pythonDirTextBox"/>
+            <TextBox x:Name="pythonDirTextBox" TextChanged="pythonDirTextBox_TextChanged"/>
             <Button Content="Browse" Click="pythonDirectoryButtonClick"/>
         </StackPanel>
         <Grid x:Name="pluginPanel">

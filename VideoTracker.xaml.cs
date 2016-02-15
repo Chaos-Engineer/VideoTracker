@@ -15,7 +15,7 @@ namespace VideoTracker
     /// </summary>
     public partial class App : Application
     {
-     
+
         static public object writeInProgress = new Object();
 
         private void Application_Startup(object sender, StartupEventArgs e)

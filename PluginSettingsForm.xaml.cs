@@ -32,8 +32,12 @@ namespace VideoTracker
         private OpenFileDialog openPluginFileDialog;
         private VistaFolderBrowserDialog openPythonDirectoryDialog;
 
-        private const string LIB1 = @"C:\Program Files\IronPython 2.7\Lib";
-        private const string LIB2 = @"C:\Program Files (x86)\IronPython 2.7\Lib";
+        private static string[] LIBS = {
+            @"C:\Program Files (x86)\IronPython 2.7\Lib",
+            @"C:\Program Files\IronPython 2.7\Lib",
+            @"D:\Program Files (x86)\IronPython 2.7\Lib",
+            @"D:\Program Files\IronPython 2.7\Lib"
+        };
 
         public PluginSettingsForm(VideoTrackerData vtd)
         {
@@ -56,20 +60,19 @@ namespace VideoTracker
         private void CheckLibValidity()
         {
             this.pythonPluginHelp.Visibility = Visibility.Collapsed;
-            if (this.pythonDirTextBox.Text == "" || !Directory.Exists(this.pythonDirTextBox.Text))
+            if (this.pythonDirTextBox.Text == "")
             {
-                if (Directory.Exists(LIB1))
+                foreach (string lib in LIBS)
                 {
-                    this.pythonDirTextBox.Text = LIB1;
+                    if (Directory.Exists(lib))
+                    {
+                        this.pythonDirTextBox.Text = lib;
+                        break;
+                    }
                 }
-                else if (Directory.Exists(LIB2))
-                {
-                    this.pythonDirTextBox.Text = LIB2;
-                }
-                else
-                {
+            }
+            if (!Directory.Exists(this.pythonDirTextBox.Text)) {
                     this.pythonPluginHelp.Visibility = Visibility.Visible;
-                }
             }
         }
 
@@ -106,23 +109,39 @@ namespace VideoTracker
 
         private void okButtonClick(object sender, EventArgs e)
         {
-            videoTrackerData.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH] = pythonDirTextBox.Text;
             this.DialogResult = true;
+        }
+
+        private void pythonDirTextBox_TextChanged(object sender, RoutedEventArgs e)
+        {
+            videoTrackerData.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH] = pythonDirTextBox.Text;
+            CheckLibValidity();
+        }
+
+        private void pythonDirectoryButtonClick(object sender, EventArgs e)
+        {
+            if (openPythonDirectoryDialog.ShowDialog() == true)
+            {
+                pythonDirTextBox.Text = openPythonDirectoryDialog.SelectedPath;
+            }
         }
 
 
         private void registerButton_Click(object sender, EventArgs e)
         {
-            if (openPluginFileDialog.ShowDialog() != true) return;
-
-            Plugin plugin = new Plugin();
-            if (plugin.Register(openPluginFileDialog.FileName, videoTrackerData))
+            using (new WaitCursor())
             {
-                string pluginName = plugin.pluginName;
-                string pluginAdd = videoTrackerData.globals[pluginName][gpk.ADD];
-                string pluginDesc = videoTrackerData.globals[pluginName][gpk.DESC];
-                AddPluginRow(pluginName, pluginAdd, pluginDesc);
-                this.videoTrackerForm.InsertPluginMenuItem(pluginName, pluginAdd);
+                if (openPluginFileDialog.ShowDialog() != true) return;
+
+                Plugin plugin = new Plugin();
+                if (plugin.Register(openPluginFileDialog.FileName, videoTrackerData))
+                {
+                    string pluginName = plugin.pluginName;
+                    string pluginAdd = videoTrackerData.globals[pluginName][gpk.ADD];
+                    string pluginDesc = videoTrackerData.globals[pluginName][gpk.DESC];
+                    AddPluginRow(pluginName, pluginAdd, pluginDesc);
+                    this.videoTrackerForm.InsertPluginMenuItem(pluginName, pluginAdd);
+                }
             }
         }
 
@@ -152,21 +171,10 @@ namespace VideoTracker
             }
         }
 
-        private void pythonDirectoryButtonClick(object sender, EventArgs e)
-        {
-            if (openPythonDirectoryDialog.ShowDialog() == true)
-            {
-                pythonDirTextBox.Text = openPythonDirectoryDialog.SelectedPath;
-                videoTrackerData.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH] = pythonDirTextBox.Text;
-                CheckLibValidity();
-            }
-        }
-
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(e.Uri.AbsoluteUri);
         }
-
     }
 
     // Utility class to create a bordered label, with AutoSize set to true and with the text 

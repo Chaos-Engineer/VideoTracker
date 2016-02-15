@@ -63,7 +63,8 @@ namespace VideoTracker
             this.configFile = file;
         }
 
-        public new void Show() {
+        public new void Show()
+        {
             // Create the VTR file if it doesn't already exist and save the default global settings. Otherwise
             // open the existing VTR file.
             base.Show();
@@ -172,7 +173,8 @@ namespace VideoTracker
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             // F5 = Refresh
-            if (e.Key == Key.F5) {
+            if (e.Key == Key.F5)
+            {
                 LoadAllSeries();
                 return;
             }
@@ -254,7 +256,7 @@ namespace VideoTracker
             // to that width.
             double panelWidth = 0;
             foreach (VideoPlayerPanel vp in mainPanel.Children)
-            {  
+            {
                 panelWidth = Math.Max(panelWidth, vp.requiredSize.Width);
             }
             foreach (VideoPlayerPanel vp in mainPanel.Children)
@@ -414,7 +416,7 @@ namespace VideoTracker
             plugin.Click += (sender, e) => this.PluginLoader(name);
             plugin.Header = add;
             pluginsLoaded++;
-            
+
             int index = 0;
             int separatorCount = 0;
 
@@ -430,7 +432,7 @@ namespace VideoTracker
                     if (pluginsLoaded == 1) // Add a new Separator bar after the first plug-in
                     {
                         editMenuItem.Items.Insert(index, plugin);
-                        editMenuItem.Items.Insert(index+1, new Separator());
+                        editMenuItem.Items.Insert(index + 1, new Separator());
                         break;
                     }
                     if (separatorCount == 2)
@@ -447,7 +449,7 @@ namespace VideoTracker
         {
             foreach (Control item in editMenuItem.Items)
             {
-                if (item is MenuItem && ((MenuItem) item).Header.ToString() == add)
+                if (item is MenuItem && ((MenuItem)item).Header.ToString() == add)
                 {
                     editMenuItem.Items.Remove(item);
                     break;
@@ -765,12 +767,16 @@ namespace VideoTracker
         {
             if (this.ContainsKey(key)) base.Remove(key);
         }
+
     }
 
 
     // Utility class to display a wait cursor for long-running operations. This is
     // designed to be done in a "using" block so that the original cursor will be 
     // restored when the object goes out-of-scope.
+    //
+    // The cusor is changed through Application.Current.Dispatcher so that it can
+    // be run from a class that isn't GUI-aware.
     //
     // Usage:
     //
@@ -779,20 +785,14 @@ namespace VideoTracker
     // }
     public class WaitCursor : IDisposable
     {
-        private Cursor previousCursor;
-
         public WaitCursor()
         {
-            previousCursor = Mouse.OverrideCursor;
-
-            Mouse.OverrideCursor = Cursors.Wait;
+             Mouse.OverrideCursor = Cursors.Wait;
         }
-
         public void Dispose()
         {
-            Mouse.OverrideCursor = previousCursor;
+
+             Mouse.OverrideCursor = null;
         }
-
     }
-
 }

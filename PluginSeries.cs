@@ -272,7 +272,8 @@ namespace VideoTracker
 
                 pluginName = pluginRegisterDictionary[gpk.NAME];
 
-                if (vtd.globals.ContainsKey(pluginName)) {
+                if (vtd.globals.ContainsKey(pluginName))
+                {
                     App.ErrorBox(pluginName + " is already registered.");
                     pluginDictionary.Remove(NEW);
                     return false;
@@ -315,8 +316,6 @@ namespace VideoTracker
         //
         public dynamic LoadPlugin()
         {
-            using (new WaitCursor())
-            {
                 lock (pluginDictionaryLock)
                 {
 
@@ -327,11 +326,15 @@ namespace VideoTracker
                     DateTime lastMod = File.GetLastWriteTime(pluginFileName);
                     if (scope == null || pluginDictionary[pluginName].fileMod < lastMod)
                     {
+                        if (scope != null)
+                        {
+                            pluginDictionary[pluginName].fileMod = File.GetLastWriteTime(pluginFileName);
+                            App.ErrorBox(pluginFileName + " has been modified. Reloading.");
+                        }
                         this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
                     }
                     return this.scope;
                 }
-            }
         }
 
         public bool ConfigureGlobals(VideoTrackerData vtd, out string errorString)
@@ -402,6 +405,5 @@ namespace VideoTracker
                 this.runtime = python;
             }
         };
-
     }
 }
