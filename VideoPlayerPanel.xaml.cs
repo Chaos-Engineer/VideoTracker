@@ -288,6 +288,5 @@ namespace VideoTracker
             this.playButton.Visibility = flag ? Visibility.Visible : Visibility.Collapsed;
             this.playNextButton.Visibility = flag ? Visibility.Visible : Visibility.Collapsed;
         }
-
     }
 }

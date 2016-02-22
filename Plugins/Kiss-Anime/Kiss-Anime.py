@@ -4,6 +4,7 @@ import wpf
 from System.Windows import Application, Window, MessageBox
 from System.IO import Path
 from System.Diagnostics import Process
+from Microsoft.Win32 import OpenFileDialog
 
 clr.AddReference('VideoTrackerLib')
 import VideoTracker
@@ -15,10 +16,20 @@ import urllib2
 def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.NAME]  = "Kiss-Anime"
     pluginRegisterDictionary[gpk.ADD]   = "Add Kiss-Anime Series"
-    pluginRegisterDictionary[gpk.DESC]  = "Find programs on http://kiss-anime.tv"
+    pluginRegisterDictionary[gpk.DESC]  = "Find programs on http://kiss-anime.tv. (Use CONFIGURE to set media player)"
+
+def ConfigureGlobals(parent, pluginGlobalDictionary) :
+    form = KissAnimeConfigureGlobals()
+    form.Owner = parent
+    form.playerBox.Text = pluginGlobalDictionary["player"]
+    if form.ShowDialog() :
+        pluginGlobalDictionary["player"] = form.playerBox.Text
+        return True
+    else :
+        return False
 
 def ConfigureSeries(parent, pluginSeriesDictionary) :
-    form = SampleConfigureSeries()
+    form = KissAnimeConfigureSeries()
     form.Owner = parent
     form.NameBox.Text = pluginSeriesDictionary[spk.TITLE]
     if form.ShowDialog() :
@@ -30,38 +41,38 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
 
 def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 
-    #
-    # Grab the full series list and search for the title. Extract the series URL
-    # 
-    # Regex matches:
-    #    <a class="bigChar" href="http://kiss-anime.tv/Anime/mirai-nikki">Mirai Nikki</a>
-    #
     series = pluginSeriesDictionary[spk.TITLE]
+    #
+    # Grab the full series list and search for the title. Extract the canonical title
+    # and the series URL.
+    # 
+    # <a class="bigChar" href="http://kiss-anime.tv/Anime/mirai-nikki">Mirai Nikki</a>
     url = "http://kiss-anime.tv/full-anime-list"
     h = HtmlLoader(url);
     if (h.error != ""):
         return h.error
 
-    m = re.search('<a class="bigChar" href="(\S*)">.*' + series + '.*</a>', h.html, flags=re.IGNORECASE)
+    html = h.read()
+    m = re.search('<a class="bigChar" href="(.*)">(.*' + series + '.*)</a>', html, flags=re.IGNORECASE)
     if m is None:
-        return "Series not found at " + url
+        return "Series not found"
     url = m.group(1)
+    title = m.group(2)
     
     #
-    # Load the episode page and build the series list. The "href" is the internal name of the series, and the link
-    # text is the epsiode name. Episodes are not guaranteed to have a numeric field (as shown by the "redial-episode"
-    # below), but are always listed in reverse order - so we can build the list and then reverse it to get the 
-    # episode numbers.
+    # Load the episode page and build the series list. Episode titles are not guaranteed to have a numeric field
+    # (as shown by the "redial-episode" below), but are guaranteed to be listed in reverse order - so build the
+    # list and then reverse it to get the episode numbers.
     #
     # <a href="http://kiss-anime.tv/Anime-mirai-nikki-redial-episode" title="Watch anime Mirai Nikki Redial Episode online in high quality">
     #    Mirai Nikki Redial Episode</a>
-    # <a href="http://kiss-anime.tv/Anime-mirai-nikki-episode-26" title="Watch anime Mirai Nikki Episode 26 online in high quality">
+    #<a href="http://kiss-anime.tv/Anime-mirai-nikki-episode-26" title="Watch anime Mirai Nikki Episode 26 online in high quality">
     #    Mirai Nikki Episode 26</a>
     h = HtmlLoader(url);
     if (h.error != ""):
         return h.error
-
-    m = re.findall('<a href="(.*)" title="Watch', h.html)
+    html = h.read();
+    m = re.findall('<a href="(.*)" title="Watch', html)
     episode = 0
     for item in reversed(m):
         episode += 1
@@ -81,21 +92,30 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 # Play is optional
 #
 
-def Play(pluginGlobalDictionary, name) :
+def Play(pluginGlobalDictionary, url) :
+
+    player = pluginGlobalDictionary["player"]
+    if (player == ""):
+        return False
+
     # Get MP4 file. HTML format is:
     #
     # Download (Save as...): <a href="http://kiss-anime.tv/download.php?id=73002">
     # Mirai_Nikki_Episode_19.mp4</a></div>
-    h = HtmlLoader(name);
+    h = HtmlLoader(url);
     if (h.error != ""):
         return h.error
-
-    m = re.search('<a href="(http://kiss-anime.tv/download.php\?id=\S*)"', h.html)
+    html = h.read();
+    m = re.search('<a href="(http://kiss-anime.tv/download.php\?id=.*)"', html)
     if m is None:
-        return False
-
+        return "Episode not found"
     file = m.group(1)
-    Process.Start(file)
+
+    # The link will contain a redirect - this code resolves it.
+    h = HtmlLoader(file)
+    file = h.handle.url
+
+    Process.Start(player, h.handle.url)
     return True;
 
 
@@ -112,25 +132,25 @@ class HtmlLoader:
         req = urllib2.Request(url, "", headers)
         self.error = ""
         try:
-            handle = urllib2.urlopen(req)
+            self.handle = urllib2.urlopen(req)
         except urllib2.HTTPError as e:
             self.error = "Request returns HTTP code " + str(e.code)
-        self.html = handle.read()
+    
+    def read(self):
+        return self.handle.read()
 
 
-#
-# SampleConfigureGlobals is optional.
-#
+class KissAnimeConfigureSeries(Window):
+    def __init__(self):
+        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Kiss-Anime.xaml')
 
-#class SampleConfigureGlobals(Window):
-#    def __init__(self):
-#        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + '<CONFIGURE GLOBALS>.xaml')
-#
-#    # User hit OK, return the text field to the caller.
-#    def OKButton_Click(self, sender, e):
-#        # Validation comes here
-#        self.DialogResult = True
-#        return
+    # User hit OK, return the text field to the caller.
+    def OKButton_Click(self, sender, e):
+        if self.NameBox.Text == "" :
+            MessageBox.Show("Series name must be specified")
+            return
+        self.DialogResult = True
+        return
 
 #
 # WPF Form controlled by the ConfigureSeries call.
@@ -138,14 +158,16 @@ class HtmlLoader:
 # Allow the user to enter an episode name and a URL. Both values are required.
 #
 # 
-class SampleConfigureSeries(Window):
+class KissAnimeConfigureGlobals(Window):
     def __init__(self):
-        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Kiss-Anime.xaml')
-    
+        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Kiss-AnimeConfigureGlobals.xaml')
+
+    def BrowseButton_Click(self, sender, e):
+        openFileDialog = OpenFileDialog()
+        if (openFileDialog.ShowDialog() == True):
+            self.playerBox.Text = openFileDialog.FileName;
+
     def OKButton_Click(self, sender, e):
-        if self.NameBox.Text == "" :
-            MessageBox.Show("Series name must be specified")
-            return
         self.DialogResult = True
         return
 

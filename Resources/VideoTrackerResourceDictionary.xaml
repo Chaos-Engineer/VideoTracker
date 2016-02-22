@@ -14,7 +14,7 @@
         <Setter Property="Background" Value="{StaticResource ResourceKey=DefaultBackground}"/>
     </Style>
     <Style TargetType="MenuItem">
-        <Setter Property="Background" Value="{StaticResource ResourceKey=DefaultBackground}"/>
+        <Setter Property="Background" Value="Transparent"/>
     </Style>
     <Style TargetType="TextBlock">
         <Setter Property="TextWrapping" Value="Wrap"/>

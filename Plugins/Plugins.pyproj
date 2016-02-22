@@ -29,6 +29,9 @@
   <ItemGroup>
     <Compile Include="Funimation\Funimation.py" />
     <Compile Include="Kiss-Anime\Kiss-Anime.py" />
+    <Compile Include="Kiss-Anime\Kiss-AnimeConfigureGlobals.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Sample\Sample.py" />
     <Compile Include="Sample\SampleConfigureGlobals.py" />
     <Compile Include="SyFy\SyFy.py" />
@@ -37,6 +40,9 @@
   <ItemGroup>
     <Content Include="Funimation\Funimation.xaml" />
     <Content Include="Kiss-Anime\Kiss-Anime.xaml" />
+    <Content Include="Kiss-Anime\Kiss-AnimeConfigureGlobals.xaml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Resources\VideoTrackerResourceDictionary.xaml" />
     <Content Include="Sample\Sample.xaml" />
     <Content Include="Sample\SampleConfigureGlobals.xaml" />
