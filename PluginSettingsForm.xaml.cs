@@ -83,8 +83,8 @@ namespace VideoTracker
             {
                 this.pythonDirTextBox.Text = videoTrackerData.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH];
 
-                pluginPanel.Children.Add(new CustomLabel("Plug-In", 0, 0));
-                pluginPanel.Children.Add(new CustomLabel("Description", 0, 1));
+                pluginPanel.Children.Add(new CustomTextBlock("Plug-In", 0, 0));
+                pluginPanel.Children.Add(new CustomTextBlock("Description", 0, 1));
                 foreach (string key in videoTrackerData.globals[gdg.PLUGINS].Keys)
                 {
                     AddPluginRow(key, videoTrackerData.globals[key][gpk.ADD], videoTrackerData.globals[key][gpk.DESC]);
@@ -97,8 +97,8 @@ namespace VideoTracker
             int index = pluginPanel.RowDefinitions.Count;
             RowDefinition def = new RowDefinition();
             pluginPanel.RowDefinitions.Add(def);
-            CustomLabel keyLabel = new CustomLabel(pluginName, index, 0);
-            CustomLabel fileLabel = new CustomLabel(pluginDesc, index, 1);
+            CustomTextBlock keyLabel = new CustomTextBlock(pluginName, index, 0);
+            CustomTextBlock fileLabel = new CustomTextBlock(pluginDesc, index, 1);
             pluginPanel.Children.Add(keyLabel);
             pluginPanel.Children.Add(fileLabel);
             CustomButton configButton = new CustomButton(this, pluginName, pluginAdd, CONFIGURE, index, 2);
@@ -181,10 +181,14 @@ namespace VideoTracker
     // passed into the constructor. In order to keep the border thickness constant, we only
     // set the top/left border in the first row/column.
   
-    public class CustomLabel : Label
+    public class CustomTextBlock : Border
     {
-        public CustomLabel(string text, int row, int column)
+        public TextBlock textBlock;
+
+        public CustomTextBlock(string text, int row, int column)
         {
+            this.textBlock = new TextBlock();
+            this.Child =  this.textBlock;
             this.Padding = new Thickness(5);
 
             Thickness borderThickness = new Thickness(0, 0, 1, 1);
@@ -192,7 +196,7 @@ namespace VideoTracker
             if (row == 0)
             {
                 borderThickness.Top = 1.0;
-                this.FontWeight = FontWeights.Bold;
+                this.textBlock.FontWeight = FontWeights.Bold;
             }
             if (column == 0)
             {
@@ -201,7 +205,10 @@ namespace VideoTracker
 
             this.BorderThickness = borderThickness;
             this.BorderBrush = Brushes.Black;
-            this.Content = text;
+
+            this.textBlock.Text = text;
+            this.textBlock.TextWrapping = TextWrapping.Wrap;
+            this.textBlock.MaxWidth = 300;
             Grid.SetRow(this, row);
             Grid.SetColumn(this, column);
         }
