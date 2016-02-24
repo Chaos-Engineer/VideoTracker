@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_090BE8A6D8AAC009FA9E410CA5FE7E20"
+        "OwnerKey" = "8:_55FCBFBFA5D64FA69C7261B55889E28A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_13FCD17498138DD90ECE14E4ECA02CB9"
         "OwnerKey" = "8:_14FB035D7821FC71D9292E55DA294E16"
         "MsmSig" = "8:_UNDEFINED"
@@ -28,13 +34,13 @@
         "Entry"
         {
         "MsmKey" = "8:_13FCD17498138DD90ECE14E4ECA02CB9"
-        "OwnerKey" = "8:_55FCBFBFA5D64FA69C7261B55889E28A"
+        "OwnerKey" = "8:_D1D305FB1776E0AD02E22F19827A52FB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_13FCD17498138DD90ECE14E4ECA02CB9"
-        "OwnerKey" = "8:_D1D305FB1776E0AD02E22F19827A52FB"
+        "OwnerKey" = "8:_55FCBFBFA5D64FA69C7261B55889E28A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -107,6 +113,12 @@
         {
         "MsmKey" = "8:_3FD0378D9BC478DCAA7A4B4A1A60050B"
         "OwnerKey" = "8:_55FCBFBFA5D64FA69C7261B55889E28A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4AC880C4DCE34067BD6C65152E4F48F1"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -250,12 +262,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_55FCBFBFA5D64FA69C7261B55889E28A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_223E20496D3669EE8AE79EDECAE3DB06"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -311,6 +317,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_B801A4A9FBEE96DDDE36823B52D698CA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_090BE8A6D8AAC009FA9E410CA5FE7E20"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -426,6 +438,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_090BE8A6D8AAC009FA9E410CA5FE7E20"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CsQuery, Version=1.3.3.249, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_090BE8A6D8AAC009FA9E410CA5FE7E20"
+                    {
+                    "Name" = "8:CsQuery.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:CsQuery.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B298CFF3B8C049CA9C8CEA64F129E940"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_13FCD17498138DD90ECE14E4ECA02CB9"
@@ -590,6 +633,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4AC880C4DCE34067BD6C65152E4F48F1"
+            {
+            "SourcePath" = "8:..\\Plugins\\Kiss-Anime\\Kiss-AnimeConfigureGlobals.xaml"
+            "TargetName" = "8:Kiss-AnimeConfigureGlobals.xaml"
+            "Tag" = "8:"
+            "Folder" = "8:_D15C978F68244DC3A5F3A34B1BF26F9B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_59E4209F31677CA8844BA8C8F9009981"
