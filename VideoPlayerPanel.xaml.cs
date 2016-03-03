@@ -61,6 +61,7 @@ namespace VideoTracker
         {
             VideoSeries vs = videoSeries;
             int index = videoSelector.SelectedIndex;
+            if (index == -1) return;
             vs.currentVideo = vs.videoFiles.Values[index];
             UpdatePanel();
         }
@@ -151,9 +152,7 @@ namespace VideoTracker
                  this.videoSelector.FontWeight,
                  this.videoSelector.FontStretch);
 
-            this.UpdatePanel();
-            this.VisibleControls(true);
-            this.UpdateLayout();
+
             if (videoSelectorControlWidth == 0)
             {
                 // Get the size of the ComboBox drop-down button and the margins/padding/borders. This works,
@@ -167,8 +166,9 @@ namespace VideoTracker
                     this.videoSelector.Margin.Right + 
                     this.border.Margin.Right + this.border.BorderThickness.Right;
             }
-            // Loop through the list of titles and add them to the combox box, also getting the 
+            // Loop through the list of titles and add them to the combo box, also getting the 
             // length of the longest one. 
+            videoSelector.Items.Clear();
             foreach (VideoFile f in vs.videoFiles.Values)
             {
                 string filename = f.episodeTitle;
@@ -195,6 +195,10 @@ namespace VideoTracker
             this.Width = Double.NaN;        // Allow width to be dynamically calculated
             this.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
             this.requiredSize.Width = Math.Max(videoSelectorWidth, this.DesiredSize.Width);
+
+            this.UpdatePanel();
+            this.VisibleControls(true);
+            this.UpdateLayout();
 
             this.videoTrackerForm.WorkerThreadComplete();
         }

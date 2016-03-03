@@ -22,7 +22,6 @@ namespace VideoTracker
         private StringDictionary pluginGlobalDictionary;
 
         private Window parentWindow;        // Used by plugins to set their forms' "Owner" field.
-        private dynamic scope = null;
         private Plugin plugin = null;
 
         public PluginSeries()
@@ -53,6 +52,18 @@ namespace VideoTracker
 
         public override void Play()
         {
+            dynamic scope;
+            // Initialize the Python runtime 
+            try
+            {
+                scope = plugin.LoadPlugin();
+            }
+            catch (Exception ex)
+            {
+                App.ErrorBox("Unable to load Python file " + plugin.pluginFileName + ":\n" + ex.ToString());
+                base.Play();
+                return;
+            }
 
             if (!scope.ContainsVariable("Play"))
             {
@@ -71,6 +82,8 @@ namespace VideoTracker
 
         protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
         {
+            dynamic scope;
+
             VideoTrackerData vtd = (VideoTrackerData)e.Argument;
             if (!vtd.globals[gdg.PLUGINS].ContainsKey(pluginName))
             {
@@ -133,7 +146,7 @@ namespace VideoTracker
 
         public bool ConfigureSeries(VideoTrackerData vtd, out string errorString)
         {
-            //Plugin plugin = new Plugin(pluginName, vtd);
+            dynamic scope;
             errorString = "";
             // Initialize the Python runtime 
             try
@@ -316,25 +329,27 @@ namespace VideoTracker
         //
         public dynamic LoadPlugin()
         {
-                lock (pluginDictionaryLock)
-                {
+            lock (pluginDictionaryLock)
+            {
 
-                    if (!pluginDictionary.ContainsKey(pluginName))
+                if (!pluginDictionary.ContainsKey(pluginName))
+                {
+                    pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
+                }
+
+                DateTime lastMod = File.GetLastWriteTime(pluginFileName);
+                if (scope == null || pluginDictionary[pluginName].fileMod < lastMod)
+                {
+                    if (scope != null)
                     {
+                        App.ErrorBox(pluginFileName + " has been modified. Reloading.");
                         pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
                     }
-                    DateTime lastMod = File.GetLastWriteTime(pluginFileName);
-                    if (scope == null || pluginDictionary[pluginName].fileMod < lastMod)
-                    {
-                        if (scope != null)
-                        {
-                            pluginDictionary[pluginName].fileMod = File.GetLastWriteTime(pluginFileName);
-                            App.ErrorBox(pluginFileName + " has been modified. Reloading.");
-                        }
-                        this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
-                    }
-                    return this.scope;
+                    this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
                 }
+            }
+            return this.scope;
+
         }
 
         public bool ConfigureGlobals(VideoTrackerData vtd, out string errorString)

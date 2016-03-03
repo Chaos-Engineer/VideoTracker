@@ -32,6 +32,7 @@
     <Compile Include="Kiss-Anime\Kiss-AnimeConfigureGlobals.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PutLocker\PutLocker.py" />
     <Compile Include="Sample\Sample.py" />
     <Compile Include="Sample\SampleConfigureGlobals.py" />
     <Compile Include="SyFy\SyFy.py" />
@@ -43,6 +44,7 @@
     <Content Include="Kiss-Anime\Kiss-AnimeConfigureGlobals.xaml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="PutLocker\PutLocker.xaml" />
     <Content Include="Resources\VideoTrackerResourceDictionary.xaml" />
     <Content Include="Sample\Sample.xaml" />
     <Content Include="Sample\SampleConfigureGlobals.xaml" />
@@ -78,6 +80,7 @@
   <ItemGroup>
     <Folder Include="Funimation\" />
     <Folder Include="Kiss-Anime\" />
+    <Folder Include="PutLocker\" />
     <Folder Include="SyFy\" />
     <Folder Include="Resources\" />
     <Folder Include="Sample\" />

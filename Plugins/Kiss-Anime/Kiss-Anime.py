@@ -93,7 +93,6 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 #
 
 def Play(pluginGlobalDictionary, url) :
-
     player = pluginGlobalDictionary["player"]
     if (player == ""):
         return False
@@ -140,6 +139,12 @@ class HtmlLoader:
         return self.handle.read()
 
 
+#
+# WPF Form controlled by the ConfigureSeries call.
+#
+# Allow the user to enter an episode name.
+#
+# 
 class KissAnimeConfigureSeries(Window):
     def __init__(self):
         wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Kiss-Anime.xaml')
@@ -153,11 +158,11 @@ class KissAnimeConfigureSeries(Window):
         return
 
 #
-# WPF Form controlled by the ConfigureSeries call.
+# WPF Form controlled by CongigureGlobals call
 #
-# Allow the user to enter an episode name and a URL. Both values are required.
+# Allow the user to enter an MP4 player application. If none is specified, the 
+# episode will be launched from the web browser.
 #
-# 
 class KissAnimeConfigureGlobals(Window):
     def __init__(self):
         wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Kiss-AnimeConfigureGlobals.xaml')
