@@ -185,12 +185,10 @@ namespace VideoTracker
             }
             videoSelectorWidth += videoSelectorControlWidth;
 
-
             // Calculate the minimum required size for the panel. If this is greater 
             // than the length of the dropdown menu, then it becomes the required
             // size of the panel. Otherwise the required size is the dropdown menu
             // length
- 
 
             this.Width = Double.NaN;        // Allow width to be dynamically calculated
             this.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));

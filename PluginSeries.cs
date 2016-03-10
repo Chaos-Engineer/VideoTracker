@@ -87,7 +87,7 @@ namespace VideoTracker
             VideoTrackerData vtd = (VideoTrackerData)e.Argument;
             if (!vtd.globals[gdg.PLUGINS].ContainsKey(pluginName))
             {
-                errorString = "Plugin '" + pluginName + "' is no longer registered.";
+                this.errorString = "Plugin '" + pluginName + "' is no longer registered.";
                 return;
             }
             if (this.plugin == null)
@@ -101,7 +101,7 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                errorString = "Unable to load Python file " + plugin.pluginFileName + ":\n" + ex.ToString();
+                this.errorString = "Unable to load Python file " + plugin.pluginFileName + ":\n" + ex.ToString();
                 return;
             }
 
@@ -111,9 +111,9 @@ namespace VideoTracker
             // Load the series episodes.
             try
             {
-                string errorString = scope.LoadSeries(this.pluginGlobalDictionary, this.pluginSeriesDictionary,
+                this.errorString = scope.LoadSeries(this.pluginGlobalDictionary, this.pluginSeriesDictionary,
                         out this.videoFiles);
-                if (errorString != "")
+                if (this.errorString != "")
                 {
                     this.videoFiles.Clear();
                     return;
@@ -122,7 +122,7 @@ namespace VideoTracker
             catch (Exception ex)
             {
                 this.videoFiles.Clear(); // Make sure error is reported if list was partially loaded.
-                errorString = "Error calling LoadSeries in " + plugin.pluginFileName + ":\n" + ex.ToString();
+                this.errorString = "Error calling LoadSeries in " + plugin.pluginFileName + ":\n" + ex.ToString();
                 return;
             }
 

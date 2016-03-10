@@ -25,8 +25,13 @@
 	series values, convert them into VideoFile objects, and add them to the videoFiles collection. If
 	no files can be loaded, store an error message in the errorString variable.
 
-	NUGET PACKAGES:
-	- csquery: Used for HTML screen-scraping (CrunchyRollVideoSeries)
-	- ookii: Allows access to the Vista-style directory selector dialog, not otherwise available in .NET.
+UPDATING VERSION NUMBER:
+- Change in Properties\AssemblyInfo.cs
+- Change in VideoTrackerInstaller properties window.
+
+NUGET PACKAGES:
+- csquery: Used for HTML screen-scraping (CrunchyRollVideoSeries)
+- ookii: Allows access to the Vista-style directory selector dialog, not otherwise available in .NET.
+- ironpython: Python run-time for PluginSeries class
 
 Use "git push origin master" to publish updated package.

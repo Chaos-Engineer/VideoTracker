@@ -37,6 +37,9 @@
     <Compile Include="Sample\SampleConfigureGlobals.py" />
     <Compile Include="SyFy\SyFy.py" />
     <Compile Include="Template\Template.py" />
+    <Compile Include="VideoTrackerUtils\HtmlLoader.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Funimation\Funimation.xaml" />
@@ -80,6 +83,7 @@
   <ItemGroup>
     <Folder Include="Funimation\" />
     <Folder Include="Kiss-Anime\" />
+    <Folder Include="VideoTrackerUtils\" />
     <Folder Include="PutLocker\" />
     <Folder Include="SyFy\" />
     <Folder Include="Resources\" />

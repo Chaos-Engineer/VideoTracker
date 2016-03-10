@@ -1,4 +1,7 @@
-﻿import clr 
+﻿import sys, os
+import re
+
+import clr 
 clr.AddReference('IronPython.Wpf')
 import wpf
 from System.Windows import Application, Window, MessageBox
@@ -10,8 +13,10 @@ clr.AddReference('VideoTrackerLib')
 import VideoTracker
 from VideoTracker import VideoFile, gpk, spk
 
-import re
-import urllib2
+# Append the "..\VideoTrackerUtils" directory relative to this file.
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "\\VideoTrackerUtils")
+from HtmlLoader import HtmlLoader
+
 
 def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.NAME]  = "Kiss-Anime"
@@ -91,7 +96,9 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 #
 # Play is optional
 #
-
+# Launching through a streaming media player doesn't seem to work well - video halts after
+# 5-10 minutes and needs to be reloaded. Playing through the browser is fine.
+#
 def Play(pluginGlobalDictionary, url) :
     player = pluginGlobalDictionary["player"]
     if (player == ""):
@@ -116,27 +123,6 @@ def Play(pluginGlobalDictionary, url) :
 
     Process.Start(player, h.handle.url)
     return True;
-
-
-# Return the HTML from a web page, or report an error if the site
-# is unavailable.
-class HtmlLoader:
-    def __init__(self, url):
-        #
-        # The kiss-anime website returns a 403 error if no user agent
-        # is specified.
-        #
-        userAgent = "Wget/1.16.1 (cygwin)"
-        headers = { 'User-Agent' : userAgent }
-        req = urllib2.Request(url, "", headers)
-        self.error = ""
-        try:
-            self.handle = urllib2.urlopen(req)
-        except urllib2.HTTPError as e:
-            self.error = "Request returns HTTP code " + str(e.code)
-    
-    def read(self):
-        return self.handle.read()
 
 
 #

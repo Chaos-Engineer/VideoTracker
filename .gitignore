@@ -4,5 +4,6 @@ obj/*
 backup/*
 VideoTrackerLib/obj/*
 VideoTrackerLib/bin/*
+Plugins/PutLocker/*
 *.suo
 *.exe

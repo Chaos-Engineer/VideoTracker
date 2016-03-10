@@ -123,6 +123,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_506D1A3D6E8C4E0A9B9A478954BD820D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_55FCBFBFA5D64FA69C7261B55889E28A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -655,6 +661,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_506D1A3D6E8C4E0A9B9A478954BD820D"
+            {
+            "SourcePath" = "8:..\\Plugins\\VideoTrackerUtils\\HtmlLoader.py"
+            "TargetName" = "8:HtmlLoader.py"
+            "Tag" = "8:"
+            "Folder" = "8:_55A129C881D14324B5FF2203E3DBF0D2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_59E4209F31677CA8844BA8C8F9009981"
             {
             "AssemblyRegister" = "3:1"
@@ -1068,6 +1094,17 @@
                     "Property" = "8:_FE8D8D92DC8242809978ED341EAB483A"
                         "Folders"
                         {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_55A129C881D14324B5FF2203E3DBF0D2"
+                            {
+                            "Name" = "8:VideoTrackerUtils"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_2E1D57F16E6341079DFD7973E7FE30AF"
+                                "Folders"
+                                {
+                                }
+                            }
                             "{9EF0B969-E518-4E46-987F-47570745A589}:_96B191B6471E49FDA3E906E589B84CD7"
                             {
                             "Name" = "8:SyFy"
@@ -1165,15 +1202,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:VideoTracker"
-        "ProductCode" = "8:{1757AC94-4C16-4F06-AF3F-508BE02B1913}"
-        "PackageCode" = "8:{388C3BA6-DBA9-4D00-8B69-6D5821DF3A57}"
+        "ProductCode" = "8:{7D1692FA-3A46-4BB6-B909-2AE259E95372}"
+        "PackageCode" = "8:{936A0AEC-8AF1-4093-827A-4CC342E019AA}"
         "UpgradeCode" = "8:{E486F037-4B11-409F-A329-CD5363DB71E5}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.11"
+        "ProductVersion" = "8:1.0.12"
         "Manufacturer" = "8:Extraordinary Popular Delusions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
