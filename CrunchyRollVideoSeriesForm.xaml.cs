@@ -76,7 +76,7 @@ namespace VideoTracker
                 crunchyRollVideoSeries.seriesTitle = titleBox.Text;
                 crunchyRollVideoSeries.URL = URLBox.Text;
             }
-            crunchyRollVideoSeries.LoadFiles(titleBox.Text, "", videoTrackerData);
+            crunchyRollVideoSeries.LoadSeries(titleBox.Text, "", videoTrackerData);
             this.DialogResult = true;
         }
     }

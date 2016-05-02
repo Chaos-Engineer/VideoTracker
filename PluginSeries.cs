@@ -47,7 +47,7 @@ namespace VideoTracker
             }
             // We always want an alert if there's an error here, so reset the timer. 
             VideoSeries.lastAlert = DateTime.Now.AddDays(-1);
-            this.LoadFiles(this.pluginSeriesDictionary["title"], "", vtd);
+            this.LoadSeries(this.pluginSeriesDictionary["title"], "", vtd);
         }
 
         public override void Play()

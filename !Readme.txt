@@ -18,8 +18,9 @@
     first one is used to add a new series. The second one is used to edit an existing series and presets the 
 	displayed fields to the current series values.
 10 - Add the FormClosing event to the Form Class. This should call the multi-argument constructor, an optional
-    InitializeFromForm routine to copy form properties into the VideoSeries object, and the base LoadFiles 
-	method. (LoadFiles will set up a call to the class-specific LoadSeriesAsync method, which will do the actual file load.)
+    InitializeFromForm routine to copy form properties into the VideoSeries object, and the base LoadSeries
+	method. (LoadSeries will set up a call to the class-specific LoadSeriesAsync method, which will do the 
+	actual data load.)
 10 - Write the PlayCurrent() routine if the default can't be used
 11 - Write the LoadSeriesAsync() routine. This should get information about each video based on the 
 	series values, convert them into VideoFile objects, and add them to the videoFiles collection. If

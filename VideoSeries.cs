@@ -54,8 +54,10 @@ namespace VideoTracker
         private VideoPlayerPanel panel;
         [XmlIgnore,NonSerialized]
         private bool valid;
+
+        // Last error; set inside LoadSeriesAsynch and displayed during LoadSeriesCompleted
         [XmlIgnore,NonSerialized]
-        protected string errorString;
+        protected string errorString;   
         [XmlIgnore,NonSerialized]
         private BackgroundWorker backgroundWorker;
         [XmlIgnore, NonSerialized]
@@ -79,7 +81,7 @@ namespace VideoTracker
             this.backgroundWorker.WorkerSupportsCancellation = true;
             this.backgroundWorker.DoWork += new DoWorkEventHandler(LoadSeriesAsync);
             this.backgroundWorker.RunWorkerCompleted +=
-                new RunWorkerCompletedEventHandler(LoadDataCompleted);
+                new RunWorkerCompletedEventHandler(LoadSeriesCompleted);
         }
 
         public virtual void Play()
@@ -87,7 +89,7 @@ namespace VideoTracker
             Process.Start(currentVideo.internalName);
         }
 
-        public void LoadFiles(string title, string currentKey, VideoTrackerData videoTrackerData)
+        public void LoadSeries(string title, string currentKey, VideoTrackerData videoTrackerData)
         {
             videoTrackerData.videoTrackerForm.RegisterWorkerThread();
             videoFiles.Clear();
@@ -99,7 +101,7 @@ namespace VideoTracker
             this.backgroundWorker.RunWorkerAsync(videoTrackerData);
         }
 
-        private void LoadDataCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void LoadSeriesCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
 
             // If no files were found, then mark the series as invalid. If we've 

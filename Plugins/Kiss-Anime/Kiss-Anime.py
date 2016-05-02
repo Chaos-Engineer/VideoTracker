@@ -14,8 +14,9 @@ import VideoTracker
 from VideoTracker import VideoFile, gpk, spk
 
 # Append the "..\VideoTrackerUtils" directory relative to this file.
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "\\VideoTrackerUtils")
-from HtmlLoader import HtmlLoader
+utilsDir = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "\\VideoTrackerUtils";
+sys.path.append(utilsDir)
+from HtmlLoader_CloudFlare import HtmlLoader_CloudFlare
 
 
 def Register(pluginRegisterDictionary) :
@@ -51,14 +52,14 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     # Grab the full series list and search for the title. Extract the canonical title
     # and the series URL.
     # 
-    # <a class="bigChar" href="http://kiss-anime.tv/Anime/mirai-nikki">Mirai Nikki</a>
+    # <a href="http://kiss-anime.tv/Anime/mirai-nikki">Mirai Nikki</a>
     url = "http://kiss-anime.tv/full-anime-list"
-    h = HtmlLoader(url);
+    h = HtmlLoader_CloudFlare(url, utilsDir);
     if (h.error != ""):
         return h.error
 
     html = h.read()
-    m = re.search('<a class="bigChar" href="(.*)">(.*' + series + '.*)</a>', html, flags=re.IGNORECASE)
+    m = re.search('<a[^<]*?href="([^<]*?)">([^<]*?' + series + '[^<]*?)</a>', html, flags=re.IGNORECASE)
     if m is None:
         return "Series not found"
     url = m.group(1)
@@ -73,11 +74,11 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     #    Mirai Nikki Redial Episode</a>
     #<a href="http://kiss-anime.tv/Anime-mirai-nikki-episode-26" title="Watch anime Mirai Nikki Episode 26 online in high quality">
     #    Mirai Nikki Episode 26</a>
-    h = HtmlLoader(url);
+    h = HtmlLoader_CloudFlare(url, utilsDir);
     if (h.error != ""):
         return h.error
     html = h.read();
-    m = re.findall('<a href="(.*)" title="Watch', html)
+    m = re.findall('<a href="(.*?)" title="Watch', html)
     episode = 0
     for item in reversed(m):
         episode += 1
@@ -108,7 +109,7 @@ def Play(pluginGlobalDictionary, url) :
     #
     # Download (Save as...): <a href="http://kiss-anime.tv/download.php?id=73002">
     # Mirai_Nikki_Episode_19.mp4</a></div>
-    h = HtmlLoader(url);
+    h = HtmlLoader_CloudFlare(url, utilsDir);
     if (h.error != ""):
         return h.error
     html = h.read();
@@ -118,7 +119,7 @@ def Play(pluginGlobalDictionary, url) :
     file = m.group(1)
 
     # The link will contain a redirect - this code resolves it.
-    h = HtmlLoader(file)
+    h = HtmlLoader_CloudFlare(file, utilsDir)
     file = h.handle.url
 
     Process.Start(player, h.handle.url)
@@ -160,8 +161,4 @@ class KissAnimeConfigureGlobals(Window):
 
     def OKButton_Click(self, sender, e):
         self.DialogResult = True
-        return
-
-
-
-    
+        return    

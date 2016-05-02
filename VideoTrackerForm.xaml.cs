@@ -355,7 +355,7 @@ namespace VideoTracker
                         "\n\nAuto-save will not be performed until configuration is saved manually");
                     configFileValid = false;
                 }
-                vs.LoadFiles(vs.seriesTitle, vs.currentVideo.episodeTitle, videoTrackerData);
+                vs.LoadSeries(vs.seriesTitle, vs.currentVideo.episodeTitle, videoTrackerData);
             }
 
         }
@@ -469,7 +469,7 @@ namespace VideoTracker
                 if (errorString != "") App.ErrorBox(errorString);
                 return;
             }
-            ps.LoadFiles(ps.pluginSeriesDictionary["title"], "", videoTrackerData);
+            ps.LoadSeries(ps.pluginSeriesDictionary["title"], "", videoTrackerData);
         }
     }
 

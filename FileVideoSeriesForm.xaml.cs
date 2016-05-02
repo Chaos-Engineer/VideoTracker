@@ -91,7 +91,7 @@ namespace VideoTracker
 
             fileVideoSeries.InitializeFromForm(directoryListBox.Items.OfType<String>().ToList(),
                 this.fileNameBox.Text);
-            fileVideoSeries.LoadFiles(titleBox.Text, fileNameBox.Text, videoTrackerData);
+            fileVideoSeries.LoadSeries(titleBox.Text, fileNameBox.Text, videoTrackerData);
             this.DialogResult = true;
         }
 

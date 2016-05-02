@@ -75,31 +75,6 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     return "" #  Indicates no error
 
 #
-# Play is optional
-#
-
-#def Play(pluginGlobalDictionary, name) :
-#    launcher = pluginGlobalDictionary["launcher"]
-#    if launcher == "" :
-#        return False
-#    Process.Start(launcher + " " + name)
-#    return True;
-
-#
-# SampleConfigureGlobals is optional.
-#
-
-#class SampleConfigureGlobals(Window):
-#    def __init__(self):
-#        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + '<CONFIGURE GLOBALS>.xaml')
-#
-#    # User hit OK, return the text field to the caller.
-#    def OKButton_Click(self, sender, e):
-#        # Validation comes here
-#        self.DialogResult = True
-#        return
-
-#
 # WPF Form controlled by the ConfigureSeries call.
 #
 # Allow the user to enter an episode name and a URL. Both values are required.

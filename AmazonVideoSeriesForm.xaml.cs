@@ -83,7 +83,7 @@ namespace VideoTracker
             }
 
             amazonVideoSeries.InitializeFromForm(keywordBox.Text);
-            amazonVideoSeries.LoadFiles(titleBox.Text, currentKey, videoTrackerData);
+            amazonVideoSeries.LoadSeries(titleBox.Text, currentKey, videoTrackerData);
 
             this.DialogResult = true;
         }

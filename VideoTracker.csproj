@@ -213,6 +213,9 @@
   <ItemGroup>
     <Resource Include="!Readme.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages\PhantomJS.2.1.1\tools\phantomjs\phantomjs.exe" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /y $(ProjectDir)resources\*.xaml $(ProjectDir)plugins\resources</PostBuildEvent>
