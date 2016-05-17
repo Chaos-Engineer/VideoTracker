@@ -43,7 +43,7 @@ function forceExit() {
   phantom.exit(0);
 }
 
-// Handle errors caused by things like advertising javascript failing.
+// Ignore errors caused by things like advertising javascript failing.
 function errorHandler(msg, trace) {
     var msgStack = ['ERROR: ' + msg];
     if (trace && trace.length) {

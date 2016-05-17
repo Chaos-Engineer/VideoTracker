@@ -2,6 +2,7 @@ bin/*
 Data/*
 obj/*
 backup/*
+VideoTrackerInstaller/Release/*
 VideoTrackerInstaller/Debug/*
 VideoTrackerLib/obj/*
 VideoTrackerLib/bin/*
