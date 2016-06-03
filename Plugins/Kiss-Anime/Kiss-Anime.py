@@ -52,14 +52,14 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     # Grab the full series list and search for the title. Extract the canonical title
     # and the series URL.
     # 
-    # <a href="http://kiss-anime.tv/Anime/mirai-nikki">Mirai Nikki</a>
-    url = "http://kiss-anime.tv/full-anime-list"
+    # <a href="http://kiss-anime.tv/Anime/mirai-nikki"><span class=\"title\">Mirai Nikki</span></a>
+    url = "http://kiss-anime.tv/search/" + series
     h = HtmlLoader_CloudFlare(url, utilsDir);
     if (h.error != ""):
         return h.error
 
     html = h.read()
-    m = re.search('<a[^<]*?href="([^<]*?)">([^<]*?' + series + '[^<]*?)</a>', html, flags=re.IGNORECASE)
+    m = re.search('<a[^<]*?href="([^<]*?)"><span class="title">([^<]*?' + series + '[^<]*?)</span></a>', html, flags=re.IGNORECASE)
     if m is None:
         return "Series not found"
     url = m.group(1)
@@ -72,7 +72,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     #
     # <a href="http://kiss-anime.tv/Anime-mirai-nikki-redial-episode" title="Watch anime Mirai Nikki Redial Episode online in high quality">
     #    Mirai Nikki Redial Episode</a>
-    #<a href="http://kiss-anime.tv/Anime-mirai-nikki-episode-26" title="Watch anime Mirai Nikki Episode 26 online in high quality">
+    # <a href="http://kiss-anime.tv/Anime-mirai-nikki-episode-26" title="Watch anime Mirai Nikki Episode 26 online in high quality">
     #    Mirai Nikki Episode 26</a>
     h = HtmlLoader_CloudFlare(url, utilsDir);
     if (h.error != ""):

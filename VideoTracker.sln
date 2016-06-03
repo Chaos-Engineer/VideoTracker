@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoTracker", "VideoTracker.csproj", "{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoTracker", "VideoTracker\VideoTracker.csproj", "{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF} = {CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}
 	EndProjectSection
@@ -17,6 +17,13 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VideoTrackerInstaller", "Vi
 	EndProjectSection
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Plugins", "Plugins\Plugins.pyproj", "{1F1D6332-9264-4C8A-B320-3B923797466A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02334D65-5170-42CC-B0E2-D70AB77F76BD}"
+	ProjectSection(SolutionItems) = preProject
+		!Readme.txt = !Readme.txt
+		.gitignore = .gitignore
+		VideoTracker\Properties\AssemblyInfo.cs = VideoTracker\Properties\AssemblyInfo.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
