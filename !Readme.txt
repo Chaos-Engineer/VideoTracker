@@ -28,7 +28,6 @@
 
 UPDATING VERSION NUMBER:
 - Change in Properties\AssemblyInfo.cs
-- Change in VideoTrackerInstaller properties window.
 
 NUGET PACKAGES:
 - csquery: Used for HTML screen-scraping (CrunchyRollVideoSeries)

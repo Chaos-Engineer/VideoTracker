@@ -24,6 +24,7 @@ namespace VideoTracker
 {
     public partial class VideoTrackerForm : Window
     {
+        private const string defaultFilePath = @"%USERPROFILE%\Documents\VideoTracker\Default.vtr";
         private string configFile;
         private bool configFileValid = false;
         private int numPanels;
@@ -53,7 +54,7 @@ namespace VideoTracker
             // Load the default file if a file wasn't specified on the command line.
             if (launchFile.Equals(""))
             {
-                file = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["DefaultFilePath"]);
+                file = Environment.ExpandEnvironmentVariables(defaultFilePath);
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(file));
             }
             else

@@ -33,11 +33,11 @@ namespace VideoTracker
         public List<string> directoryList;
 
         // addDelay is a debugging flag used to test threading. If set, then the 
-        // LoadSeriesAsync call will have an additional delay added before
+        // LoadSeriesAsync call will have an additional semi-random delay added before
         // completion, so we can watch how the display gets updated on the completion
         // of each thread.
         [XmlIgnore, NonSerialized]
-        private static string addDelay = ConfigurationManager.AppSettings["AddDelay"];
+        private static bool addDelay = false;
 
         [XmlIgnore, NonSerialized]
         private string currentFileName;
@@ -81,7 +81,7 @@ namespace VideoTracker
                 bool parsingEpisode = true;
                 string[] files;
 
-                if (addDelay.Equals("true"))
+                if (addDelay)
                 {
                     Thread.Sleep(1000 * seriesTitle.Length); // Force delay 
                 }

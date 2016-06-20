@@ -10,12 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoTracker", "VideoTracke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoTrackerLib", "VideoTrackerLib\VideoTrackerLib.csproj", "{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VideoTrackerInstaller", "VideoTrackerInstaller\VideoTrackerInstaller.vdproj", "{4A682808-7335-40B2-BB49-63FD97580429}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF} = {CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}
-		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A} = {5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}
-	EndProjectSection
-EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Plugins", "Plugins\Plugins.pyproj", "{1F1D6332-9264-4C8A-B320-3B923797466A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02334D65-5170-42CC-B0E2-D70AB77F76BD}"
@@ -25,26 +19,58 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		VideoTracker\Properties\AssemblyInfo.cs = VideoTracker\Properties\AssemblyInfo.cs
 	EndProjectSection
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "VideoTrackerInstaller", "VideoTrackerInstaller\VideoTrackerInstaller.wixproj", "{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF} = {CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}
+		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A} = {5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5E5E5DB4-DF8E-44FE-A452-71582CC17A7A}.Release|x86.ActiveCfg = Release|Any CPU
 		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A682808-7335-40B2-BB49-63FD97580429}.Debug|Any CPU.ActiveCfg = Debug
-		{4A682808-7335-40B2-BB49-63FD97580429}.Debug|Any CPU.Build.0 = Debug
-		{4A682808-7335-40B2-BB49-63FD97580429}.Release|Any CPU.ActiveCfg = Release
-		{4A682808-7335-40B2-BB49-63FD97580429}.Release|Any CPU.Build.0 = Release
+		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CAE0CF02-4CE7-4D8C-894B-1233B1DC74AF}.Release|x86.ActiveCfg = Release|Any CPU
 		{1F1D6332-9264-4C8A-B320-3B923797466A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F1D6332-9264-4C8A-B320-3B923797466A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1F1D6332-9264-4C8A-B320-3B923797466A}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{1F1D6332-9264-4C8A-B320-3B923797466A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F1D6332-9264-4C8A-B320-3B923797466A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1F1D6332-9264-4C8A-B320-3B923797466A}.Release|x86.ActiveCfg = Release|Any CPU
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Debug|x86.ActiveCfg = Debug|x86
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Debug|x86.Build.0 = Debug|x86
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Release|Any CPU.ActiveCfg = Release|x86
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Release|Mixed Platforms.Build.0 = Release|x86
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Release|x86.ActiveCfg = Release|x86
+		{92B9BF4D-118C-4D2F-ACAE-F3BDBE99BC84}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
