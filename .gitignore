@@ -9,4 +9,5 @@ VideoTrackerLib/bin/**
 Plugins/PutLocker/**
 Plugins/VideoTrackerUtils/*.txt
 *.suo
+*.pdb
 

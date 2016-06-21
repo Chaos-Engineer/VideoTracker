@@ -9,7 +9,7 @@
 // format for errors detected within this script.
 //
 var loadingString  = "DDoS protection by CloudFlare";
-var timeoutSeconds = 30;
+var timeoutSeconds = 60;
 var oldContent = "";
 
 var page = require('webpage').create();

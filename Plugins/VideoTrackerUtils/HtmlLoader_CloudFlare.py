@@ -29,7 +29,7 @@ class HtmlLoader_CloudFlare:
             except urllib2.HTTPError as e:
                 # Note: Use e.read() here to get full HTML
                 if (e.code != 503):
-                    self.error = "Request returns HTTP code " + str(e.code)
+                    self.error = "Cloudflare-ByPass request on " + url + " returns HTTP code " + str(e.code)
                     return
 
          phantomjs = directory + "\\phantomjs.exe"
@@ -45,11 +45,8 @@ class HtmlLoader_CloudFlare:
             CREATE_NO_WINDOW = 0x08000000
             self.html = subprocess.check_output(args, shell=False, creationflags=CREATE_NO_WINDOW)
          except subprocess.CalledProcessError as ex:
-            self.error = self.html
+            self.error = "Cloudflare-ByPass on " + url + " generates exception " + self.html
             return
-         m = re.search('<title>([^<]*?Error.*?)>', self.html, flags=re.IGNORECASE)
-         if (m is not None):
-             self.error = re.sub("(<.*?>)+", "\r\n", self.html) # Simple HTML tag remover
 
     def read(self):
          return self.html
