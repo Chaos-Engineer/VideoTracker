@@ -7,7 +7,7 @@ VideoTrackerInstaller/bin/**
 VideoTrackerLib/obj/**
 VideoTrackerLib/bin/**
 Plugins/PutLocker/**
-Plugins/VideoTrackerUtils/*.txt
+"Plugins/VideoTrackerUtils/CloudFlare-Cookies.txt"
 *.suo
 *.pdb
 
