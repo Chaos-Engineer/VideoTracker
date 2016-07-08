@@ -164,10 +164,10 @@ namespace VideoTracker
 
             }
             if ((string) cb.operation == CONFIGURE) {
-                string errorString;
+                string errorString, detailString;
                 Plugin plugin = new Plugin(pluginName, videoTrackerData);
-                plugin.ConfigureGlobals(videoTrackerData, out errorString);
-                if (errorString != "") App.ErrorBox(errorString);
+                plugin.ConfigureGlobals(videoTrackerData, out errorString, out detailString);
+                if (errorString != "") App.ErrorBox(errorString, detailString);
             }
         }
 

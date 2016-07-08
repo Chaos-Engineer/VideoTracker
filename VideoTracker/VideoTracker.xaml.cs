@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ookii.Dialogs.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -17,7 +18,7 @@ namespace VideoTracker
     {
 
         static public object writeInProgress = new Object();
-
+        static public Window VideoTrackerFormWindow; // For App.Errorbox()
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             try
@@ -46,9 +47,31 @@ namespace VideoTracker
         }
 
         // Global method for error logging.
+        private static TaskDialog dialog;
+
         public static void ErrorBox(string message)
         {
-            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            ErrorBox(message, null);
+        }
+        public static void ErrorBox(string message, string details)
+        {
+            // Using Ookii task dialog
+            dialog = new TaskDialog();
+            dialog.MainIcon = TaskDialogIcon.Error;
+            dialog.WindowTitle = "Error";
+            //dialog.MainInstruction = message;
+            dialog.Content = message; 
+            dialog.ExpandedInformation = details; 
+            //dialog.Footer = "Task Dialogs support footers and can even include <a href=\"http://www.ookii.org\">hyperlinks</a>.";
+            //dialog.FooterIcon = TaskDialogIcon.Information;
+            dialog.EnableHyperlinks = true;
+            TaskDialogButton okButton = new TaskDialogButton(ButtonType.Ok);
+            dialog.Buttons.Add(okButton);
+            //dialog.HyperlinkClicked += new EventHandler<HyperlinkClickedEventArgs>(TaskDialog_HyperLinkClicked);
+            //TaskDialogButton button = dialog.ShowDialog(this);;
+            dialog.ShowDialog(VideoTrackerFormWindow);
+
+            //MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
     }
 }

@@ -44,7 +44,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
     # Episode 1
     v = VideoFile()
     v.episodeTitle = "[NAME]"

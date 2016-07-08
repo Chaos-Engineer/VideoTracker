@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -39,10 +40,8 @@ namespace VideoTracker
 
         public override void EditForm(VideoTrackerData vtd)
         {
-            string errorString;
-            if (!this.ConfigureSeries(vtd, out errorString))
+            if (!this.ConfigureSeries(vtd))
             {
-                if (errorString != "") App.ErrorBox(errorString);
                 return;
             }
             // We always want an alert if there's an error here, so reset the timer. 
@@ -60,7 +59,7 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                App.ErrorBox("Unable to load Python file " + plugin.pluginFileName + ":\n" + ex.ToString());
+                App.ErrorBox("Unable to load Python file " + plugin.pluginFileName, ex.ToString());
                 base.Play();
                 return;
             }
@@ -76,7 +75,7 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                App.ErrorBox("Unable to call Play() in " + plugin.pluginFileName + ":\n" + ex.ToString());
+                App.ErrorBox("Unable to call Play() in " + plugin.pluginFileName, ex.ToString());
             }
         }
 
@@ -101,7 +100,8 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                this.errorString = "Unable to load Python file " + plugin.pluginFileName + ":\n" + ex.ToString();
+                this.errorString = "Unable to load Python file " + plugin.pluginFileName;
+                this.detailsString = ex.ToString();
                 return;
             }
 
@@ -112,7 +112,7 @@ namespace VideoTracker
             try
             {
                 this.errorString = scope.LoadSeries(this.pluginGlobalDictionary, this.pluginSeriesDictionary,
-                        out this.videoFiles);
+                        out this.videoFiles, out this.detailsString);
                 if (this.errorString != "")
                 {
                     this.videoFiles.Clear();
@@ -122,7 +122,8 @@ namespace VideoTracker
             catch (Exception ex)
             {
                 this.videoFiles.Clear(); // Make sure error is reported if list was partially loaded.
-                this.errorString = "Error calling LoadSeries in " + plugin.pluginFileName + ":\n" + ex.ToString();
+                this.errorString = "Error calling LoadSeries in " + plugin.pluginFileName;
+                this.detailsString = ex.ToString();
                 return;
             }
 
@@ -144,10 +145,9 @@ namespace VideoTracker
         }
 
 
-        public bool ConfigureSeries(VideoTrackerData vtd, out string errorString)
+        public bool ConfigureSeries(VideoTrackerData vtd)
         {
             dynamic scope;
-            errorString = "";
             // Initialize the Python runtime 
             try
             {
@@ -155,7 +155,7 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                errorString = "Unable to load Python file " + plugin.pluginFileName + ":\n" + ex.ToString();
+                App.ErrorBox("Unable to load Python file " + plugin.pluginFileName, ex.ToString()); 
                 return false;
             }
 
@@ -165,20 +165,19 @@ namespace VideoTracker
                 if (!scope.ConfigureSeries(parentWindow, out this.pluginSeriesDictionary))
                 {
                     // Operation cancelled - no need to report error
-                    errorString = "";
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                errorString = "Unable to call ConfigureSeries in " + plugin.pluginFileName + ":\n" + ex.ToString();
+                App.ErrorBox("Unable to call ConfigureSeries in " + plugin.pluginFileName, ex.ToString());
                 return false;
             }
 
             seriesTitle = pluginSeriesDictionary[spk.TITLE];
             if (seriesTitle == "")
             {
-                errorString = "ERROR: ConfigureSeries call in " + plugin.pluginFileName + "\n" + "did not set the 'spk.TITLE' field";
+                App.ErrorBox("ERROR: ConfigureSeries call in " + plugin.pluginFileName + " did not set the 'spk.TITLE' field");
                 return false;
             }
             return true;
@@ -243,6 +242,7 @@ namespace VideoTracker
                 pluginDictionary[NEW] = new PluginData(pluginFileName, vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH]);
 
                 // Load the plug-in file and call the "Register" method.
+                using (new WaitCursor()) {
                 try
                 {
                     LoadPlugin();
@@ -259,6 +259,7 @@ namespace VideoTracker
                 {
                     App.ErrorBox("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
                     return false;
+                }
                 }
 
                 StringDictionary pluginRegisterDictionary = new StringDictionary();
@@ -284,6 +285,11 @@ namespace VideoTracker
                 }
 
                 pluginName = pluginRegisterDictionary[gpk.NAME];
+                if (!Regex.IsMatch(pluginName, @"^[a-zA-Z0-9]+$"))
+                {
+                    App.ErrorBox("NAME field '" + pluginName + "' contains non-alphanumeric characters");
+                    return false;
+                }
 
                 if (vtd.globals.ContainsKey(pluginName))
                 {
@@ -310,10 +316,10 @@ namespace VideoTracker
                 // operation fails.
                 if (pluginRegisterDictionary[gpk.FORCECONFIG] != "")
                 {
-                    string errorString;
-                    if (!ConfigureGlobals(vtd, out errorString))
+                    string errorString, detailString;
+                    if (!ConfigureGlobals(vtd, out errorString, out detailString))
                     {
-                        if (errorString == "") { App.ErrorBox(errorString); }
+                        if (errorString != "") { App.ErrorBox(errorString, detailString); }
                     }
                 }
                 return true;
@@ -352,11 +358,11 @@ namespace VideoTracker
 
         }
 
-        public bool ConfigureGlobals(VideoTrackerData vtd, out string errorString)
+        public bool ConfigureGlobals(VideoTrackerData vtd, out string errorString, out string detailString)
         {
             StringDictionary pluginGlobalDictionary = vtd.globals[pluginName];
 
-            errorString = "";
+            errorString = detailString = "";
             // Initialize the Python runtime 
             try
             {
@@ -364,7 +370,8 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                errorString = "Unable to load Python file " + pluginFileName + ":\n" + ex.ToString();
+                errorString = "Unable to load Python file " + pluginFileName;
+                detailString = ex.ToString();
                 return false;
             }
 
@@ -386,7 +393,8 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                errorString = "Unable to call ConfigureGlobals in " + pluginFileName + ":\n" + ex.ToString();
+                errorString = "Unable to call ConfigureGlobals in " + pluginFileName;
+                detailString = ex.ToString();
                 return false;
             }
             vtd.globals[pluginName] = pluginGlobalDictionary;

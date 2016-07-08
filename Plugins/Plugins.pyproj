@@ -28,11 +28,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Funimation\Funimation.py" />
-    <Compile Include="Kiss-Anime\Kiss-Anime.py" />
-    <Compile Include="Kiss-Anime\Kiss-AnimeConfigureGlobals.py">
+    <Compile Include="KissStreaming\KissStreaming.py" />
+    <Compile Include="KissStreaming\KissStreamingConfigureGlobals.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PutLocker\PutLocker.py" />
+    <Compile Include="LockerStreaming\LockerStreaming.py" />
+    <Compile Include="LockerStreaming\LockerStreamingConfigureGlobals.py" />
     <Compile Include="Sample\Sample.py" />
     <Compile Include="Sample\SampleConfigureGlobals.py" />
     <Compile Include="SyFy\SyFy.py" />
@@ -44,11 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Funimation\Funimation.xaml" />
-    <Content Include="Kiss-Anime\Kiss-Anime.xaml" />
-    <Content Include="Kiss-Anime\Kiss-AnimeConfigureGlobals.xaml">
+    <Content Include="KissStreaming\KissStreaming.xaml" />
+    <Content Include="KissStreaming\KissStreamingConfigureGlobals.xaml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="PutLocker\PutLocker.xaml" />
+    <Content Include="LockerStreaming\LockerStreaming.xaml" />
+    <Content Include="LockerStreaming\LockerStreamingConfigureGlobals.xaml" />
     <Content Include="Resources\VideoTrackerResourceDictionary.xaml" />
     <Content Include="Sample\Sample.xaml" />
     <Content Include="Sample\SampleConfigureGlobals.xaml" />
@@ -67,12 +69,6 @@
       <AssemblyName>PresentationFramework.dll</AssemblyName>
       <HintPath>$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationFramework.dll</HintPath>
     </Reference>
-    <Reference Include="VideoTrackerLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <Name>VideoTrackerLib</Name>
-      <AssemblyName>VideoTrackerLib.dll</AssemblyName>
-      <HintPath>..\bin\Release\VideoTrackerLib.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Name>WindowsBase</Name>
       <AssemblyName>WindowsBase.dll</AssemblyName>
@@ -84,13 +80,20 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Funimation\" />
-    <Folder Include="Kiss-Anime\" />
+    <Folder Include="KissStreaming\" />
     <Folder Include="VideoTrackerUtils\" />
-    <Folder Include="PutLocker\" />
+    <Folder Include="LockerStreaming\" />
     <Folder Include="SyFy\" />
     <Folder Include="Resources\" />
     <Folder Include="Sample\" />
     <Folder Include="Template\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VideoTrackerLib\VideoTrackerLib.csproj">
+      <Name>VideoTrackerLib</Name>
+      <Project>{cae0cf02-4ce7-4d8c-894b-1233b1dc74af}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

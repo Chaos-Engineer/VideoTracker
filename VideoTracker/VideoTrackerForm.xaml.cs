@@ -41,6 +41,7 @@ namespace VideoTracker
             InitializeComponent();
             string file = "UNDEFINED";
             videoTrackerData = new VideoTrackerData(this);
+            App.VideoTrackerFormWindow = this;
 
             // Initialize dialog boxes
             openFileDialog = new OpenFileDialog();
@@ -443,7 +444,6 @@ namespace VideoTracker
                     }
 
                 }
-
             }
         }
         public void DeletePluginMenuItem(string add)
@@ -464,10 +464,8 @@ namespace VideoTracker
         {
             string file = videoTrackerData.globals[gdg.PLUGINS][name];
             PluginSeries ps = new PluginSeries(name, videoTrackerData);
-            string errorString;
-            if (!ps.ConfigureSeries(videoTrackerData, out errorString))
+            if (!ps.ConfigureSeries(videoTrackerData))
             {
-                if (errorString != "") App.ErrorBox(errorString);
                 return;
             }
             ps.LoadSeries(ps.pluginSeriesDictionary["title"], "", videoTrackerData);
@@ -776,7 +774,7 @@ namespace VideoTracker
     // designed to be done in a "using" block so that the original cursor will be 
     // restored when the object goes out-of-scope.
     //
-    // The cusor is changed through Application.Current.Dispatcher so that it can
+    // The cursor is changed through Application.Current.Dispatcher so that it can
     // be run from a class that isn't GUI-aware.
     //
     // Usage:

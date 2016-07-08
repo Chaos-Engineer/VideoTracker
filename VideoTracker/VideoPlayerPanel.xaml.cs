@@ -79,7 +79,7 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                App.ErrorBox( "Unable to play file\n" + ex.ToString());
+                App.ErrorBox("Unable to play file\n" + ex.ToString());
             }
         }
 
@@ -155,9 +155,7 @@ namespace VideoTracker
 
             if (videoSelectorControlWidth == 0)
             {
-                // Get the size of the ComboBox drop-down button and the margins/padding/borders. This works,
-                // but try temporarily setting the videoSelector content to the longest string and 
-                // then getting the size of the box.
+                // Get the size of the ComboBox drop-down button and the margins/padding/borders. 
                 this.videoSelector.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                 videoSelectorControlWidth =
                     this.videoSelector.Margin.Left + 
@@ -193,7 +191,6 @@ namespace VideoTracker
             this.Width = Double.NaN;        // Allow width to be dynamically calculated
             this.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
             this.requiredSize.Width = Math.Max(videoSelectorWidth, this.DesiredSize.Width);
-
             this.UpdatePanel();
             this.VisibleControls(true);
             this.UpdateLayout();
@@ -205,8 +202,8 @@ namespace VideoTracker
         {
             // Prevent recursive calls using the "updateInProgress" variable.
             //
-            // Reason: If this routine changes the SelectedIndex field, it triggers
-            // a recursive call because it's the handler for the SelectedIndexChanged
+            // Reason: When this routine changes the SelectedIndex field, it triggers
+            // a recursive call because this is the handler for the SelectedIndexChanged
             // event.
             if (updateInProgress) { return;  }
             updateInProgress = true;

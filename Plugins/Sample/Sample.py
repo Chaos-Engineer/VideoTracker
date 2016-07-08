@@ -59,7 +59,7 @@ from VideoTracker import VideoFile, gpk, spk
 # - gpk.ADD  - The string to insert into the "Edit" menu so that the user can invoke the plug-in
 # - gpk.DESC - A text description of the plug-in.
 # - gkp.FORCECONFIG - If non-null, the ConfigureGlobals routine will be called immediately after 
-#   registrations.
+#   registration.
 #
 # You may also assign additional keys if you want. The keyname can be any text string, for example:
 #    pluginRegisterDictionary["other"] = "Additional data is stored like this"
@@ -138,6 +138,9 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
 #
 # The output, videoFiles, is an object of type SortedList<VideoFile>
 #
+# detailString holds additional information in the event of an error. If the plugin does
+# screen-scraping, then this typically holds the HTML of the last page loaded.
+#
 # SortedList is a standard C# data structure. To add a new element to the list, you must
 # provide both the value of a sort key and the object to be added.
 #
@@ -149,7 +152,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
 #        public string internalName;     // Internal reference to episode (e.g. filename or URL)
 #        public int season;              // Season number
 #        public int episode;             // Episode number
-#        public int special;          // Set to "1" if this is a post-season special
+#        public int special;             // Set to "1" if this is a post-season special
 #        public string key;              // Unique value, used to sort episodes
 #    }
 #
@@ -158,7 +161,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
 # a link to Youtube. "Season 1 Episode 2" is the link specified by the user in the
 # ConfigureSeries call.
 #
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
 
     # Episode 1
     v = VideoFile()

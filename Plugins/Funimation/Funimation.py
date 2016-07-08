@@ -29,7 +29,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
     # Get the website index. Data is returned in JSON format, which can be converted to
     # a list of dictionaries with the json.load call.
     index_url = "http://www.funimation.com/feeds/ps/shows?ut=FunimationSubscriptionUser&limit=9999"
@@ -50,7 +50,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
             handle = urllib2.urlopen(member["link"])
             series_url = handle.url + "/videos/official/"
     if series_url == "":
-        errorString = "Can't find " + series + " on website"
+        errorString = "Series not found"
         return errorString
 
     # Get the episodes and build the VideoFiles list.

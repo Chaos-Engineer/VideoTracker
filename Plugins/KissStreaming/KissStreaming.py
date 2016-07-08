@@ -20,16 +20,17 @@ from HtmlLoader_CloudFlare import HtmlLoader_CloudFlare
 
 
 def Register(pluginRegisterDictionary) :
-    pluginRegisterDictionary[gpk.NAME]  = "Kiss-Anime"
-    pluginRegisterDictionary[gpk.ADD]   = "Add Kiss-Anime Series"
-    pluginRegisterDictionary[gpk.DESC]  = "Find programs on http://kiss-anime.tv. (Use CONFIGURE to set media player)"
+    pluginRegisterDictionary[gpk.NAME]  = "KissStreaming"
+    pluginRegisterDictionary[gpk.ADD]   = "Add Kiss Streaming Series"
+    pluginRegisterDictionary[gpk.DESC]  = "Find programs on a Kiss streaming site."
+    pluginRegisterDictionary[gpk.FORCECONFIG] = "TRUE";
 
 def ConfigureGlobals(parent, pluginGlobalDictionary) :
     form = KissAnimeConfigureGlobals()
     form.Owner = parent
-    form.playerBox.Text = pluginGlobalDictionary["player"]
+    form.URL.Text = pluginGlobalDictionary["URL"]
     if form.ShowDialog() :
-        pluginGlobalDictionary["player"] = form.playerBox.Text
+        pluginGlobalDictionary["URL"] = form.URL.Text
         return True
     else :
         return False
@@ -45,15 +46,19 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
 
     series = pluginSeriesDictionary[spk.TITLE]
     #
     # Grab the full series list and search for the title. Extract the canonical title
     # and the series URL.
     # 
-    # <a href="http://kiss-anime.tv/Anime/mirai-nikki"><span class=\"title\">Mirai Nikki</span></a>
-    url = "http://kiss-anime.tv/search/" + series
+    # <a href="<base>/Anime/tv-show"><span class=\"title\">TV Show</span></a>
+    base = pluginGlobalDictionary["URL"]
+    if base == "":
+        return "Must set URL in Plugins/Configure"
+    
+    url = base + "/search/" + series
     h = HtmlLoader_CloudFlare(url, utilsDir);
     if (h.error != ""):
         return h.error
@@ -61,18 +66,19 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     html = h.read()
     m = re.search('<a[^<]*?href="([^<]*?)"><span class="title">([^<]*?' + series + '[^<]*?)</span></a>', html, flags=re.IGNORECASE)
     if m is None:
+        detailString = html
         return "Series not found"
     url = m.group(1)
     title = m.group(2)
     
     #
     # Load the episode page and build the series list. Episode titles are not guaranteed to have a numeric field
-    # (as shown by the "redial-episode" below), but are guaranteed to be listed in reverse order - so build the
+    # (as shown by the "extra-episode" below), but are guaranteed to be listed in reverse order - so build the
     # list and then reverse it to get the episode numbers.
     #
-    # <a href="http://kiss-anime.tv/Anime-mirai-nikki-redial-episode" title="Watch anime Mirai Nikki Redial Episode online in high quality">
+    # <a href="http://base/TV-Show-extra-episode" title="Watch extra episode">
     #    Mirai Nikki Redial Episode</a>
-    # <a href="http://kiss-anime.tv/Anime-mirai-nikki-episode-26" title="Watch anime Mirai Nikki Episode 26 online in high quality">
+    # <a href="http://base/TV-Show-episode-26" title="Watch Episode 26">
     #    Mirai Nikki Episode 26</a>
     h = HtmlLoader_CloudFlare(url, utilsDir);
     if (h.error != ""):
@@ -92,39 +98,11 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
         v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
         videoFiles.Add(v.key, v)
 
+    if episode == 0:
+        detailString = html
+        return "No episodes found"
+
     return "" # Indicates no error
-
-#
-# Play is optional
-#
-# Launching through a streaming media player doesn't seem to work well - video halts after
-# 5-10 minutes and needs to be reloaded. Playing through the browser is fine.
-#
-def Play(pluginGlobalDictionary, url) :
-    player = pluginGlobalDictionary["player"]
-    if (player == ""):
-        return False
-
-    # Get MP4 file. HTML format is:
-    #
-    # Download (Save as...): <a href="http://kiss-anime.tv/download.php?id=73002">
-    # Mirai_Nikki_Episode_19.mp4</a></div>
-    h = HtmlLoader_CloudFlare(url, utilsDir);
-    if (h.error != ""):
-        return h.error
-    html = h.read();
-    m = re.search('<a href="(http://kiss-anime.tv/download.php\?id=.*)"', html)
-    if m is None:
-        return "Episode not found"
-    file = m.group(1)
-
-    # The link will contain a redirect - this code resolves it.
-    h = HtmlLoader_CloudFlare(file, utilsDir)
-    file = h.handle.url
-
-    Process.Start(player, h.handle.url)
-    return True;
-
 
 #
 # WPF Form controlled by the ConfigureSeries call.
@@ -134,7 +112,7 @@ def Play(pluginGlobalDictionary, url) :
 # 
 class KissAnimeConfigureSeries(Window):
     def __init__(self):
-        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Kiss-Anime.xaml')
+        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'KissStreaming.xaml')
 
     # User hit OK, return the text field to the caller.
     def OKButton_Click(self, sender, e):
@@ -152,7 +130,7 @@ class KissAnimeConfigureSeries(Window):
 #
 class KissAnimeConfigureGlobals(Window):
     def __init__(self):
-        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'Kiss-AnimeConfigureGlobals.xaml')
+        wpf.LoadComponent(self, Path.GetDirectoryName(__file__) + '\\' + 'KissStreamingConfigureGlobals.xaml')
 
     def BrowseButton_Click(self, sender, e):
         openFileDialog = OpenFileDialog()

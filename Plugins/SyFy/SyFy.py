@@ -28,7 +28,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
 
     #
     # Grab the full series list and search for the title. Extract the canonical title
@@ -45,7 +45,8 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 
     m = re.search('<a href="(/[^/]*)">(.*' + series + '.*)</a>', html, flags=re.IGNORECASE)
     if m is None:
-        return "Series not found at " + url
+        detailString = html
+        return "Series not found"
     url = "http://syfy.com" + m.group(1) + "/episodes"
     
     #
@@ -72,6 +73,10 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
         
         v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
         videoFiles.Add(v.key, v)
+
+    if episode == 0:
+        detailString = html
+        return "Episodes not found"
 
     return "" # Indicates no error
 

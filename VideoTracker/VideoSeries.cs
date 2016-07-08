@@ -57,7 +57,9 @@ namespace VideoTracker
 
         // Last error; set inside LoadSeriesAsynch and displayed during LoadSeriesCompleted
         [XmlIgnore,NonSerialized]
-        protected string errorString;   
+        protected string errorString;
+        [XmlIgnore, NonSerialized]
+        protected string detailsString;  
         [XmlIgnore,NonSerialized]
         private BackgroundWorker backgroundWorker;
         [XmlIgnore, NonSerialized]
@@ -115,7 +117,7 @@ namespace VideoTracker
                 if ((DateTime.Now - lastAlert).TotalSeconds > 10)
                 {
                     lastAlert = DateTime.Now;
-                    App.ErrorBox( "Error loading " + this.seriesTitle + " (and possibly others).\n" + errorString);
+                    App.ErrorBox( "Error loading \"" + this.seriesTitle + "\" (and possibly others).\n" + errorString, detailsString);
                 }
                 this.valid = false;
                 if (this.currentVideo != null)

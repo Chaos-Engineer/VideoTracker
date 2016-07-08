@@ -31,106 +31,117 @@
           </Component>
           <Directory Id="Lib" Name="Lib">
             <Component Id="VIDEOTRACKERLIB.DLL" DiskId="1" Guid="4B41CFB9-1372-4C00-A5AF-E60D4FD3C93E">
-              <File Id="VIDEOTRACKERLIB.DLL" Name="VideoTrackerLib.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\VideoTrackerLib.dll" />
+              <File Id="VIDEOTRACKERLIB.DLL" Name="VideoTrackerLib.dll" Source="..\VideoTracker\bin\Release\VideoTrackerLib.dll" />
             </Component>
             <Component Id="CSQUERY.DLL" DiskId="1" Guid="40B224A7-CB04-46F9-AFA0-B295B3C14283">
-              <File Id="CSQUERY.DLL" Name="CsQuery.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\CsQuery.dll" />
+              <File Id="CSQUERY.DLL" Name="CsQuery.dll" Source="..\VideoTracker\bin\Release\CsQuery.dll" />
             </Component>
             <Component Id="IRONPYTHON.DLL" DiskId="1" Guid="720FC3AF-953A-4257-AD21-037A2D8323DB">
-              <File Id="IRONPYTHON.DLL" Name="IronPython.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\IronPython.dll" />
+              <File Id="IRONPYTHON.DLL" Name="IronPython.dll" Source="..\VideoTracker\bin\Release\IronPython.dll" />
             </Component>
             <Component Id="IRONPYTHON.MODULES.DLL" DiskId="1" Guid="ABC70DF0-BA2A-409A-8D45-B332CE3D49CC">
-              <File Id="IRONPYTHON.MODULES.DLL" Name="IronPython.Modules.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\IronPython.Modules.dll" />
+              <File Id="IRONPYTHON.MODULES.DLL" Name="IronPython.Modules.dll" Source="..\VideoTracker\bin\Release\IronPython.Modules.dll" />
             </Component>
             <Component Id="IRONPYTHON.SQLITE.DLL" DiskId="1" Guid="F7F0108A-81C3-4823-A724-24A168AAD60B">
-              <File Id="IRONPYTHON.SQLITE.DLL" Name="IronPython.SQLite.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\IronPython.SQLite.dll" />
+              <File Id="IRONPYTHON.SQLITE.DLL" Name="IronPython.SQLite.dll" Source="..\VideoTracker\bin\Release\IronPython.SQLite.dll" />
             </Component>
             <Component Id="IRONPYTHON.WPF.DLL" DiskId="1" Guid="8543499A-7F3B-4485-B3C6-C3F6E4B5D967">
-              <File Id="IRONPYTHON.WPF.DLL" Name="IronPython.Wpf.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\IronPython.Wpf.dll" />
+              <File Id="IRONPYTHON.WPF.DLL" Name="IronPython.Wpf.dll" Source="..\VideoTracker\bin\Release\IronPython.Wpf.dll" />
             </Component>
             <Component Id="MICROSOFT.DYNAMIC.DLL" DiskId="1" Guid="F1A72FE7-6159-4B99-A34E-E90A901F9521">
-              <File Id="MICROSOFT.DYNAMIC.DLL" Name="Microsoft.Dynamic.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\Microsoft.Dynamic.dll" />
+              <File Id="MICROSOFT.DYNAMIC.DLL" Name="Microsoft.Dynamic.dll" Source="..\VideoTracker\bin\Release\Microsoft.Dynamic.dll" />
             </Component>
             <Component Id="MICROSOFT.SCRIPTING.ASPNET.DLL" DiskId="1" Guid="3CC4904F-0660-4859-A898-4883780AEF18">
-              <File Id="MICROSOFT.SCRIPTING.ASPNET.DLL" Name="Microsoft.Scripting.AspNet.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\Microsoft.Scripting.AspNet.dll" />
+              <File Id="MICROSOFT.SCRIPTING.ASPNET.DLL" Name="Microsoft.Scripting.AspNet.dll" Source="..\VideoTracker\bin\Release\Microsoft.Scripting.AspNet.dll" />
             </Component>
             <Component Id="MICROSOFT.SCRIPTING.DLL" DiskId="1" Guid="6C887033-02FF-4398-AF6D-42A34C796041">
-              <File Id="MICROSOFT.SCRIPTING.DLL" Name="Microsoft.Scripting.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\Microsoft.Scripting.dll" />
+              <File Id="MICROSOFT.SCRIPTING.DLL" Name="Microsoft.Scripting.dll" Source="..\VideoTracker\bin\Release\Microsoft.Scripting.dll" />
             </Component>
             <Component Id="MICROSOFT.SCRIPTING.METADATA.DLL" DiskId="1" Guid="88E752E3-4BEB-40BA-B532-30CE2754633E">
-              <File Id="MICROSOFT.SCRIPTING.METADATA.DLL" Name="Microsoft.Scripting.Metadata.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\Microsoft.Scripting.Metadata.dll" />
+              <File Id="MICROSOFT.SCRIPTING.METADATA.DLL" Name="Microsoft.Scripting.Metadata.dll" Source="..\VideoTracker\bin\Release\Microsoft.Scripting.Metadata.dll" />
             </Component>
             <Component Id="OOKII.DIALOGS.WPF.DLL" DiskId="1" Guid="B127DE91-FB47-4045-9166-5B708F9C2E46">
-              <File Id="OOKII.DIALOGS.WPF.DLL" Name="Ookii.Dialogs.Wpf.dll" Source="D:\MyProjects\VideoTracker\VideoTracker\bin\Release\Ookii.Dialogs.Wpf.dll" />
+              <File Id="OOKII.DIALOGS.WPF.DLL" Name="Ookii.Dialogs.Wpf.dll" Source="..\VideoTracker\bin\Release\Ookii.Dialogs.Wpf.dll" />
             </Component>
           </Directory>
           <Directory Id="PLUGINS" Name="Plugins">
             <Directory Id="FUNIMATION" Name="Funimation">
               <Component Id="FUNIMATION.PY" DiskId="1" Guid="B11D4CCB-FACD-4556-A86E-471BD51AE9A9">
-                <File Id="FUNIMATION.PY" Name="Funimation.py" Source="D:\MyProjects\VideoTracker\Plugins\Funimation\Funimation.py" />
+                <File Id="FUNIMATION.PY" Name="Funimation.py" Source="..\Plugins\Funimation\Funimation.py" />
               </Component>
               <Component Id="FUNIMATION.XAML" DiskId="1" Guid="310693BA-75ED-4740-930D-3CEDF7C2C2D3">
-                <File Id="FUNIMATION.XAML" Name="Funimation.xaml" Source="D:\MyProjects\VideoTracker\Plugins\Funimation\Funimation.xaml" />
+                <File Id="FUNIMATION.XAML" Name="Funimation.xaml" Source="..\Plugins\Funimation\Funimation.xaml" />
               </Component>
             </Directory>
-            <Directory Id="KISS_ANIME" Name="Kiss-Anime">
-              <Component Id="KISS_ANIME.PY" DiskId="1" Guid="319AF7A4-147B-4A9B-8616-536D3CC60972">
-                <File Id="KISS_ANIME.PY" Name="Kiss-Anime.py" Source="D:\MyProjects\VideoTracker\Plugins\Kiss-Anime\Kiss-Anime.py" />
+            <Directory Id="KISSSTREAMING" Name="KissStreaming">
+              <Component Id="KISSSTREAMING.PY" DiskId="1" Guid="319AF7A4-147B-4A9B-8616-536D3CC60972">
+                <File Id="KISSSTREAMING.PY" Name="KissStreaming.py" Source="..\Plugins\KissStreaming\KissStreaming.py" />
               </Component>
-              <Component Id="KISS_ANIME.XAML" DiskId="1" Guid="E9434A44-43D3-4E5E-8BB1-FFEA74B5317E">
-                <File Id="KISS_ANIME.XAML" Name="Kiss-Anime.xaml" Source="D:\MyProjects\VideoTracker\Plugins\Kiss-Anime\Kiss-Anime.xaml" />
+              <Component Id="KISSSTREAMING.XAML" DiskId="1" Guid="E9434A44-43D3-4E5E-8BB1-FFEA74B5317E">
+                <File Id="KISSSTREAMING.XAML" Name="KissStreaming.xaml" Source="..\Plugins\KissStreaming\KissStreaming.xaml" />
               </Component>
-              <Component Id="KISS_ANIMECONFIGUREGLOBALS.XAML" DiskId="1" Guid="91A6E797-A220-46B9-9FD8-418E5D7C23AE">
-                <File Id="KISS_ANIMECONFIGUREGLOBALS.XAML" Name="Kiss-AnimeConfigureGlobals.xaml" Source="D:\MyProjects\VideoTracker\Plugins\Kiss-Anime\Kiss-AnimeConfigureGlobals.xaml" />
+              <Component Id="KISSSTREAMINGCONFIGUREGLOBALS.XAML" DiskId="1" Guid="91A6E797-A220-46B9-9FD8-418E5D7C23AE">
+                <File Id="KISSSTREAMINGCONFIGUREGLOBALS.XAML" Name="KissStreamingConfigureGlobals.xaml" Source="..\Plugins\KissStreaming\KissStreamingConfigureGlobals.xaml" />
+              </Component>
+            </Directory>
+              <Directory Id="LOCKERSTREAMING" Name="LockerStreaming">
+              <Component Id="LOCKERSTREAMING.PY" DiskId="1" Guid="F6EA7A9E-7FCB-42E3-AE10-60BFA0A3DEAD">
+                <File Id="LOCKERSTREAMING.PY" Name="LockerStreaming.py" Source="..\Plugins\LockerStreaming\LockerStreaming.py" />
+              </Component>
+              <Component Id="LOCKERSTREAMING.XAML" DiskId="1" Guid="78C53C48-F0C2-4BBA-AB75-3117E6302030">
+                <File Id="LOCKERSTREAMING.XAML" Name="LockerStreaming.xaml" Source="..\Plugins\LockerStreaming\LockerStreaming.xaml" />
+              </Component>
+              <Component Id="LOCKERSTREAMINGCONFIGUREGLOBALS.XAML" DiskId="1" Guid="19762066-95D3-4BF3-A12D-CCD323DCEFA6">
+                <File Id="LOCKERSTREAMINGCONFIGUREGLOBALS.XAML" Name="LockerStreamingConfigureGlobals.xaml" Source="..\Plugins\LockerStreaming\LockerStreamingConfigureGlobals.xaml" />
               </Component>
             </Directory>
             <Directory Id="RESOURCES" Name="Resources">
               <Component Id="VIDEOTRACKERRESOURCEDICTIONARY.XAML" DiskId="1" Guid="7C7EAEF4-7189-4F7E-A33E-FCD208005E46">
-                <File Id="VIDEOTRACKERRESOURCEDICTIONARY.XAML" Name="VideoTrackerResourceDictionary.xaml" Source="D:\MyProjects\VideoTracker\Plugins\Resources\VideoTrackerResourceDictionary.xaml" />
+                <File Id="VIDEOTRACKERRESOURCEDICTIONARY.XAML" Name="VideoTrackerResourceDictionary.xaml" Source="..\Plugins\Resources\VideoTrackerResourceDictionary.xaml" />
               </Component>
             </Directory>
             <Directory Id="SAMPLE" Name="Sample">
               <Component Id="SAMPLE.PY" DiskId="1" Guid="DD55BB8C-285D-45AA-A02C-6B9909B06919">
-                <File Id="SAMPLE.PY" Name="Sample.py" Source="D:\MyProjects\VideoTracker\Plugins\Sample\Sample.py" />
+                <File Id="SAMPLE.PY" Name="Sample.py" Source="..\Plugins\Sample\Sample.py" />
               </Component>
               <Component Id="SAMPLE.XAML" DiskId="1" Guid="A5D8EEA6-C17C-448F-ADBC-110E0AF2B242">
-                <File Id="SAMPLE.XAML" Name="Sample.xaml" Source="D:\MyProjects\VideoTracker\Plugins\Sample\Sample.xaml" />
+                <File Id="SAMPLE.XAML" Name="Sample.xaml" Source="..\Plugins\Sample\Sample.xaml" />
               </Component>
               <Component Id="SAMPLECONFIGUREGLOBALS.PY" DiskId="1" Guid="00CA04D5-D452-47E7-878D-7441A5474F61">
-                <File Id="SAMPLECONFIGUREGLOBALS.PY" Name="SampleConfigureGlobals.py" Source="D:\MyProjects\VideoTracker\Plugins\Sample\SampleConfigureGlobals.py" />
+                <File Id="SAMPLECONFIGUREGLOBALS.PY" Name="SampleConfigureGlobals.py" Source="..\Plugins\Sample\SampleConfigureGlobals.py" />
               </Component>
               <Component Id="SAMPLECONFIGUREGLOBALS.XAML" DiskId="1" Guid="3534C25A-01CA-41BD-AC9D-40F6194A00D4">
-                <File Id="SAMPLECONFIGUREGLOBALS.XAML" Name="SampleConfigureGlobals.xaml" Source="D:\MyProjects\VideoTracker\Plugins\Sample\SampleConfigureGlobals.xaml" />
+                <File Id="SAMPLECONFIGUREGLOBALS.XAML" Name="SampleConfigureGlobals.xaml" Source="..\Plugins\Sample\SampleConfigureGlobals.xaml" />
               </Component>
             </Directory>
             <Directory Id="SYFY" Name="SyFy">
               <Component Id="SYFY.PY" DiskId="1" Guid="4099E8AE-352A-4212-935E-DAFE334A15E5">
-                <File Id="SYFY.PY" Name="SyFy.py" Source="D:\MyProjects\VideoTracker\Plugins\SyFy\SyFy.py" />
+                <File Id="SYFY.PY" Name="SyFy.py" Source="..\Plugins\SyFy\SyFy.py" />
               </Component>
               <Component Id="SYFY.XAML" DiskId="1" Guid="AC8FD723-74C3-4F53-AEA6-8D4FFEBB6C5B">
-                <File Id="SYFY.XAML" Name="SyFy.xaml" Source="D:\MyProjects\VideoTracker\Plugins\SyFy\SyFy.xaml" />
+                <File Id="SYFY.XAML" Name="SyFy.xaml" Source="..\Plugins\SyFy\SyFy.xaml" />
               </Component>
             </Directory>
             <Directory Id="TEMPLATE" Name="Template">
               <Component Id="TEMPLATE.PY" DiskId="1" Guid="9EAEFF7D-0E03-4189-9CB1-9DCAC6D82B05">
-                <File Id="TEMPLATE.PY" Name="Template.py" Source="D:\MyProjects\VideoTracker\Plugins\Template\Template.py" />
+                <File Id="TEMPLATE.PY" Name="Template.py" Source="..\Plugins\Template\Template.py" />
               </Component>
               <Component Id="TEMPLATE.XAML" DiskId="1" Guid="F4FCE01F-2074-49F8-9638-89358F26F327">
-                <File Id="TEMPLATE.XAML" Name="Template.xaml" Source="D:\MyProjects\VideoTracker\Plugins\Template\Template.xaml" />
+                <File Id="TEMPLATE.XAML" Name="Template.xaml" Source="..\Plugins\Template\Template.xaml" />
               </Component>
             </Directory>
             <Directory Id="VIDEOTRACKERUTILS" Name="VideoTrackerUtils">
               <Component Id="CLOUDFLARE_BYPASS.JS" DiskId="1" Guid="66FE8409-2BCD-462F-8A55-8C8BFFCA77F4">
-                <File Id="CLOUDFLARE_BYPASS.JS" Name="CloudFlare-Bypass.js" Source="D:\MyProjects\VideoTracker\Plugins\VideoTrackerUtils\CloudFlare-Bypass.js" />
+                <File Id="CLOUDFLARE_BYPASS.JS" Name="CloudFlare-Bypass.js" Source="..\Plugins\VideoTrackerUtils\CloudFlare-Bypass.js" />
               </Component>
               <Component Id="HTMLLOADER.PY" DiskId="1" Guid="0624A7EA-FBC2-411B-942F-B8A9888BDF4F">
-                <File Id="HTMLLOADER.PY" Name="HtmlLoader.py" Source="D:\MyProjects\VideoTracker\Plugins\VideoTrackerUtils\HtmlLoader.py" />
+                <File Id="HTMLLOADER.PY" Name="HtmlLoader.py" Source="..\Plugins\VideoTrackerUtils\HtmlLoader.py" />
               </Component>
               <Component Id="HTMLLOADER_CLOUDFLARE.PY" DiskId="1" Guid="75EA79C2-9853-4F21-84BC-9D0B6D3DF26E">
-                <File Id="HTMLLOADER_CLOUDFLARE.PY" Name="HtmlLoader_CloudFlare.py" Source="D:\MyProjects\VideoTracker\Plugins\VideoTrackerUtils\HtmlLoader_CloudFlare.py" />
+                <File Id="HTMLLOADER_CLOUDFLARE.PY" Name="HtmlLoader_CloudFlare.py" Source="..\Plugins\VideoTrackerUtils\HtmlLoader_CloudFlare.py" />
               </Component>
               <Component Id="TEST_CLOUDFLARE.BAT" DiskId="1" Guid="3262907D-2F74-4F42-BB27-88388C013316">
-                <File Id="TEST_CLOUDFLARE.BAT" Name="Test-CloudFlare.bat" Source="D:\MyProjects\VideoTracker\Plugins\VideoTrackerUtils\Test-CloudFlare.bat" />
+                <File Id="TEST_CLOUDFLARE.BAT" Name="Test-CloudFlare.bat" Source="..\Plugins\VideoTrackerUtils\Test-CloudFlare.bat" />
               </Component>
             </Directory>
           </Directory>
@@ -169,9 +180,12 @@
       <ComponentRef Id="VIDEOTRACKERLIB.DLL" />
       <ComponentRef Id="FUNIMATION.PY" />
       <ComponentRef Id="FUNIMATION.XAML" />
-      <ComponentRef Id="KISS_ANIME.PY" />
-      <ComponentRef Id="KISS_ANIME.XAML" />
-      <ComponentRef Id="KISS_ANIMECONFIGUREGLOBALS.XAML" />
+      <ComponentRef Id="KISSSTREAMING.PY" />
+      <ComponentRef Id="KISSSTREAMING.XAML" />
+      <ComponentRef Id="KISSSTREAMINGCONFIGUREGLOBALS.XAML" />
+      <ComponentRef Id="LOCKERSTREAMING.PY" />
+      <ComponentRef Id="LOCKERSTREAMING.XAML" />
+      <ComponentRef Id="LOCKERSTREAMINGCONFIGUREGLOBALS.XAML" />
       <ComponentRef Id="VIDEOTRACKERRESOURCEDICTIONARY.XAML" />
       <ComponentRef Id="SAMPLE.PY" />
       <ComponentRef Id="SAMPLE.XAML" />
