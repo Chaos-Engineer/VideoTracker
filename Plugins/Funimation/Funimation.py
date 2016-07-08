@@ -3,7 +3,9 @@ clr.AddReference('IronPython.Wpf')
 import wpf
 from System.Windows import Application, Window, MessageBox
 from System.IO import Path
+from System.Collections.Generic import List
 from System.Diagnostics import Process
+
 
 clr.AddReference('VideoTrackerLib')
 import VideoTracker
@@ -29,7 +31,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     # Get the website index. Data is returned in JSON format, which can be converted to
     # a list of dictionaries with the json.load call.
     index_url = "http://www.funimation.com/feeds/ps/shows?ut=FunimationSubscriptionUser&limit=9999"

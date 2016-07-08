@@ -230,20 +230,22 @@ namespace VideoTracker
         // each directory to the program-specific directory list.
         private void GetDirectoriesFromDefaultList(string search)
         {
-
-            List<string> l = directoryListBox.Items.Cast<string>().ToList();
-            foreach (String d in l)
+            using (new WaitCursor())
             {
-                if (!Directory.Exists(d))
+                List<string> l = directoryListBox.Items.Cast<string>().ToList();
+                foreach (String d in l)
                 {
-                    directoryListBox.Items.Remove(d);
+                    if (!Directory.Exists(d))
+                    {
+                        directoryListBox.Items.Remove(d);
+                    }
                 }
-            }
-            foreach (String d in videoTrackerData.globals.GetList(gdg.FILE, gdk.DEFDIRLIST))
-            {
-                foreach (String f in Directory.GetFiles(d, search, SearchOption.AllDirectories))
+                foreach (String d in videoTrackerData.globals.GetList(gdg.FILE, gdk.DEFDIRLIST))
                 {
-                    AddDirectoryToListBox(System.IO.Path.GetDirectoryName(f));
+                    foreach (String f in Directory.GetFiles(d, search, SearchOption.AllDirectories))
+                    {
+                        AddDirectoryToListBox(System.IO.Path.GetDirectoryName(f));
+                    }
                 }
             }
         }

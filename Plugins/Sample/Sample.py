@@ -17,6 +17,7 @@ import wpf
 from System.Windows import Application, Window, MessageBox
 from System.IO import Path
 from System.Diagnostics import Process
+from System.Collections.Generic import List
 from Microsoft.Win32 import OpenFileDialog
 
 #
@@ -138,8 +139,9 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
 #
 # The output, videoFiles, is an object of type SortedList<VideoFile>
 #
-# detailString holds additional information in the event of an error. If the plugin does
-# screen-scraping, then this typically holds the HTML of the last page loaded.
+# Success is indicated by returning the null string. Failure is indicated by returning
+# an error string, or a two-element string list containing an error string and a detail 
+# string.
 #
 # SortedList is a standard C# data structure. To add a new element to the list, you must
 # provide both the value of a sort key and the object to be added.
@@ -161,7 +163,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
 # a link to Youtube. "Season 1 Episode 2" is the link specified by the user in the
 # ConfigureSeries call.
 #
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 
     # Episode 1
     v = VideoFile()
@@ -186,6 +188,9 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detai
     v.special = 0
     v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
     videoFiles.Add(v.key, v)
+
+    # Error messages with additional details can be returned in a two-element List structure.
+    #   return List[str](["Error", "Detail"])
 
     return "" # Indicate no error
 

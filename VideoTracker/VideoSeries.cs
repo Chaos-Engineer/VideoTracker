@@ -59,7 +59,7 @@ namespace VideoTracker
         [XmlIgnore,NonSerialized]
         protected string errorString;
         [XmlIgnore, NonSerialized]
-        protected string detailsString;  
+        protected string detailString;  
         [XmlIgnore,NonSerialized]
         private BackgroundWorker backgroundWorker;
         [XmlIgnore, NonSerialized]
@@ -117,7 +117,7 @@ namespace VideoTracker
                 if ((DateTime.Now - lastAlert).TotalSeconds > 10)
                 {
                     lastAlert = DateTime.Now;
-                    App.ErrorBox( "Error loading \"" + this.seriesTitle + "\" (and possibly others).\n" + errorString, detailsString);
+                    App.ErrorBox( "Error loading \"" + this.seriesTitle + "\" (and possibly others).\n" + errorString, detailString);
                 }
                 this.valid = false;
                 if (this.currentVideo != null)

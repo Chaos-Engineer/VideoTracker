@@ -11,6 +11,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel Style="{StaticResource WindowStackPanel}">
+        <TextBlock Text="Load series from a Kiss Streaming site."/>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition/>

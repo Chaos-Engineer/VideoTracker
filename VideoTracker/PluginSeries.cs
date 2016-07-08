@@ -1,4 +1,5 @@
 ﻿using IronPython.Hosting;
+using IronPython.Runtime;
 using Microsoft.Scripting.Hosting;
 using System;
 using System.Collections.Generic;
@@ -101,7 +102,7 @@ namespace VideoTracker
             catch (Exception ex)
             {
                 this.errorString = "Unable to load Python file " + plugin.pluginFileName;
-                this.detailsString = ex.ToString();
+                this.detailString = ex.ToString();
                 return;
             }
 
@@ -111,8 +112,18 @@ namespace VideoTracker
             // Load the series episodes.
             try
             {
-                this.errorString = scope.LoadSeries(this.pluginGlobalDictionary, this.pluginSeriesDictionary,
-                        out this.videoFiles, out this.detailsString);
+                object status;
+                status = scope.LoadSeries(this.pluginGlobalDictionary, this.pluginSeriesDictionary,
+                        out this.videoFiles);
+                if (status is string) {
+                    this.errorString = (string) status;
+                } else if (status is List<string>) {
+                    List<string> temp = (List<string>) status;
+                    this.errorString = temp[0];
+                    this.detailString = temp[1];
+                } else {
+                    App.ErrorBox("LoadSeries returns unexpected type " + status.GetType().ToString());
+                }
                 if (this.errorString != "")
                 {
                     this.videoFiles.Clear();
@@ -123,7 +134,7 @@ namespace VideoTracker
             {
                 this.videoFiles.Clear(); // Make sure error is reported if list was partially loaded.
                 this.errorString = "Error calling LoadSeries in " + plugin.pluginFileName;
-                this.detailsString = ex.ToString();
+                this.detailString = ex.ToString();
                 return;
             }
 
@@ -148,17 +159,20 @@ namespace VideoTracker
         public bool ConfigureSeries(VideoTrackerData vtd)
         {
             dynamic scope;
-            // Initialize the Python runtime 
-            try
+            // Initialize the Python runtime
+            using (new WaitCursor())
             {
-                scope = plugin.LoadPlugin();
-            }
-            catch (Exception ex)
-            {
-                App.ErrorBox("Unable to load Python file " + plugin.pluginFileName, ex.ToString()); 
-                return false;
-            }
 
+                try
+                {
+                    scope = plugin.LoadPlugin();
+                }
+                catch (Exception ex)
+                {
+                    App.ErrorBox("Unable to load Python file " + plugin.pluginFileName, ex.ToString());
+                    return false;
+                }
+            }
             // Get the local variables for this plugin
             try
             {
@@ -242,24 +256,25 @@ namespace VideoTracker
                 pluginDictionary[NEW] = new PluginData(pluginFileName, vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH]);
 
                 // Load the plug-in file and call the "Register" method.
-                using (new WaitCursor()) {
-                try
+                using (new WaitCursor())
                 {
-                    LoadPlugin();
-                }
-                catch (IronPython.Runtime.Exceptions.ImportException ex)
-                {
-                    App.ErrorBox("Import exception: This usually means that IronPython has not been " +
-                        "installed on your system (download it from http://ironpython.net), or that the " +
-                        "IronPython library path on this page is incorrect. The other possibility is that " +
-                        "this plug-in relies on a Python library module that is not installed on your system\n\n"
-                        + ex.ToString());
-                }
-                catch (Exception ex)
-                {
-                    App.ErrorBox("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
-                    return false;
-                }
+                    try
+                    {
+                        LoadPlugin();
+                    }
+                    catch (IronPython.Runtime.Exceptions.ImportException ex)
+                    {
+                        App.ErrorBox("Import exception: This usually means that IronPython has not been " +
+                            "installed on your system (download it from http://ironpython.net), or that the " +
+                            "IronPython library path on this page is incorrect. The other possibility is that " +
+                            "this plug-in relies on a Python library module that is not installed on your system\n\n"
+                            + ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        App.ErrorBox("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
+                        return false;
+                    }
                 }
 
                 StringDictionary pluginRegisterDictionary = new StringDictionary();
@@ -362,25 +377,28 @@ namespace VideoTracker
         {
             StringDictionary pluginGlobalDictionary = vtd.globals[pluginName];
 
-            errorString = detailString = "";
-            // Initialize the Python runtime 
-            try
+            using (new WaitCursor())
             {
-                LoadPlugin();
+                errorString = detailString = "";
+                // Initialize the Python runtime 
+                try
+                {
+                    LoadPlugin();
+                }
+                catch (Exception ex)
+                {
+                    errorString = "Unable to load Python file " + pluginFileName;
+                    detailString = ex.ToString();
+                    return false;
+                }
             }
-            catch (Exception ex)
-            {
-                errorString = "Unable to load Python file " + pluginFileName;
-                detailString = ex.ToString();
-                return false;
-            }
-
             // Get the global variables for this plugin
             if (!scope.ContainsVariable("ConfigureGlobals"))
             {
                 errorString = "Configuration not possible.\nNo ConfigureGlobals entry point in " + pluginFileName;
                 return false;
             }
+
             try
             {
                 pluginGlobalDictionary = vtd.globals[pluginName];
@@ -400,6 +418,7 @@ namespace VideoTracker
             vtd.globals[pluginName] = pluginGlobalDictionary;
             return true;
         }
+
 
 
         private class PluginData
@@ -427,6 +446,6 @@ namespace VideoTracker
                 this.fileMod = File.GetLastWriteTime(file);
                 this.runtime = python;
             }
-        };
+        }
     }
 }

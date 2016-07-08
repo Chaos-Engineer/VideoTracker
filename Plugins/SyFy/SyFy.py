@@ -28,7 +28,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 
     #
     # Grab the full series list and search for the title. Extract the canonical title

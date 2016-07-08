@@ -6,6 +6,7 @@ clr.AddReference('IronPython.Wpf')
 import wpf
 from System.Windows import Application, Window, MessageBox
 from System.IO import Path
+from System.Collections.Generic import List
 from System.Diagnostics import Process
 from Microsoft.Win32 import OpenFileDialog
 
@@ -46,7 +47,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 
     series = pluginSeriesDictionary[spk.TITLE]
     #
@@ -61,13 +62,12 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detai
     url = base + "/search/" + series
     h = HtmlLoader_CloudFlare(url, utilsDir);
     if (h.error != ""):
-        return h.error
+        return List[str]([h.error, url])
 
     html = h.read()
     m = re.search('<a[^<]*?href="([^<]*?)"><span class="title">([^<]*?' + series + '[^<]*?)</span></a>', html, flags=re.IGNORECASE)
     if m is None:
-        detailString = html
-        return "Series not found"
+        return List[str](["Series not found", html])
     url = m.group(1)
     title = m.group(2)
     
@@ -82,7 +82,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detai
     #    Mirai Nikki Episode 26</a>
     h = HtmlLoader_CloudFlare(url, utilsDir);
     if (h.error != ""):
-        return h.error
+        return List[str]([h.error, url])
     html = h.read();
     m = re.findall('<a href="(.*?)" title="Watch', html)
     episode = 0
@@ -99,8 +99,8 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detai
         videoFiles.Add(v.key, v)
 
     if episode == 0:
-        detailString = html
-        return "No episodes found"
+        videoFiles.detailString = html
+        return List[str](["No episodes found", html])
 
     return "" # Indicates no error
 

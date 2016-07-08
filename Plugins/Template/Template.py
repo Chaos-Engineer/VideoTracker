@@ -9,6 +9,7 @@ import wpf
 from System.Windows import Application, Window, MessageBox
 from System.IO import Path
 from System.Diagnostics import Process
+from System.Collections.Generic import List
 
 clr.AddReference('VideoTrackerLib')
 import VideoTracker
@@ -44,7 +45,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     # Episode 1
     v = VideoFile()
     v.episodeTitle = "[NAME]"
@@ -55,6 +56,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detai
     v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
     videoFiles.Add(v.key, v);
 
+    #return List[str](["error", "details"])  # Sends an error with details
     return "" # Indicates no error
 
 #

@@ -11,7 +11,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel Style="{StaticResource WindowStackPanel}">
-        <TextBlock Text="Load series from LockerStreaming.is."/>
+        <TextBlock Text="Load series from a Locker Streaming site."/>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition/>

@@ -23,15 +23,13 @@ namespace VideoTracker
         private VideoTrackerData videoTrackerData;
         private VideoTrackerForm videoTrackerForm;
         public  Size requiredSize = new Size(); 
-        private bool updateInProgress;
-        private double videoSelectorControlWidth = 0;
+        private bool allowCurrentEpisodeUpdate;
 
         public VideoPlayerPanel(VideoTrackerData vtd, VideoSeries vs)
         {
             InitializeComponent();
 
-            this.updateInProgress = false;  // Set when a call to UpdatePanel is in progress
-
+            this.allowCurrentEpisodeUpdate = true;
             this.videoSeries = vs;
             this.videoTrackerForm = vtd.videoTrackerForm;
             this.videoTrackerData = vtd;
@@ -59,6 +57,11 @@ namespace VideoTracker
 
         private void videoSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // allowCurrentEpsidodeUpdate is disabled in UpdatePanel to prevent recursive calls,
+            // and when we're temporarily changing the selected index in order to calculate
+            // the maximum panel size.
+            if (!this.allowCurrentEpisodeUpdate) { return; }
+
             VideoSeries vs = videoSeries;
             int index = videoSelector.SelectedIndex;
             if (index == -1) return;
@@ -151,24 +154,14 @@ namespace VideoTracker
                  this.videoSelector.FontStyle,
                  this.videoSelector.FontWeight,
                  this.videoSelector.FontStretch);
+            int longestIndex = 0;
 
-
-            if (videoSelectorControlWidth == 0)
-            {
-                // Get the size of the ComboBox drop-down button and the margins/padding/borders. 
-                this.videoSelector.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                videoSelectorControlWidth =
-                    this.videoSelector.Margin.Left + 
-                    this.border.Margin.Left + this.border.BorderThickness.Left +
-                    this.videoSelector.DesiredSize.Width +
-                    this.videoSelector.Margin.Right + 
-                    this.border.Margin.Right + this.border.BorderThickness.Right;
-            }
-            // Loop through the list of titles and add them to the combo box, also getting the 
-            // length of the longest one. 
+            // Add all the files into the videoSelector control. Also measure the length
+            // of each string, saving the index of the longest.
             videoSelector.Items.Clear();
-            foreach (VideoFile f in vs.videoFiles.Values)
+            for (int index = 0; index < vs.videoFiles.Values.Count; index++)
             {
+                VideoFile f = vs.videoFiles.Values[index];
                 string filename = f.episodeTitle;
                 this.videoSelector.Items.Add(filename);
                 FormattedText formattedText = new FormattedText(
@@ -179,20 +172,27 @@ namespace VideoTracker
                     this.videoSelector.FontSize,
                     System.Windows.Media.Brushes.Black);
                 double width = formattedText.Width;
-                videoSelectorWidth = Math.Max(videoSelectorWidth, width);
+                if (width > videoSelectorWidth)
+                {
+                    videoSelectorWidth = width;
+                    longestIndex = index;
+                }
             }
-            videoSelectorWidth += videoSelectorControlWidth;
 
-            // Calculate the minimum required size for the panel. If this is greater 
-            // than the length of the dropdown menu, then it becomes the required
-            // size of the panel. Otherwise the required size is the dropdown menu
-            // length
-
+            // Temporarily set the current video to the longest title so that we can
+            // calculate the size. Clear "allowCurrentEpisodeUpdate" to ensure that
+            // we don't lose the real current episode.
+            this.allowCurrentEpisodeUpdate = false; 
             this.Width = Double.NaN;        // Allow width to be dynamically calculated
-            this.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-            this.requiredSize.Width = Math.Max(videoSelectorWidth, this.DesiredSize.Width);
-            this.UpdatePanel();
+            this.videoSelector.SelectedIndex = longestIndex;
             this.VisibleControls(true);
+            this.UpdateLayout();
+            this.requiredSize.Width = this.DesiredSize.Width;
+            this.allowCurrentEpisodeUpdate = true;
+
+            // Set the current video to the correct value, and enable/disable
+            // controls as appropriate.
+            this.UpdatePanel();
             this.UpdateLayout();
 
             this.videoTrackerForm.WorkerThreadComplete();
@@ -200,13 +200,13 @@ namespace VideoTracker
 
         private void UpdatePanel()
         {
-            // Prevent recursive calls using the "updateInProgress" variable.
+            // Prevent recursive calls using the "allowCurrentEpisodeUpdate" variable.
             //
             // Reason: When this routine changes the SelectedIndex field, it triggers
             // a recursive call because this is the handler for the SelectedIndexChanged
             // event.
-            if (updateInProgress) { return;  }
-            updateInProgress = true;
+            //
+            this.allowCurrentEpisodeUpdate = false;
 
             using (var d = Dispatcher.DisableProcessing())
             {
@@ -273,7 +273,7 @@ namespace VideoTracker
                 }
 
                 videoTrackerForm.CheckAutoSave();
-                updateInProgress = false;
+                this.allowCurrentEpisodeUpdate = true;
             }
         }
 

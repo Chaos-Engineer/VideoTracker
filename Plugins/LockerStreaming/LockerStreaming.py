@@ -4,6 +4,7 @@ clr.AddReference('IronPython.Wpf')
 import wpf
 from System.Windows import Application, Window, MessageBox
 from System.IO import Path
+from System.Collections.Generic import List
 from System.Diagnostics import Process
 
 clr.AddReference('VideoTrackerLib')
@@ -42,7 +43,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detailString) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     #
     # Search for the desired program. Output from the search string is:
     # 
@@ -57,14 +58,13 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles, detai
     url = base + "/search/search.php?q=" + series
     h = HtmlLoader(url);
     if (h.error != ""):
-        detailString = h.error
-        return "Error loading " + url
+        return List[str](["Error loading " + url, h.error])
     html = h.read();
 
     m = re.search('<a href="(.*?)" title=(.*?' + series + '.*?)>', html, flags=re.IGNORECASE)
     if m is None:
         detailString = url + "\n" + html
-        return "Series not found"
+        return List[str](["Series not found", detailString])
     url = m.group(1)
     title = m.group(2)
 
