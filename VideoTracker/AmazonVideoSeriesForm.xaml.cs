@@ -49,7 +49,7 @@ namespace VideoTracker
                   String.IsNullOrWhiteSpace(videoTrackerData.globals[gdg.AMAZON][gdk.SECRETKEY]) ||
                   String.IsNullOrWhiteSpace(videoTrackerData.globals[gdg.AMAZON][gdk.AFFILIATEID]))
             {
-                App.ErrorBox("Amazon Affiliate ID parameters must be set before loading " +
+                ErrorDialog.Show("Amazon Affiliate ID parameters must be set before loading " +
                     "Amazon On-Demand Video programs");
                 SettingsForm s = new SettingsForm(videoTrackerData);
                 foreach (TabItem t in s.tabControl.Items) {
@@ -63,7 +63,7 @@ namespace VideoTracker
             // Check input for validity
             if (titleBox.Text.Equals(""))
             {
-                App.ErrorBox("Title must be specified");
+                ErrorDialog.Show("Title must be specified");
                 return;
             }
             if (keywordBox.Text.Equals(""))

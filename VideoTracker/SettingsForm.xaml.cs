@@ -127,7 +127,7 @@ namespace VideoTracker
         {
             if (!Directory.Exists(directory))
             {
-                App.ErrorBox(directory + " does not exist.");
+                ErrorDialog.Show(directory + " does not exist.");
                 return;
             }
             if (!defaultDirectoryListBox.Items.Contains(directory))

@@ -117,7 +117,7 @@ namespace VideoTracker
                 if ((DateTime.Now - lastAlert).TotalSeconds > 10)
                 {
                     lastAlert = DateTime.Now;
-                    App.ErrorBox( "Error loading \"" + this.seriesTitle + "\" (and possibly others).\n" + errorString, detailString);
+                    ErrorDialog.Show( "Error loading \"" + this.seriesTitle + "\" (and possibly others).\n" + errorString, detailString);
                 }
                 this.valid = false;
                 if (this.currentVideo != null)

@@ -44,7 +44,7 @@ namespace VideoTracker
             // Check input for validity
             if (titleBox.Text.Equals(""))
             {
-                App.ErrorBox("Title must be set");
+                ErrorDialog.Show("Title must be set");
                 return;
             }
 

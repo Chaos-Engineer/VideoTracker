@@ -67,7 +67,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     html = h.read()
     m = re.search('<a[^<]*?href="([^<]*?)"><span class="title">([^<]*?' + series + '[^<]*?)</span></a>', html, flags=re.IGNORECASE)
     if m is None:
-        return List[str](["Series not found", html])
+        return List[str](["Series not found at " + url, html])
     url = m.group(1)
     title = m.group(2)
     
@@ -100,9 +100,9 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 
     if episode == 0:
         videoFiles.detailString = html
-        return List[str](["No episodes found", html])
+        return List[str](["No episodes found at " + url, html])
 
-    return "" # Indicates no error
+    return # Indicates no error
 
 #
 # WPF Form controlled by the ConfigureSeries call.

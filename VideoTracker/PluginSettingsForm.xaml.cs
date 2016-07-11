@@ -167,7 +167,7 @@ namespace VideoTracker
                 string errorString, detailString;
                 Plugin plugin = new Plugin(pluginName, videoTrackerData);
                 plugin.ConfigureGlobals(videoTrackerData, out errorString, out detailString);
-                if (errorString != "") App.ErrorBox(errorString, detailString);
+                if (errorString != "") ErrorDialog.Show(errorString, detailString);
             }
         }
 

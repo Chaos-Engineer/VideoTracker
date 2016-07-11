@@ -100,7 +100,7 @@ namespace VideoTracker
         {
             if (titleBox.Text.Equals(""))
             {
-                App.ErrorBox("Title must be set");
+                ErrorDialog.Show("Title must be set");
                 return (false);
             }
 
@@ -109,7 +109,7 @@ namespace VideoTracker
             fileWildcard = "*" + whitespace.Replace(titleBox.Text, "*") + "*";
             if (fileNameBox.Text != "" && !Regex.Match(fileNameBox.Text, regexWildcard, RegexOptions.IgnoreCase).Success)
             {
-                App.ErrorBox("Title string must be contained in filename");
+                ErrorDialog.Show("Title string must be contained in filename");
                 return (false);
             }
 
@@ -117,13 +117,13 @@ namespace VideoTracker
             {
                 if (videoTrackerData.globals.GetList(gdg.FILE, gdk.DEFDIRLIST).Count == 0)
                 {
-                    App.ErrorBox("Directory list (or default directory list) must be set.");
+                    ErrorDialog.Show("Directory list (or default directory list) must be set.");
                     return (false);
                 }
                 GetDirectoriesFromDefaultList(fileWildcard);
                 if (directoryListBox.Items.Count == 0)
                 {
-                    App.ErrorBox("No matching files found in default directory list.");
+                    ErrorDialog.Show("No matching files found in default directory list.");
                     return (false);
                 }
             }
@@ -204,7 +204,7 @@ namespace VideoTracker
             }
             else
             {
-                App.ErrorBox(file + " does not exist.");
+                ErrorDialog.Show(file + " does not exist.");
             }
         }
 
@@ -212,12 +212,12 @@ namespace VideoTracker
         {
             if (File.Exists(directory))
             {
-                App.ErrorBox(directory + " is not a directory.");
+                ErrorDialog.Show(directory + " is not a directory.");
                 return;
             }
             if (!Directory.Exists(directory))
             {
-                App.ErrorBox(directory + " does not exist.");
+                ErrorDialog.Show(directory + " does not exist.");
                 return;
             }
             if (!directoryListBox.Items.Contains(directory))

@@ -106,7 +106,7 @@ namespace VideoTracker
                 }
                 else
                 {
-                    App.ErrorBox("Can't extract episode number from " + this.URL);
+                    ErrorDialog.Show("Can't extract episode number from " + this.URL);
                     continue;
                 }
 

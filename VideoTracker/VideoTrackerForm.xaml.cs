@@ -116,11 +116,11 @@ namespace VideoTracker
             autoSaveMenuItem.IsChecked = videoTrackerData.globals.GetBool(gdg.MAIN, gdk.AUTOSAVE);
             if (autoSaveMenuItem.IsChecked)
             {
-                App.ErrorBox("Autosave enabled");
+                ErrorDialog.Show("Autosave enabled");
             }
             else
             {
-                App.ErrorBox("Autosave disabled");
+                ErrorDialog.Show("Autosave disabled");
             }
         }
 
@@ -307,7 +307,7 @@ namespace VideoTracker
             }
             catch (Exception e)
             {
-                App.ErrorBox("Failed to load " + file + "\n" + e.ToString() +
+                ErrorDialog.Show("Failed to load " + file + "\n" + e.ToString() +
                     "\n\nAuto-save will not be performed until configuration is saved manually");
                 EnableFileOperations(true);
                 configFileValid = false;
@@ -353,7 +353,7 @@ namespace VideoTracker
                 {
                     vs.currentVideo = new VideoFile();
                     vs.currentVideo.key = vs.currentVideo.episodeTitle = "NO FILE FOUND";
-                    App.ErrorBox("Invalid data for title " + vs.seriesTitle + ". " +
+                    ErrorDialog.Show("Invalid data for title " + vs.seriesTitle + ". " +
                         "\n\nAuto-save will not be performed until configuration is saved manually");
                     configFileValid = false;
                 }
@@ -379,7 +379,7 @@ namespace VideoTracker
                 }
                 catch (Exception ex)
                 {
-                    App.ErrorBox("Can't save " + file + ".\n" + ex.ToString());
+                    ErrorDialog.Show("Can't save " + file + ".\n" + ex.ToString());
                     return;
                 }
                 configFileValid = true;
@@ -742,7 +742,7 @@ namespace VideoTracker
             }
             else
             {
-                App.ErrorBox("VideoTrackerData.Set(): Unknown type " + value.GetType().ToString());
+                ErrorDialog.Show("VideoTrackerData.Set(): Unknown type " + value.GetType().ToString());
             }
         }
 

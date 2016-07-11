@@ -82,7 +82,7 @@ namespace VideoTracker
             }
             catch (Exception ex)
             {
-                App.ErrorBox("Unable to play file\n" + ex.ToString());
+                ErrorDialog.Show("Unable to play file\n" + ex.ToString());
             }
         }
 

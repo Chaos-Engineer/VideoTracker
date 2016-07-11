@@ -46,7 +46,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     m = re.search('<a href="(/[^/]*)">(.*' + series + '.*)</a>', html, flags=re.IGNORECASE)
     if m is None:
         detailString = html
-        return "Series not found"
+        return "Series not found at " + url
     url = "http://syfy.com" + m.group(1) + "/episodes"
     
     #
@@ -76,7 +76,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
 
     if episode == 0:
         detailString = html
-        return "Episodes not found"
+        return "Episodes not found at " + url
 
     return "" # Indicates no error
 
