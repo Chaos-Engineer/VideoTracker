@@ -769,7 +769,6 @@ namespace VideoTracker
 
     }
 
-
     // Utility class to display a wait cursor for long-running operations. This is
     // designed to be done in a "using" block so that the original cursor will be 
     // restored when the object goes out-of-scope.

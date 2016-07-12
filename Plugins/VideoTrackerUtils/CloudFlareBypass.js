@@ -21,7 +21,7 @@ page.open(system.args[1], openCompletion);
 
 function openCompletion(status) {
   if (status !== "success") {
-      console.log("<TITLE>CloudFlare-Bypass Error</TITLE>Initial load failed");
+      console.log("<TITLE>CloudFlareBypass Error</TITLE>Initial load failed");
       phantom.exit(0);
   }
   checkPageLoaded();
@@ -39,7 +39,7 @@ function checkPageLoaded() {
 }
 
 function forceExit() {
-  console.log("<TITLE>CloudFlare-Bypass Error</TITLE>Unable to load page in " + timeoutSeconds + " seconds.");
+  console.log("<TITLE>CloudFlareBypass Error</TITLE>Unable to load page in " + timeoutSeconds + " seconds.");
   phantom.exit(0);
 }
 

@@ -1,1 +1,1 @@
-phantomjs.exe --cookies-file=CloudFlare-Cookies.txt CloudFlare-Bypass.js http://kiss-anime.tv/full-anime-list"
+phantomjs.exe --cookies-file=CloudFlareCookies.txt CloudFlareBypass.js http://kiss-anime.me/full-anime-list"

@@ -117,7 +117,10 @@ namespace VideoTracker
                             BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
                             null, this.DetailsHTML, new object[] { });
                         activeX.Silent = true;
-                        this.DetailsHTML.NavigateToString(this.details);
+                        using (new WaitCursor())
+                        {
+                            this.DetailsHTML.NavigateToString(this.details);
+                        }
                         htmlLoaded = true;
                     }
                 }

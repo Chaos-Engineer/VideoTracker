@@ -170,18 +170,23 @@ namespace VideoTracker
         {
             dynamic scope;
             // Initialize the Python runtime
-            using (new WaitCursor())
+            if (plugin == null)
             {
+                ErrorDialog.Show("No registered plugin for this program");
+                return false;
+            }
 
-                try
+            try
+            {
+                using (new WaitCursor())
                 {
                     scope = plugin.LoadPlugin();
                 }
-                catch (Exception ex)
-                {
-                    ErrorDialog.Show("Unable to load Python file " + plugin.pluginFileName, ex.ToString());
-                    return false;
-                }
+            }
+            catch (Exception ex)
+            {
+                ErrorDialog.Show("Unable to load Python file " + plugin.pluginFileName, ex.ToString());
+                return false;
             }
             // Get the local variables for this plugin
             try
@@ -266,31 +271,36 @@ namespace VideoTracker
                 pluginDictionary[NEW] = new PluginData(pluginFileName, vtd.globals[gdg.PLUGIN_GLOBALS][gdk.PYTHONPATH]);
 
                 // Load the plug-in file and call the "Register" method.
-                using (new WaitCursor())
+
+                try
                 {
-                    try
+                    using (new WaitCursor())
                     {
                         LoadPlugin();
                     }
-                    catch (IronPython.Runtime.Exceptions.ImportException ex)
-                    {
-                        ErrorDialog.Show("Import exception: This usually means that IronPython has not been " +
-                            "installed on your system (download it from http://ironpython.net), or that the " +
-                            "IronPython library path on this page is incorrect. The other possibility is that " +
-                            "this plug-in relies on a Python library module that is not installed on your system\n\n"
-                            + ex.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        ErrorDialog.Show("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
-                        return false;
-                    }
                 }
+                catch (IronPython.Runtime.Exceptions.ImportException ex)
+                {
+                    ErrorDialog.Show("Import exception: This usually means that IronPython has not been " +
+                        "installed on your system (download it from http://ironpython.net), or that the " +
+                        "IronPython library path on this page is incorrect. The other possibility is that " +
+                        "this plug-in relies on a Python library module that is not installed on your system\n\n"
+                        + ex.ToString());
+                }
+                catch (Exception ex)
+                {
+                    ErrorDialog.Show("Unable to load Python file " + pluginFileName + ":\n" + ex.ToString());
+                    return false;
+                }
+
 
                 StringDictionary pluginRegisterDictionary = new StringDictionary();
                 try
                 {
-                    scope.Register(pluginRegisterDictionary);
+                    using (new WaitCursor())
+                    {
+                        scope.Register(pluginRegisterDictionary);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -387,20 +397,21 @@ namespace VideoTracker
         {
             StringDictionary pluginGlobalDictionary = vtd.globals[pluginName];
 
-            using (new WaitCursor())
+
+            errorString = detailString = "";
+            // Initialize the Python runtime 
+            try
             {
-                errorString = detailString = "";
-                // Initialize the Python runtime 
-                try
+                using (new WaitCursor())
                 {
                     LoadPlugin();
                 }
-                catch (Exception ex)
-                {
-                    errorString = "Unable to load Python file " + pluginFileName;
-                    detailString = ex.ToString();
-                    return false;
-                }
+            }
+            catch (Exception ex)
+            {
+                errorString = "Unable to load Python file " + pluginFileName;
+                detailString = ex.ToString();
+                return false;
             }
             // Get the global variables for this plugin
             if (!scope.ContainsVariable("ConfigureGlobals"))

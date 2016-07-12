@@ -18,7 +18,6 @@ def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.NAME]  = "Funimation"
     pluginRegisterDictionary[gpk.ADD]   = "Add Funimation Series"
     pluginRegisterDictionary[gpk.DESC]  = "Load series from Funimation website"
-    pluginRegisterDictionary[gpk.FORCECONFIG] = "false"
 
 def ConfigureSeries(parent, pluginSeriesDictionary) :
     form = ConfigureFunimationSeries()

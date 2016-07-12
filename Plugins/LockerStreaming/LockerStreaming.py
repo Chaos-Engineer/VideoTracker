@@ -19,7 +19,7 @@ def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.NAME]  = "LockerStreaming"
     pluginRegisterDictionary[gpk.ADD]   = "Add Locker Streaming Series"
     pluginRegisterDictionary[gpk.DESC]  = "Add series from a Locker Streaming site"
-    pluginRegisterDictionary[gpk.FORCECONFIG] = "true"
+    pluginRegisterDictionary[gpk.FORCECONFIG] = "TRUE"
 
 
 def ConfigureGlobals(parent, pluginGlobalDictionary) :

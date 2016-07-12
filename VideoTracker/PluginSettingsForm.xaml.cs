@@ -129,10 +129,9 @@ namespace VideoTracker
 
         private void registerButton_Click(object sender, EventArgs e)
         {
+            if (openPluginFileDialog.ShowDialog() != true) return;
             using (new WaitCursor())
             {
-                if (openPluginFileDialog.ShowDialog() != true) return;
-
                 Plugin plugin = new Plugin();
                 if (plugin.Register(openPluginFileDialog.FileName, videoTrackerData))
                 {

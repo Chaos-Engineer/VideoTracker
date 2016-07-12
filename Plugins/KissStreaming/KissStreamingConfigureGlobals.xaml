@@ -1,6 +1,6 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="KissStreaming Globals" SizeToContent="WidthAndHeight"
+        Title="Configure Kiss Streaming Globals" SizeToContent="WidthAndHeight"
        ShowInTaskbar="False" Topmost="True" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
