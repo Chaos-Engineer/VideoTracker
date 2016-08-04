@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Net;
 using System.Web;
 using System.Windows;
+using VideoTrackerLib;
 // Plays videos from the CrunchyRoll website, using screen-scraping to determine the URLs associated
 // with a series.
 

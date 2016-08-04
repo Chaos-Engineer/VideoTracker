@@ -11,7 +11,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using System.Xml.Serialization;
+using VideoTrackerLib;
 
 // CLASS: VideoSeries
 //
@@ -55,7 +57,7 @@ namespace VideoTracker
         [XmlIgnore,NonSerialized]
         private bool valid;
 
-        // Last error; set inside LoadSeriesAsynch and displayed during LoadSeriesCompleted
+        // Last error; set inside LoadSeriesAsync and displayed during LoadSeriesCompleted
         [XmlIgnore,NonSerialized]
         protected string errorString;
         [XmlIgnore, NonSerialized]

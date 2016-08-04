@@ -8,8 +8,8 @@ from System.Diagnostics import Process
 
 
 clr.AddReference('VideoTrackerLib')
-import VideoTracker
-from VideoTracker import VideoFile, gpk, spk
+import VideoTrackerLib
+from VideoTrackerLib import VideoFile, gpk, spk, DynamicHtmlLoader
 
 import urllib2
 import json
@@ -30,7 +30,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader, videoFiles) :
     # Get the website index. Data is returned in JSON format, which can be converted to
     # a list of dictionaries with the json.load call.
     index_url = "http://www.funimation.com/feeds/ps/shows?ut=FunimationSubscriptionUser&limit=9999"

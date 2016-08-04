@@ -12,27 +12,36 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml.Serialization;
+using VideoTrackerLib;
 
 namespace VideoTracker
 {
-    public class PluginSeries : VideoSeries
+    public class PluginSeries : VideoSeries, IDisposable
     {
         public string pluginName;
         public string pluginFileName;
-
         public StringDictionary pluginSeriesDictionary = new StringDictionary();
         private StringDictionary pluginGlobalDictionary;
+
+        private DynamicHtmlLoaderDialog dynamicHtmlLoaderDialog;
+        [NonSerialized,XmlIgnore]
+        public DynamicHtmlLoader dynamicHtmlLoader;
 
         private Window parentWindow;        // Used by plugins to set their forms' "Owner" field.
         private Plugin plugin = null;
 
         public PluginSeries()
         {
+            dynamicHtmlLoaderDialog = new DynamicHtmlLoaderDialog();
+            dynamicHtmlLoader = new DynamicHtmlLoader(dynamicHtmlLoaderDialog);
             return;
         }
 
         public PluginSeries(string pluginName, VideoTrackerData vtd)
         {
+            dynamicHtmlLoaderDialog = new DynamicHtmlLoaderDialog();
+            dynamicHtmlLoader = new DynamicHtmlLoader(dynamicHtmlLoaderDialog);
+
             this.pluginName = pluginName;
             this.pluginGlobalDictionary = vtd.globals[pluginName];
             this.plugin = new Plugin(pluginName, vtd);
@@ -83,7 +92,6 @@ namespace VideoTracker
         protected override void LoadSeriesAsync(object sender, DoWorkEventArgs e)
         {
             dynamic scope;
-
             VideoTrackerData vtd = (VideoTrackerData)e.Argument;
             if (!vtd.globals[gdg.PLUGINS].ContainsKey(pluginName))
             {
@@ -109,12 +117,14 @@ namespace VideoTracker
             // Get the global variables for this plug-in
             this.pluginGlobalDictionary = vtd.globals[pluginName];
 
+
+
             // Load the series episodes.
             try
-            {
+            {   
                 object status;
                 status = scope.LoadSeries(this.pluginGlobalDictionary, this.pluginSeriesDictionary,
-                        out this.videoFiles);
+                        this.dynamicHtmlLoader, out this.videoFiles);
                 if (status == null)
                 {
                     this.errorString = ""; // Success
@@ -211,6 +221,12 @@ namespace VideoTracker
             }
             return true;
         }
+
+        public void Dispose()
+        {
+            dynamicHtmlLoader.Dispose();
+            dynamicHtmlLoaderDialog.Dispose();
+        }
     }
 
     //
@@ -223,7 +239,7 @@ namespace VideoTracker
     // 2 - During global configuration, the "ConfigureGlobals()" method updates the global variables associated 
     //     with the plugin. They are not stored locally to the class, they're in the VideoTrackerData dictionary.
     // 3 - An individual video series can call the GetScope() method and use this to call the "ConfigureLocals()"
-    //     "LoadSeriesAsynch()" and "Play()" methods in the plug-in file.
+    //     "LoadSeriesAsync()" and "Play()" methods in the plug-in file.
     //
     // ScriptRuntime objects can be shared among all threads that use a plug-in.
     // ScopeRuntime objects are not thread-safe, so a new object is needed for each thread.

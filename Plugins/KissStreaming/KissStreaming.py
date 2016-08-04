@@ -11,13 +11,8 @@ from System.Diagnostics import Process
 from Microsoft.Win32 import OpenFileDialog
 
 clr.AddReference('VideoTrackerLib')
-import VideoTracker
-from VideoTracker import VideoFile, gpk, spk
-
-# Append the "..\VideoTrackerUtils" directory relative to this file.
-utilsDir = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "\\VideoTrackerUtils";
-sys.path.append(utilsDir)
-from HtmlLoader_CloudFlare import HtmlLoader_CloudFlare
+import VideoTrackerLib
+from VideoTrackerLib import VideoFile, gpk, spk, DynamicHtmlLoader, WindowMode
 
 
 def Register(pluginRegisterDictionary) :
@@ -47,7 +42,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader, videoFiles) :
 
     series = pluginSeriesDictionary[spk.TITLE]
     #
@@ -55,21 +50,21 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     # and the series URL.
     # 
     # <a href="<base>/Anime/tv-show"><span class=\"title\">TV Show</span></a>
+    # <a class="bigChar" href="<base>/Anime/tv-show">TV Show</a>
     base = pluginGlobalDictionary["URL"]
     if base == "":
         return "Must set URL in Plugins/Configure"
     
-    url = base + "/search/" + series
-    h = HtmlLoader_CloudFlare(url, utilsDir);
-    if (h.error != ""):
-        return List[str]([h.error, url])
-
-    html = h.read()
-    m = re.search('<a[^<]*?href="([^<]*?)"><span class="title">([^<]*?' + series + '[^<]*?)</span></a>', html, flags=re.IGNORECASE)
+    #url = base + "/search/" + series
+    url =  base + "/full-anime-list"
+    ##dynamicHtmlLoader.windowMode = WindowMode.Visible
+    html = dynamicHtmlLoader.Navigate(url)
+    #m = re.search('<a[^<]*?href="([^<]*?)"><span class="title">([^<]*?' + series + '[^<]*?)</span></a>', html, flags=re.IGNORECASE)
+    m = re.search('<a[^<]*?href="([^<]*?)">([^<]*?' + series + '[^<]*?)</a>', html, flags=re.IGNORECASE)
     if m is None:
         return List[str](["Series not found at " + url, html])
     url = m.group(1)
-    title = m.group(2)
+    title = m.group(2).strip()
     
     #
     # Load the episode page and build the series list. Episode titles are not guaranteed to have a numeric field
@@ -77,20 +72,20 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     # list and then reverse it to get the episode numbers.
     #
     # <a href="http://base/TV-Show-extra-episode" title="Watch extra episode">
-    #    Mirai Nikki Redial Episode</a>
+    #    Extra Episode</a>
     # <a href="http://base/TV-Show-episode-26" title="Watch Episode 26">
-    #    Mirai Nikki Episode 26</a>
-    h = HtmlLoader_CloudFlare(url, utilsDir);
-    if (h.error != ""):
-        return List[str]([h.error, url])
-    html = h.read();
-    m = re.findall('<a href="(.*?)" title="Watch', html)
+    #    Episode 26</a>
+    #
+    html = dynamicHtmlLoader.Navigate(url)
+    #m = re.findall('<a href="(.*?)" title="Watch', html)
+    m = re.findall('<a[^<]*?href="([^<]*?)"[^<]*?>([^<]*?' + title + '[^<]*?Episode[^<]*?)</a>', html, flags=re.IGNORECASE)
+ 
     episode = 0
     for item in reversed(m):
         episode += 1
         v = VideoFile()
-        v.episodeTitle = item.split('/')[-1]
-        v.internalName = item
+        v.episodeTitle = item[1].strip()
+        v.internalName = item[0]
         v.season = 1
         v.episode = episode
         v.special = 0
@@ -99,7 +94,6 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
         videoFiles.Add(v.key, v)
 
     if episode == 0:
-        videoFiles.detailString = html
         return List[str](["No episodes found at " + url, html])
 
     return # Indicates no error

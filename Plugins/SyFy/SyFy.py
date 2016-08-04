@@ -3,11 +3,12 @@ clr.AddReference('IronPython.Wpf')
 import wpf
 from System.Windows import Application, Window, MessageBox
 from System.IO import Path
+from System.Collections.Generic import List
 from System.Diagnostics import Process
 
 clr.AddReference('VideoTrackerLib')
-import VideoTracker
-from VideoTracker import VideoFile, gpk, spk
+import VideoTrackerLib
+from VideoTrackerLib import VideoFile, gpk, spk, DynamicHtmlLoader
 
 import re
 import urllib2
@@ -28,7 +29,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader, videoFiles) :
 
     #
     # Grab the full series list and search for the title. Extract the canonical title
@@ -40,13 +41,11 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     #
     series = pluginSeriesDictionary[spk.TITLE]
     url = "http://syfy.com/episodes"
-    h = urllib2.urlopen(url);
-    html = h.read()
+    html = dynamicHtmlLoader.Navigate(url)
 
     m = re.search('<a href="(/[^/]*)">(.*' + series + '.*)</a>', html, flags=re.IGNORECASE)
     if m is None:
-        detailString = html
-        return "Series not found at " + url
+        return List[str](["Series not found at " + url, html])
     url = "http://syfy.com" + m.group(1) + "/episodes"
     
     #
@@ -57,8 +56,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
     #
     # <a href="http://www.syfy.com/themagicians/videos/101-unauthorized-magic-0">Watch Full Episode</a>
     #
-    h = urllib2.urlopen(url);
-    html = h.read()
+    html = dynamicHtmlLoader.Navigate(url)
 
     m = re.findall('<a href="(.*)">Watch Full Episode</a>', html)
     episode = 0
@@ -75,8 +73,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
         videoFiles.Add(v.key, v)
 
     if episode == 0:
-        detailString = html
-        return "Episodes not found at " + url
+        return List[str](["Episodes not found at " + url, html])
 
     return "" # Indicates no error
 

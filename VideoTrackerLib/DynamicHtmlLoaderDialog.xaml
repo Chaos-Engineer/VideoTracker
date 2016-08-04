@@ -1,0 +1,8 @@
+﻿<Window x:Class="VideoTrackerLib.DynamicHtmlLoaderDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DynamicHtmlLoader" Closing="Window_Closing" SizeToContent="WidthAndHeight">
+    <Grid>
+        <WebBrowser Name="browser" Height="800" Width="800" LoadCompleted="Browser_LoadCompleted"/>
+    </Grid>
+</Window>

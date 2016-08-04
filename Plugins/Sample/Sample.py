@@ -25,10 +25,12 @@ from Microsoft.Win32 import OpenFileDialog
 # - "VideoFile" contains information about a single episode
 # - "GPK" is Global Plugin Keys, a set of text constants used to populate a data dictionary
 # - "SPK" is Series Plugin Keys, another set of text constants used to popular a data dictionary.
+# - "DynamicHtmlLoader" returns the HTML associated with a URL, possible after doing JavaScript
+#   redirects.
 #
 clr.AddReference('VideoTrackerLib')
-import VideoTracker
-from VideoTracker import VideoFile, gpk, spk
+import VideoTrackerLib
+from VideoTrackerLib import VideoFile, gpk, spk, DynamicHtmlLoader
 
 #
 # The plug-in routines below must be at the top level of the file, not contained in any class.
@@ -137,6 +139,12 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
 # It takes two inputs, pluginGlobalDictionary and pluginSeriesDictionary. These are the
 # data dictionaries built by the previous ConfigureGlobals and ConfigureSeries calls.
 #
+# The third argument, dynamicHtmlLoader, is an object which can be used to return 
+# a string representing a webpages HTML, possibly after executing Javascript. The
+# call is:
+#      html = dynamicHtmlLoader.Navigate(url)
+# It is not needed by this sample program.
+#
 # The output, videoFiles, is an object of type SortedList<VideoFile>
 #
 # Success is indicated by returning the null string. Failure is indicated by returning
@@ -163,7 +171,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
 # a link to Youtube. "Season 1 Episode 2" is the link specified by the user in the
 # ConfigureSeries call.
 #
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader, videoFiles) :
 
     # Episode 1
     v = VideoFile()

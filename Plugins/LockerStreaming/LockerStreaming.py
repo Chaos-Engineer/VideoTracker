@@ -8,12 +8,8 @@ from System.Collections.Generic import List
 from System.Diagnostics import Process
 
 clr.AddReference('VideoTrackerLib')
-import VideoTracker
-from VideoTracker import VideoFile, gpk, spk
-
-# Append the "..\VideoTrackerUtils" directory relative to this file.
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "\\VideoTrackerUtils")
-from HtmlLoader import HtmlLoader
+import VideoTrackerLib
+from VideoTrackerLib import VideoFile, gpk, spk, DynamicHtmlLoader
 
 def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.NAME]  = "LockerStreaming"
@@ -43,7 +39,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader, videoFiles) :
     #
     # Search for the desired program. Output from the search string is:
     # 
@@ -56,31 +52,28 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
         return "Must set URL in Plugins/Configure"
 
     url = base + "/search/search.php?q=" + series
-    h = HtmlLoader(url);
-    if (h.error != ""):
-        return List[str](["Error loading " + url, h.error])
-    html = h.read();
-
+    html = dynamicHtmlLoader.Navigate(url)
+ 
     m = re.search('<a href="(.*?)" title=(.*?' + series + '.*?)>', html, flags=re.IGNORECASE)
+    #m = re.search('<a title=(.*?' + series + '.*?) href="(.*?)">', html, flags=re.IGNORECASE)
     if m is None:
         detailString = html
         return List[str](["Series not found at " + url, detailString])
     url = m.group(1)
     title = m.group(2)
 
+
+
     # Find the episodes within the series:
     # 
     # <a href="[base]/TVShow-season-1-episode1.html" 
     # title="TV Show Season 1 Episode 1"><strong>Episode 1</strong></a>
     #
-    h = HtmlLoader(url);
-    if (h.error != ""):
-        detailString = h.error
-        return "Error loading " + url
-    html = h.read();
+    html = dynamicHtmlLoader.Navigate(url)
 
     episode = 0
     m = re.findall('<a href="(.*?)" title="(.*?' + series + '.*?)">', html, flags=re.IGNORECASE)
+    #m = re.findall('<a title="(.*?' + series + '.*?)" href="(.*?)">', html, flags=re.IGNORECASE)
     for item in (m):
         if item is None:
             continue
@@ -100,7 +93,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
         episode = episode + 1
 
     if episode == 0:
-        videoFiles.detailString = html
+        detailString = html
         return List[str](["No episodes found at " + url, html])
 
     return # Indicates no error

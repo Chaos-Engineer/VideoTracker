@@ -19,6 +19,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
 using System.Windows.Threading;
+using VideoTrackerLib;
 
 namespace VideoTracker
 {
@@ -132,6 +133,8 @@ namespace VideoTracker
         // Program is exiting - save current state before exiting.
         private void VideoTrackerForm_FormClosing(object sender, CancelEventArgs e)
         {
+            // Needed to allow webbrowser windows to close.
+            DynamicHtmlLoaderDialog.shutdownInProgress = true;
             CheckAutoSave();
         }
 

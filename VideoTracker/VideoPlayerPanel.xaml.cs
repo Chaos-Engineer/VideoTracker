@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Globalization;
 using System.Windows.Media;
-
+using VideoTrackerLib;
 
 
 namespace VideoTracker

@@ -130,20 +130,6 @@
                 <File Id="TEMPLATE.XAML" Name="Template.xaml" Source="..\Plugins\Template\Template.xaml" />
               </Component>
             </Directory>
-            <Directory Id="VIDEOTRACKERUTILS" Name="VideoTrackerUtils">
-              <Component Id="CLOUDFLARE_BYPASS.JS" DiskId="1" Guid="66FE8409-2BCD-462F-8A55-8C8BFFCA77F4">
-                <File Id="CLOUDFLARE_BYPASS.JS" Name="CloudFlare-Bypass.js" Source="..\Plugins\VideoTrackerUtils\CloudFlare-Bypass.js" />
-              </Component>
-              <Component Id="HTMLLOADER.PY" DiskId="1" Guid="0624A7EA-FBC2-411B-942F-B8A9888BDF4F">
-                <File Id="HTMLLOADER.PY" Name="HtmlLoader.py" Source="..\Plugins\VideoTrackerUtils\HtmlLoader.py" />
-              </Component>
-              <Component Id="HTMLLOADER_CLOUDFLARE.PY" DiskId="1" Guid="75EA79C2-9853-4F21-84BC-9D0B6D3DF26E">
-                <File Id="HTMLLOADER_CLOUDFLARE.PY" Name="HtmlLoader_CloudFlare.py" Source="..\Plugins\VideoTrackerUtils\HtmlLoader_CloudFlare.py" />
-              </Component>
-              <Component Id="TEST_CLOUDFLARE.BAT" DiskId="1" Guid="3262907D-2F74-4F42-BB27-88388C013316">
-                <File Id="TEST_CLOUDFLARE.BAT" Name="Test-CloudFlare.bat" Source="..\Plugins\VideoTrackerUtils\Test-CloudFlare.bat" />
-              </Component>
-            </Directory>
           </Directory>
         </Directory>
         <Directory Id="ProgramMenuFolder">
@@ -195,10 +181,6 @@
       <ComponentRef Id="SYFY.XAML" />
       <ComponentRef Id="TEMPLATE.PY" />
       <ComponentRef Id="TEMPLATE.XAML" />
-      <ComponentRef Id="CLOUDFLARE_BYPASS.JS" />
-      <ComponentRef Id="HTMLLOADER.PY" />
-      <ComponentRef Id="HTMLLOADER_CLOUDFLARE.PY" />
-      <ComponentRef Id="TEST_CLOUDFLARE.BAT" />
       <ComponentRef Id="StartMenuShortcuts" />
     </Feature>
     <UI>

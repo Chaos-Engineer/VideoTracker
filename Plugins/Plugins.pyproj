@@ -38,10 +38,6 @@
     <Compile Include="Sample\SampleConfigureGlobals.py" />
     <Compile Include="SyFy\SyFy.py" />
     <Compile Include="Template\Template.py" />
-    <Compile Include="VideoTrackerUtils\HtmlLoader.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="VideoTrackerUtils\HtmlLoader_CloudFlare.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Funimation\Funimation.xaml" />
@@ -56,7 +52,6 @@
     <Content Include="Sample\SampleConfigureGlobals.xaml" />
     <Content Include="SyFy\SyFy.xaml" />
     <Content Include="Template\Template.xaml" />
-    <Content Include="VideoTrackerUtils\CloudFlare-Bypass.js" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
@@ -81,7 +76,6 @@
   <ItemGroup>
     <Folder Include="Funimation\" />
     <Folder Include="KissStreaming\" />
-    <Folder Include="VideoTrackerUtils\" />
     <Folder Include="LockerStreaming\" />
     <Folder Include="SyFy\" />
     <Folder Include="Resources\" />

@@ -12,8 +12,8 @@ from System.Diagnostics import Process
 from System.Collections.Generic import List
 
 clr.AddReference('VideoTrackerLib')
-import VideoTracker
-from VideoTracker import VideoFile, gpk, spk
+import VideoTrackerLib
+from VideoTrackerLib import VideoFile, gpk, spk, DynamicHtmlLoader
 
 def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.NAME]  = "NAME"
@@ -45,7 +45,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     else :
        return False
 
-def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, videoFiles) :
+def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader, videoFiles) :
     # Episode 1
     v = VideoFile()
     v.episodeTitle = "[NAME]"
