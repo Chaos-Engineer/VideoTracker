@@ -54,8 +54,8 @@ namespace VideoTrackerLib
     public class DynamicHtmlLoader : IDisposable
     {
         private DynamicHtmlLoaderDialog loader;
-        private bool browserRequired = false;
 
+        public bool browserRequired = false;
         public List<String> inProgressList = new List<String>() { "DDoS protection by CloudFlare" };
         public List<String> requiredList = new List<String>();
         public int timeoutSeconds = 30;

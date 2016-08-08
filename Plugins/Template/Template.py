@@ -3,6 +3,9 @@
 # new plug-ins. See the Sample plug-in for documentation and more
 # detailed example code.
 #
+import sys, os
+import re
+
 import clr 
 clr.AddReference('IronPython.Wpf')
 import wpf
@@ -13,7 +16,7 @@ from System.Collections.Generic import List
 
 clr.AddReference('VideoTrackerLib')
 import VideoTrackerLib
-from VideoTrackerLib import VideoFile, gpk, spk, DynamicHtmlLoader
+from VideoTrackerLib import VideoFile, gpk, spk, DynamicHtmlLoader, WindowMode
 
 def Register(pluginRegisterDictionary) :
     pluginRegisterDictionary[gpk.NAME]  = "NAME"
@@ -24,8 +27,8 @@ def Register(pluginRegisterDictionary) :
 
 # ConfigureGlobals is optional
 
-#def ConfigureGlobals(pluginGlobalDictionary, parent) :
-#    form = SampleConfigureGlobals()
+#def ConfigureGlobals(parent, pluginGlobalDictionary) :
+#    form = TemplateConfigureGlobals()
 #    form.Owner = parent
 #    form.launcher.Text = pluginGlobalDictionary["launcher"]
 #    if form.ShowDialog() :

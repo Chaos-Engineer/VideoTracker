@@ -27,6 +27,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="F-Movies\F-Movies.py" />
+    <Compile Include="F-Movies\F-MoviesConfigureGlobals.py" />
     <Compile Include="Funimation\Funimation.py" />
     <Compile Include="KissStreaming\KissStreaming.py" />
     <Compile Include="KissStreaming\KissStreamingConfigureGlobals.py">
@@ -40,6 +42,8 @@
     <Compile Include="Template\Template.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="F-Movies\F-Movies.xaml" />
+    <Content Include="F-Movies\F-MoviesConfigureGlobals.xaml" />
     <Content Include="Funimation\Funimation.xaml" />
     <Content Include="KissStreaming\KissStreaming.xaml" />
     <Content Include="KissStreaming\KissStreamingConfigureGlobals.xaml">
@@ -77,6 +81,7 @@
     <Folder Include="Funimation\" />
     <Folder Include="KissStreaming\" />
     <Folder Include="LockerStreaming\" />
+    <Folder Include="F-Movies\" />
     <Folder Include="SyFy\" />
     <Folder Include="Resources\" />
     <Folder Include="Sample\" />
