@@ -24,7 +24,7 @@ namespace VideoTracker
         private StringDictionary pluginGlobalDictionary;
 
         private DynamicHtmlLoaderDialog dynamicHtmlLoaderDialog;
-        [NonSerialized,XmlIgnore]
+        [NonSerialized, XmlIgnore]
         public DynamicHtmlLoader dynamicHtmlLoader;
 
         private Window parentWindow;        // Used by plugins to set their forms' "Owner" field.
@@ -121,7 +121,7 @@ namespace VideoTracker
 
             // Load the series episodes.
             try
-            {   
+            {
                 object status;
                 status = scope.LoadSeries(this.pluginGlobalDictionary, this.pluginSeriesDictionary,
                         this.dynamicHtmlLoader, out this.videoFiles);
@@ -395,15 +395,20 @@ namespace VideoTracker
                 }
 
                 DateTime lastMod = File.GetLastWriteTime(pluginFileName);
-                if (scope == null || pluginDictionary[pluginName].fileMod < lastMod)
+                if (scope == null)
                 {
-                    if (scope != null)
-                    {
-                        ErrorDialog.Show(pluginFileName + " has been modified. Reloading.");
-                        pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
-                    }
                     this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
                 }
+                else if (pluginDictionary[pluginName].fileMod < lastMod)
+                {
+                    using (new TransientMessage(this.parentWindow, 
+                        Path.GetFileName(pluginFileName) + " has been modified. Reloading."))
+                    {
+                        pluginDictionary[pluginName] = new PluginData(pluginFileName, pythonLib);
+                        this.scope = pluginDictionary[pluginName].runtime.UseFile(pluginFileName);
+                    }
+                }
+
             }
             return this.scope;
 

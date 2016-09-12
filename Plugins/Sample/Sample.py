@@ -4,12 +4,11 @@
 # This creates a video series with two programs. 
 # The first is hard-coded as a link to Youtube.
 # The second is given a name and URL provided by the user.
-# The user also has the ability to specify an alternate launcher. If no launcer
+# The user also has the ability to specify an alternate launcher. If no launcher
 # is specific then the default web browser will be used.
 
 #
-# Import WPF and some .NET classes. Since Python might not be installed on the
-# client system, 
+# Import WPF and some .NET classes. 
 #
 import clr 
 clr.AddReference('IronPython.Wpf')
@@ -171,6 +170,29 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
 # a link to Youtube. "Season 1 Episode 2" is the link specified by the user in the
 # ConfigureSeries call.
 #
+# It also contains a demonstration of the dynamicHtmlLoader object. This can be used
+# to obtain the HTML of a webpage, possibly using a WebBrowser control to dynamically
+# execute Javascript.
+#
+# DynamicHtmlLoader input properties:
+# - browserRequired - boolean. If true, then always load the URL in a WebBrowser control.
+#   If false, then attempt to load the URL in a WebRequest object, retrying with a WebBrowser
+#   if the initial load fails.
+# - timeoutSeconds - the timeout interval in seconds.
+# - windowMode - the display mode for WebBrowser controls:
+#    - WindowMode.Hidden - hide the web browser window.
+#    - WindowMode.Visible - Display the web browser window.
+#    - WindowMode.Interactive - Display the web browser window. Disable timeout code.
+# - inProgressList - A list of strings. If a loaded page contains one of these strings,
+#      then wait for the page to reload (e.g. via a CloudFlare Javascript forward)
+# - requiredList - A list of strings. If the loaded page does not contain one of these
+#      strings, then wait for the page to reload
+#
+# DynamicHtmLoader output properties:
+# - html - The page HTML
+#
+# DynamicHtmlLoader methods:
+# - String Navigate(String url) - Navigate to the specified URL, returning the "html" field
 def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader, videoFiles) :
 
     # Episode 1
@@ -196,6 +218,11 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
     v.special = 0
     v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
     videoFiles.Add(v.key, v)
+
+    dynamicHtmlLoader.browserRequired = True
+    url = pluginSeriesDictionary["url"]
+    MessageBox.Show(url + " contains HTML:\n\n" + dynamicHtmlLoader.Navigate(url).Substring(0, 500) + "...")
+
 
     # Error messages with additional details can be returned in a two-element List structure.
     #   return List[str](["Error", "Detail"])

@@ -144,6 +144,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="TransientMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="VideoPlayerPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -171,6 +175,9 @@
     </Compile>
     <Compile Include="SettingsForm.xaml.cs">
       <DependentUpon>SettingsForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TransientMessage.xaml.cs">
+      <DependentUpon>TransientMessage.xaml</DependentUpon>
     </Compile>
     <Compile Include="VideoTracker.xaml.cs">
       <DependentUpon>VideoTracker.xaml</DependentUpon>

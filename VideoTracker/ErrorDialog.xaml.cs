@@ -94,7 +94,7 @@ namespace VideoTracker
         private void SetVisibility()
         {
             // The "reason" box can be expanded or hidden.
-            // If it is expanded, and if it contains HTML (starts with '>'), then the
+            // If it is expanded, and if it contains HTML (starts with '<'), then the
             // user is given the option of displaying as TEXT or HTML. Otherwise the
             // box can be displayed as TEXT only.
 
