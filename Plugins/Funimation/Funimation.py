@@ -50,14 +50,14 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
     for member in content:
         if series.upper() in member["series_name"].upper():
             asset_id = member["asset_id"]
-            series_url = member["link"] + "/videos/official/"
-            # At one time, the link contained a redirect that needed to be resolved. This
-            # no longer seems necessary, and the new Funimation "welcome" page causes
-            # urllib2 to go into a "302" redirect loop. Comment this out for now - it
-            # seems like member["link"] is now always working. If this changes then 
-            # consider switching to DynamicHtmlLoader to get the series page.
-            ##handle = urllib2.urlopen(member["link"])
-            ##series_url = handle.url + "/videos/official/"
+            # Sometimes the Funimation "welcome" page causes urllib2 to go into a "302" 
+            # redirect loop. When that happens, member["link"] is usually valid...
+            try:
+                handle = urllib2.urlopen(member["link"])
+                series_url = handle.url + "/videos/official/"
+            except:
+                # Ignore exception
+                series_url = member["link"] + "/vidoes/official/"
     if series_url == "":
         errorString = "Series not found"
         return errorString
@@ -80,10 +80,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
             v.season = int(member["season_number"])
             v.episode = int(member["sequence"])
             v.special = 0
-            v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)
-            # "sequence" or "number" here?
-            print member["title"] + " S" + member["season_number"] + "E" + member["sequence"] + " " + member["url"]
-            print series_url + member["url"] + "?watch=sub"
+            v.key = "%04d%04d%04d%s" % (v.season, v.special, v.episode, v.episodeTitle)           
             videoFiles.Add(v.key, v);
     return "" #  Indicates no error
 
