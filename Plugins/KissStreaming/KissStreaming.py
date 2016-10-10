@@ -35,9 +35,11 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     form = KissAnimeConfigureSeries()
     form.Owner = parent
     form.NameBox.Text = pluginSeriesDictionary[spk.TITLE]
+    form.URLBox.Text = pluginSeriesDictionary["URL"]
     if form.ShowDialog() :
        pluginSeriesDictionary[spk.TITLE] = form.NameBox.Text
-       #pluginSeriesDictionary[spk.CURRENTVIDEO] = form.NameBox.Text
+       if form.URLBox.Text != "":
+           pluginSeriesDictionary["URL"] = form.URLBox.Text
        return True
     else :
        return False
@@ -55,17 +57,28 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
     if base == "":
         return "Must set URL in Plugins/Configure"
     
-    #url = base + "/search/" + series
-    url =  base + "/full-anime-list"
-    ##dynamicHtmlLoader.windowMode = WindowMode.Visible
-    html = dynamicHtmlLoader.Navigate(url)
-    #m = re.search('<a[^<]*?href="([^<]*?)"><span class="title">([^<]*?' + series + '[^<]*?)</span></a>', html, flags=re.IGNORECASE)
-    m = re.search('<a[^<]*?href="([^<]*?)">([^<]*?' + series + '[^<]*?)</a>', html, flags=re.IGNORECASE)
-    if m is None:
-        return List[str](["Series not found at " + url, html])
-    url = m.group(1)
-    title = m.group(2).strip()
-    
+    #
+    # Series URL can be entered by the user, or found by using a site
+    # search for the program. If it's done via a site search, then add
+    # the URL to the dictionary for future use.
+    #
+    if pluginSeriesDictionary["URL"] != "":
+        title = pluginSeriesDictionary[spk.TITLE]
+        url = pluginSeriesDictionary["URL"]
+    else:
+        #url = base + "/search/" + series
+        url =  base + "/full-anime-list"
+        ##dynamicHtmlLoader.windowMode = WindowMode.Visible
+        html = dynamicHtmlLoader.Navigate(url)
+        #m = re.search('<a[^<]*?href="([^<]*?)"><span class="title">([^<]*?' + series + '[^<]*?)</span></a>', html, flags=re.IGNORECASE)
+        m = re.search('<a[^<]*?href="([^<]*?)">([^<]*?' + series + '[^<]*?)</a>', html, flags=re.IGNORECASE)
+        if m is None:
+            return List[str](["Series not found at " + url, html])
+        url = m.group(1)
+        title = m.group(2).strip()
+        pluginSeriesDictionary["URL"] = url
+        pluginSeriesDictionary[spk.TITLE] = title
+
     #
     # Load the episode page and build the series list. Episode titles are not guaranteed to have a numeric field
     # (as shown by the "extra-episode" below), but are guaranteed to be listed in reverse order - so build the

@@ -50,7 +50,9 @@ namespace VideoTrackerLib
         public static bool shutdownInProgress = false;
 
         public string html;
-        public List<String> inProgressList = new List<String>() { "DDoS protection by CloudFlare" };
+        public List<String> inProgressList = new List<String>() { 
+            "DDoS protection by CloudFlare"
+        };
         public List<String> requiredList = new List<String>();
         public int timeoutSeconds = 30;
         public WindowMode windowMode = WindowMode.Hidden;

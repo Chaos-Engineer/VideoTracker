@@ -15,6 +15,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -22,6 +23,8 @@
             </Grid.ColumnDefinitions>
             <Label Content="Title:" Grid.Row="0" Grid.Column="0"/>
             <TextBox x:Name="NameBox" Grid.Row="0" Grid.Column="1"/>
+            <Label Content="URL (optional):" Grid.Row="1" Grid.Column="0"/>
+            <TextBox x:Name="URLBox" Grid.Row="1" Grid.Column="1"/>
         </Grid>
         <StackPanel Style="{StaticResource RightButtonsStackPanel}">
             <Button x:Name="OKButton" Content="OK" HorizontalAlignment="Left" Click="OKButton_Click" IsDefault="True" />

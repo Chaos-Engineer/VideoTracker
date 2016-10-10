@@ -87,7 +87,7 @@ namespace VideoTrackerLib
                 catch (WebException ex)
                 {
                     HttpWebResponse resp = (HttpWebResponse) ex.Response;
-                    if (resp.StatusCode == HttpStatusCode.ServiceUnavailable)
+                    if (resp == null || resp.StatusCode == HttpStatusCode.ServiceUnavailable)
                     {
                         this.browserRequired = true;
                     }
