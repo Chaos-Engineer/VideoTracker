@@ -116,9 +116,7 @@ namespace VideoTracker
 
             // Get the global variables for this plug-in
             this.pluginGlobalDictionary = vtd.globals[pluginName];
-
-
-
+ 
             // Load the series episodes.
             try
             {
@@ -149,6 +147,10 @@ namespace VideoTracker
                     this.videoFiles.Clear();
                     return;
                 }
+
+                // The LoadSeries call can potentially change the series title 
+                // from the user-specified string to the canonical title.
+                this.seriesTitle = pluginSeriesDictionary[spk.TITLE];
             }
             catch (Exception ex)
             {
@@ -171,7 +173,6 @@ namespace VideoTracker
                 }
             }
             this.pluginSeriesDictionary[spk.CURRENTVIDEO] = "";
-
             return;
         }
 

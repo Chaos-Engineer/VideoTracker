@@ -36,9 +36,10 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     form = FMovieConfigureSeries()
     form.Owner = parent
     form.NameBox.Text = pluginSeriesDictionary[spk.TITLE]
+    form.URLBox.Text = pluginSeriesDictionary["URL"]
     if form.ShowDialog() :
        pluginSeriesDictionary[spk.TITLE] = form.NameBox.Text
-       #pluginSeriesDictionary[spk.CURRENTVIDEO] = form.NameBox.Text
+       pluginSeriesDictionary["URL"] = form.URLBox.Text
        return True
     else :
        return False
@@ -49,18 +50,31 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
         return "Must set URL in Plugins/Configure"
     series = pluginSeriesDictionary[spk.TITLE]
 
-    url =  base + "/sitemap"
-    dynamicHtmlLoader.browserRequired = True
-    dynamicHtmlLoader.inProgressList.Add("window.CloudFlare")
-    #dynamicHtmlLoader.windowMode = WindowMode.Visible
-    html = dynamicHtmlLoader.Navigate(url)
+    #
+    # Series URL can be entered by the user, or found by using a site
+    # search for the program. If it's done via a site search, then add
+    # the URL to the dictionary for future use.
+    #
+    if pluginSeriesDictionary["URL"] != "":
+        title = pluginSeriesDictionary[spk.TITLE]
+        url = pluginSeriesDictionary["URL"]
+    else:
+        url =  base + "/sitemap"
+        dynamicHtmlLoader.browserRequired = True
+        dynamicHtmlLoader.inProgressList.Add("window.CloudFlare")
+        #dynamicHtmlLoader.windowMode = WindowMode.Visible
+        html = dynamicHtmlLoader.Navigate(url)
 
-    # Series: <a title="title" href="url">
-    m = re.search('<a title="([^<]*?' + series + '[^<]*?)" href="([^<]*?)">', html, flags=re.IGNORECASE)
-    if m is None:
-        return List[str](["Series not found at " + url, html])
-    title = m.group(1)
-    url = base + m.group(2)
+        # Series: <a ... href="url" ...>Title<
+        nab="[^<]*?" # Matches string with no "<" angle bracket
+        m=re.search('<a' + nab + 'href="(' + nab + ')"'+nab+'>('+nab+series+nab+')<',html,flags=re.IGNORECASE)
+        if m is None:
+            return List[str](["Series not found at " + url, html])
+
+        url = base + m.group(1)
+        title = m.group(2)
+        pluginSeriesDictionary[spk.TITLE] = title
+        pluginSeriesDictionary["URL"] = url
 
 
     # Series is in the first block of HTML at:

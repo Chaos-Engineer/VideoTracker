@@ -38,8 +38,7 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     form.URLBox.Text = pluginSeriesDictionary["URL"]
     if form.ShowDialog() :
        pluginSeriesDictionary[spk.TITLE] = form.NameBox.Text
-       if form.URLBox.Text != "":
-           pluginSeriesDictionary["URL"] = form.URLBox.Text
+       pluginSeriesDictionary["URL"] = form.URLBox.Text
        return True
     else :
        return False
@@ -56,7 +55,8 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
     base = pluginGlobalDictionary["URL"]
     if base == "":
         return "Must set URL in Plugins/Configure"
-    
+
+    dynamicHtmlLoader.inProgressList.Add("Checking your browser before accessing")
     #
     # Series URL can be entered by the user, or found by using a site
     # search for the program. If it's done via a site search, then add

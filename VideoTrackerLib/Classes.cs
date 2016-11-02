@@ -39,7 +39,7 @@ namespace VideoTrackerLib
         public const string CURRENTVIDEO = "currentvideo";
     }
 
-    // This class allows a WebBrowser control to be access from within a
+    // This class allows a WebBrowser control to be accessed from within a
     // BackgroundWorker thread. Normally this is not allowed because UI
     // controls can only be accessed from STA threads, and BackgroundWorkers
     // cannot be STA threads.
@@ -56,8 +56,8 @@ namespace VideoTrackerLib
         private DynamicHtmlLoaderDialog loader;
 
         public bool browserRequired = false;
-        public List<String> inProgressList = new List<String>() { "DDoS protection by CloudFlare" };
-        public List<String> requiredList = new List<String>();
+        public HashSet<String> inProgressList = new HashSet<String>() { "DDoS protection by CloudFlare" };
+        public HashSet<String> requiredList = new HashSet<String>();
         public int timeoutSeconds = 30;
         public WindowMode windowMode = WindowMode.Hidden;
 
@@ -105,11 +105,9 @@ namespace VideoTrackerLib
                 }
             }
 
+            loader.SetMode(inProgressList, requiredList, timeoutSeconds, windowMode);
 
-            loader.inProgressList = this.inProgressList;
-            loader.requiredList = this.requiredList;
-            loader.timeoutSeconds = this.timeoutSeconds;
-            loader.windowMode = this.windowMode;
+            // Dispatch the request to the UI, and wait for it to complete.
             loader.Dispatcher.BeginInvoke(new Action(() => loader.Navigate(url)));
             loader.pageAvailable.WaitOne();
             return loader.html;

@@ -35,7 +35,8 @@ using System.Windows.Threading;
 //    - WindowMode.Visible - Display the web browser window.
 //    - WindowMode.Interactive - Display the web browser window. Disable timeout code.
 // - inProgressList - A list of strings. If a loaded page contains one of these strings,
-//      then wait for the page to reload (e.g. via a CloudFlare Javascript forward)
+//      then wait for the page to reload (e.g. via a CloudFlare Javascript forward). This 
+//      is implemented as a HashSet to prevent duplicates from being inserted.
 // - requiredList - A list of strings. If the loaded page does not contain one of these
 //      strings, then wait for the page to reload
 //
@@ -50,12 +51,10 @@ namespace VideoTrackerLib
         public static bool shutdownInProgress = false;
 
         public string html;
-        public List<String> inProgressList = new List<String>() { 
-            "DDoS protection by CloudFlare"
-        };
-        public List<String> requiredList = new List<String>();
-        public int timeoutSeconds = 30;
-        public WindowMode windowMode = WindowMode.Hidden;
+        private HashSet<String> inProgressList;
+        private HashSet<String> requiredList;
+        private int timeoutSeconds;
+        private WindowMode windowMode;
 
         public AutoResetEvent pageAvailable = new AutoResetEvent(false);
         private bool initialized = false;
@@ -65,9 +64,23 @@ namespace VideoTrackerLib
         public DynamicHtmlLoaderDialog()
         {
             InitializeComponent();
+
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += Browser_LoadCompleted;
         }
+
+        public void SetMode(HashSet<String> inProgressList,
+                        HashSet<String> requiredList,
+                        int timeoutSeconds,
+                        WindowMode windowMode)
+        {
+            this.inProgressList = inProgressList;
+            this.requiredList = requiredList;
+            this.timeoutSeconds = timeoutSeconds;
+            this.windowMode = windowMode;
+        }
+
+
 
         public void Navigate(String url)
         {
