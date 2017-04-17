@@ -76,14 +76,7 @@ namespace VideoTracker
 
         private void playButton_Click(object sender, EventArgs e)
         {
-            try
-            {
-                videoSeries.Play();
-            }
-            catch (Exception ex)
-            {
-                ErrorDialog.Show("Unable to play file\n" + ex.ToString());
-            }
+            videoSeries.Play();
         }
 
         private void playNextButton_Click(object sender, EventArgs e)

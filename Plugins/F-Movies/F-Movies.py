@@ -8,6 +8,7 @@ from System.Windows import Application, Window, MessageBox
 from System.IO import Path
 from System.Diagnostics import Process
 from System.Collections.Generic import List
+from urlparse import urlparse
 
 clr.AddReference('VideoTrackerLib')
 import VideoTrackerLib
@@ -55,9 +56,15 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
     # search for the program. If it's done via a site search, then add
     # the URL to the dictionary for future use.
     #
+    # The series URL can be on a different host than the F-Movies default.
+    # Extract the host name from the series URL to use when constructing the
+    # invididual episode URLs
+    #
     if pluginSeriesDictionary["URL"] != "":
         title = pluginSeriesDictionary[spk.TITLE]
         url = pluginSeriesDictionary["URL"]
+        up = urlparse(url)
+        base = up.scheme + "://" + up.netloc
     else:
         url =  base + "/sitemap"
         dynamicHtmlLoader.browserRequired = True

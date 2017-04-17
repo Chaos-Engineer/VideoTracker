@@ -78,7 +78,9 @@ namespace VideoTracker
             {
                 IDomElement atag = div.Cq().Find("a").FirstElement();
                 if (atag == null) { continue; }
-                string episodeUrl = CrunchyRollUrlPrefix + atag.GetAttribute("href").ToString(); 
+                string episodeUrl = CrunchyRollUrlPrefix + atag.GetAttribute("href").ToString();
+                if (atag.GetAttribute("title").Contains("(Dub)")) { continue; }
+
                 // URL is the user-entered URL for the series. At entry time, it was converted to 
                 // all-lowercase and so will match the beginning of the episode URL returned in div.
                 if (!episodeUrl.Contains(this.URL)) { continue; }  // Ignore "Viewers Also Liked" links.
@@ -110,13 +112,11 @@ namespace VideoTracker
                     ErrorDialog.Show("Can't extract episode number from " + this.URL);
                     continue;
                 }
-
                 v.key = key;
                 v.internalName = episodeUrl;
                 v.episodeTitle = v.episode + " - " + desc;
                 v.season = 1;
                 videoFiles.Add(key, v);
-
             }
         }
     }

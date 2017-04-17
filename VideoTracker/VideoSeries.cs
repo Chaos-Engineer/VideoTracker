@@ -90,7 +90,14 @@ namespace VideoTracker
 
         public virtual void Play()
         {
-            Process.Start(currentVideo.internalName);
+            try
+            {
+                Process.Start(currentVideo.internalName);
+            }
+            catch (Exception e)
+            {
+                ErrorDialog.Show("Can't play " + currentVideo.internalName + "\n" + e.ToString());
+            }
         }
 
         public void LoadSeries(string title, string currentKey, VideoTrackerData videoTrackerData)

@@ -6,6 +6,7 @@ from System.Windows import Application, Window, MessageBox
 from System.IO import Path
 from System.Collections.Generic import List
 from System.Diagnostics import Process
+from urlparse import urlparse
 
 clr.AddReference('VideoTrackerLib')
 import VideoTrackerLib
@@ -32,8 +33,10 @@ def ConfigureSeries(parent, pluginSeriesDictionary) :
     form = LockerStreamingConfigureSeries()
     form.Owner = parent
     form.NameBox.Text = pluginSeriesDictionary[spk.TITLE]
+    form.UrlBox.Text = pluginSeriesDictionary["URL"]
     if form.ShowDialog() :
        pluginSeriesDictionary[spk.TITLE] = form.NameBox.Text
+       pluginSeriesDictionary["URL"] = form.UrlBox.Text
        #pluginSeriesDictionary[spk.CURRENTVIDEO] = form.NameBox.Text
        return True
     else :
@@ -46,22 +49,27 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
     # <a href="[BASE]/tvshow.html" title="TV Show">
     #  
     #
-    series = pluginSeriesDictionary[spk.TITLE]
-    base = pluginGlobalDictionary["URL"]
-    if base == "":
-        return "Must set URL in Plugins/Configure"
+    if pluginSeriesDictionary["URL"] != "":
+        title = pluginSeriesDictionary[spk.TITLE]
+        url = pluginSeriesDictionary["URL"]
+        up = urlparse(url)
+        base = up.scheme + "://" + up.netloc
+    else:
+        title = pluginSeriesDictionary[spk.TITLE]
+        base = pluginGlobalDictionary["URL"]
+        if base == "":
+            return "Must set URL in Plugins/Configure"
+        url = base + "/search/search.php?q=" + title
 
-    url = base + "/search/search.php?q=" + series
-    html = dynamicHtmlLoader.Navigate(url)
- 
-    m = re.search('<a href="(.*?)" title=(.*?' + series + '.*?)>', html, flags=re.IGNORECASE)
-    #m = re.search('<a title=(.*?' + series + '.*?) href="(.*?)">', html, flags=re.IGNORECASE)
-    if m is None:
-        detailString = html
-        return List[str](["Series not found at " + url, detailString])
-    url = m.group(1)
-    title = m.group(2)
-
+        html = dynamicHtmlLoader.Navigate(url)
+        m = re.search('<a href="(.*?)" title=(.*?' + title + '.*?)>', html, flags=re.IGNORECASE)
+        if m is None:
+            detailString = html
+            return List[str](["Series not found at " + url, detailString])
+        url = m.group(1)
+        # Don't change title - it doesn't always match the title as displayed in URL.
+        # title = m.group(2)
+        pluginSeriesDictionary["URL"] = url
 
 
     # Find the episodes within the series:
@@ -72,8 +80,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
     html = dynamicHtmlLoader.Navigate(url)
 
     episode = 0
-    m = re.findall('<a href="(.*?)" title="(.*?' + series + '.*?)">', html, flags=re.IGNORECASE)
-    #m = re.findall('<a title="(.*?' + series + '.*?)" href="(.*?)">', html, flags=re.IGNORECASE)
+    m = re.findall('<a href="(.*?)" title="(.*?' + title + '.*?)">', html, flags=re.IGNORECASE)
     for item in (m):
         if item is None:
             continue
