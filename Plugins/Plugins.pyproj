@@ -11,9 +11,8 @@
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <IsWindowsApplication>True</IsWindowsApplication>
-    <InterpreterId>{80659ab7-4d53-4e0c-8588-a766116cbd46}</InterpreterId>
+    <InterpreterId>IronPython|2.7-32</InterpreterId>
     <LaunchProvider>IronPython (.NET) launcher</LaunchProvider>
-    <InterpreterVersion>2.7</InterpreterVersion>
     <OutputPath>.</OutputPath>
     <Name>Plugins</Name>
     <RootNamespace>Plugins</RootNamespace>
@@ -75,7 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="{80659ab7-4d53-4e0c-8588-a766116cbd46}\2.7" />
+    <InterpreterReference Include="IronPython|2.7-32" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Funimation\" />
@@ -96,10 +95,7 @@
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
-  <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
-  <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
        Visual Studio and specify your pre- and post-build commands in
        the BeforeBuild and AfterBuild targets below. -->
@@ -108,4 +104,5 @@
   </Target>
   <Target Name="AfterBuild">
   </Target>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>

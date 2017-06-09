@@ -24,6 +24,9 @@ def ConfigureGlobals(parent, pluginGlobalDictionary) :
     form.Owner = parent
     form.URL.Text = pluginGlobalDictionary["URL"]
     if form.ShowDialog() :
+        # Strip trailing slash from URL
+        if form.URL.Text.endswith('/') :
+            form.URL.Text = form.URL.Text[:-1]
         pluginGlobalDictionary["URL"] = form.URL.Text
         return True
     else :
