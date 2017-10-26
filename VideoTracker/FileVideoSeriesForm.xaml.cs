@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using VideoTrackerLib;
+
 // FileVideoSeriesForm
 //
 // Fields:

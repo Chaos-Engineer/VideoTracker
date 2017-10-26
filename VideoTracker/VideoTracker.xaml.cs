@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
+using VideoTrackerLib;
 
 namespace VideoTracker
 {

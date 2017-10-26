@@ -24,7 +24,7 @@
             </MenuItem>
             <MenuItem x:Name="editMenuItem" Header="Edit">
                 <MenuItem Header="Add Video Files" Click="addVideoFileMenuItem_Click"/>
-                <MenuItem Header="Add Amazon Video On-Demand" Click="addAmazonVideoOnDemandMenuItem_Click"/>
+                <!-- " MenuItem Header="Add Amazon Video On-Demand" Click="addAmazonVideoOnDemandMenuItem_Click"/ -->
                 <MenuItem Header="Add CrunchyRoll Video" Click="addCrunchyRollVideoMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Refresh" Click="refreshMenuItem_Click" InputGestureText="F5"/>

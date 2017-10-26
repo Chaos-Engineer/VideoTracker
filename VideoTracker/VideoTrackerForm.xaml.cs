@@ -44,6 +44,7 @@ namespace VideoTracker
             videoTrackerData = new VideoTrackerData(this);
             App.VideoTrackerFormWindow = this;
 
+
             // Initialize dialog boxes
             openFileDialog = new OpenFileDialog();
             this.openFileDialog.DefaultExt = "vtr";
@@ -788,12 +789,12 @@ namespace VideoTracker
     {
         public WaitCursor()
         {
-             Mouse.OverrideCursor = Cursors.Wait;
+            Mouse.OverrideCursor = Cursors.Wait;
         }
         public void Dispose()
         {
 
-             Mouse.OverrideCursor = null;
+            Mouse.OverrideCursor = null;
         }
     }
 }

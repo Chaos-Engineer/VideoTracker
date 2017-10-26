@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("VideoTracker")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Toys R Us")]
+[assembly: AssemblyCompany("Extraordinary Popular Delusions")]
 [assembly: AssemblyProduct("VideoTracker")]
-[assembly: AssemblyCopyright("Copyright © Toys R Us 2016")]
+[assembly: AssemblyCopyright("Copyright © Extraordinary Popular Delusions 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -52,4 +52,4 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.19.*")]
+[assembly: AssemblyVersion("1.20.*")]

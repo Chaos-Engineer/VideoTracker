@@ -26,6 +26,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Amazon\Amazon.py" />
     <Compile Include="F-Movies\F-Movies.py" />
     <Compile Include="F-Movies\F-MoviesConfigureGlobals.py" />
     <Compile Include="Funimation\Funimation.py" />
@@ -41,6 +42,7 @@
     <Compile Include="Template\Template.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Amazon\Amazon.xaml" />
     <Content Include="F-Movies\F-Movies.xaml" />
     <Content Include="F-Movies\F-MoviesConfigureGlobals.xaml" />
     <Content Include="Funimation\Funimation.xaml" />
@@ -81,6 +83,7 @@
     <Folder Include="KissStreaming\" />
     <Folder Include="LockerStreaming\" />
     <Folder Include="F-Movies\" />
+    <Folder Include="Amazon\" />
     <Folder Include="SyFy\" />
     <Folder Include="Resources\" />
     <Folder Include="Sample\" />

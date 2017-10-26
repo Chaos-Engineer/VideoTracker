@@ -65,6 +65,14 @@
             </Component>
           </Directory>
           <Directory Id="PLUGINS" Name="Plugins">
+            <Directory Id="AMAZON" Name="Amazon">
+              <Component Id="AMAZON.PY" DiskId="1" Guid="580D41AE-EAC1-4460-A5E4-F992A5AE420A">
+                <File Id="AMAZON.PY" Name="Amazon.py" Source="..\Plugins\Amazon\Amazon.py" />
+              </Component>
+              <Component Id="AMAZON.XAML" DiskId="1" Guid="EA306FFA-7BF9-4CD6-818D-777A4322814F">
+                <File Id="AMAZON.XAML" Name="Amazon.xaml" Source="..\Plugins\Amazon\Amazon.xaml" />
+              </Component>
+            </Directory>
             <Directory Id="FUNIMATION" Name="Funimation">
               <Component Id="FUNIMATION.PY" DiskId="1" Guid="B11D4CCB-FACD-4556-A86E-471BD51AE9A9">
                 <File Id="FUNIMATION.PY" Name="Funimation.py" Source="..\Plugins\Funimation\Funimation.py" />
@@ -175,6 +183,8 @@
       <ComponentRef Id="MICROSOFT.SCRIPTING.METADATA.DLL" />
       <ComponentRef Id="OOKII.DIALOGS.WPF.DLL" />
       <ComponentRef Id="VIDEOTRACKERLIB.DLL" />
+      <ComponentRef Id="AMAZON.PY" />
+      <ComponentRef Id="AMAZON.XAML" />
       <ComponentRef Id="FUNIMATION.PY" />
       <ComponentRef Id="FUNIMATION.XAML" />
       <ComponentRef Id="FMOVIES.PY" />

@@ -97,13 +97,26 @@ namespace VideoTrackerLib
                         break;
                     case WindowMode.Visible:
                         this.ShowInTaskbar = true;
+                        // If the Window is being changed from Minimized to
+                        // Normal, then it needs to be maximized first - otherwise
+                        // it doesn't get sized correctly for some reason.
+                        if (this.WindowState == WindowState.Minimized)
+                        {
+                            this.WindowState = WindowState.Maximized;
+                            this.Show();
+                        }
                         this.WindowState = WindowState.Normal;
                         this.Visibility = Visibility.Visible;
                         dispatcherTimer.Start();
                         break;
                     case WindowMode.Interactive:
                         this.ShowInTaskbar = false;
-                        this.WindowState = WindowState.Normal;
+                        if (this.WindowState == WindowState.Minimized)
+                        {
+                            this.WindowState = WindowState.Maximized;
+                            this.Show();
+                        }
+                        this.WindowState = WindowState.Normal; 
                         this.Visibility = Visibility.Visible;
                         break;
                 }

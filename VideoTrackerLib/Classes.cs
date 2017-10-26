@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 // Class definitions to be inherited by plugins
@@ -73,7 +74,8 @@ namespace VideoTrackerLib
 
         public string Navigate(string url)
         {
-            if (!this.browserRequired) {
+            if (!this.browserRequired)
+            {
                 try
                 {
                     HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
@@ -86,7 +88,7 @@ namespace VideoTrackerLib
                 }
                 catch (WebException ex)
                 {
-                    HttpWebResponse resp = (HttpWebResponse) ex.Response;
+                    HttpWebResponse resp = (HttpWebResponse)ex.Response;
                     if (resp == null || resp.StatusCode == HttpStatusCode.ServiceUnavailable)
                     {
                         this.browserRequired = true;
