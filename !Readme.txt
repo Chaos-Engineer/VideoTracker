@@ -34,4 +34,9 @@ NUGET PACKAGES:
 - ookii: Allows access to the Vista-style directory selector dialog, not otherwise available in .NET.
 - ironpython: Python run-time for PluginSeries class
 
+WIX INSTALLER:
+- I haven't been able to get the VideoTrackerInstaller WiX installation project to build using the
+  NuGet packages. To get this to work, go to http://wixtoolset.org/releases/ and install *BOTH*
+  the Wix Toolset and the WiX Toolset Visual Studio Extension.
+
 Use "git push origin master" to publish updated package.

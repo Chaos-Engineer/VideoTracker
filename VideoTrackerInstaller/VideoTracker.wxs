@@ -154,6 +154,7 @@
         <Directory Id="ProgramMenuFolder">
           <Directory Id="ProgramMenuDir" Name="VideoTracker">
             <Component Id="StartMenuShortcuts" Guid="5AAE1268-9093-48EA-B5EC-4714D27567C3">
+              <Shortcut Id="ApplicationStartMenuShortcut" Name="VideoTracker" Description="Video Tracking Software" Target="[INSTALLDIR]VideoTracker.exe" WorkingDirectory="INSTALLDIR" />
               <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
               <RegistryValue Root="HKCU" Key="Software\ExtraordinaryPopularDelusions\VideoTracker" Type="string" Value="" />
             </Component>
