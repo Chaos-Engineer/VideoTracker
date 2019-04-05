@@ -30,6 +30,9 @@
     <Compile Include="F-Movies\F-Movies.py" />
     <Compile Include="F-Movies\F-MoviesConfigureGlobals.py" />
     <Compile Include="Funimation\Funimation.py" />
+    <Compile Include="Interactive\Interactive.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="KissStreaming\KissStreaming.py" />
     <Compile Include="KissStreaming\KissStreamingConfigureGlobals.py">
       <SubType>Code</SubType>
@@ -84,6 +87,7 @@
     <Folder Include="LockerStreaming\" />
     <Folder Include="F-Movies\" />
     <Folder Include="Amazon\" />
+    <Folder Include="Interactive\" />
     <Folder Include="SyFy\" />
     <Folder Include="Resources\" />
     <Folder Include="Sample\" />

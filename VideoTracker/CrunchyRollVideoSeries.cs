@@ -63,13 +63,14 @@ namespace VideoTracker
 
 
             WebClient c = new WebClient();
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             try
             {
                 html = c.DownloadString(this.URL);
             }
-            catch (WebException)
+            catch (WebException ex)
             {
-                errorString = "Failed to load " + this.URL;
+                errorString = "Failed to load " + this.URL + ex.Message;
                 return;
             }
             CQ dom = CQ.Create(html);
