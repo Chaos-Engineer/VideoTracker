@@ -107,7 +107,7 @@ def LoadSeries(pluginGlobalDictionary, pluginSeriesDictionary, dynamicHtmlLoader
 
 def GetSeason(season, seasonName, url, html, videoFiles):
     #MessageBox.Show("Season URL = " + url)
-    blocks = getblocks('<div class="dv-radial-linear-wrap">', '<div class="dv-el-synopsis-wrapper">', html)
+    blocks = getblocks('<div class="dv-episode-playback-title', '<div class="dv-episode-playback-title', html)
     if not blocks:
         return List[str](["Can't find episode list in " + url, html])
     #
